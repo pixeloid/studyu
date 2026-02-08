@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
+import { StudyULogo } from '@/components/ui/StudyULogo'
 
 const navigation = [
   { name: 'Bemutatkozás', href: '/bemutatkozas' },
@@ -18,19 +19,8 @@ export function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
         {/* Logo */}
         <div className="flex lg:flex-1">
-          <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3">
-            {/* Geometric logo mark */}
-            <div className="relative w-10 h-10">
-              <div
-                className="absolute inset-0 rounded-full border-[3px] border-black"
-                style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-              />
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-                style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-              />
-            </div>
-            <span className="font-bugrino text-2xl uppercase tracking-tight">StudyU</span>
+          <Link href="/" className="-m-1.5 p-1.5 flex items-center">
+            <StudyULogo className="h-8" />
           </Link>
         </div>
 

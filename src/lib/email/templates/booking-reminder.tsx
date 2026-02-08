@@ -5,10 +5,13 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
 } from '@react-email/components'
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://studyu.hu'
 
 interface BookingReminderEmailProps {
   customerName: string
@@ -29,6 +32,9 @@ export function BookingReminderEmail({
       <Preview>Emlékeztető: holnapi foglalás - StudyU</Preview>
       <Body style={main}>
         <Container style={container}>
+          <Section style={logoSection}>
+            <Img src={`${siteUrl}/logo.svg`} alt="StudyU" height="32" style={{ height: '32px', width: 'auto' }} />
+          </Section>
           <Heading style={h1}>Emlékeztető a holnapi foglalásáról</Heading>
 
           <Text style={text}>
@@ -116,6 +122,10 @@ const detailValue = {
 const hr = {
   borderColor: '#e5e7eb',
   margin: '20px 0',
+}
+
+const logoSection = {
+  marginBottom: '24px',
 }
 
 const footer = {

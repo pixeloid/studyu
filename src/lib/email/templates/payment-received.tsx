@@ -5,11 +5,14 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
   Text,
 } from '@react-email/components'
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://studyu.hu'
 
 interface PaymentReceivedEmailProps {
   customerName: string
@@ -32,6 +35,9 @@ export function PaymentReceivedEmail({
       <Preview>Fizetés megérkezett - StudyU</Preview>
       <Body style={main}>
         <Container style={container}>
+          <Section style={logoSection}>
+            <Img src={`${siteUrl}/logo.svg`} alt="StudyU" height="32" style={{ height: '32px', width: 'auto' }} />
+          </Section>
           <Section style={successBadge}>
             <Text style={successText}>Fizetés sikeres</Text>
           </Section>
@@ -161,6 +167,10 @@ const link = {
 const hr = {
   borderColor: '#e5e7eb',
   margin: '20px 0',
+}
+
+const logoSection = {
+  marginBottom: '24px',
 }
 
 const footer = {

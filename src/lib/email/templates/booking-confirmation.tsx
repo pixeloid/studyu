@@ -5,10 +5,13 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
 } from '@react-email/components'
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://studyu.hu'
 
 interface BookingConfirmationEmailProps {
   customerName: string
@@ -31,6 +34,9 @@ export function BookingConfirmationEmail({
       <Preview>Foglalása visszaigazolva - StudyU</Preview>
       <Body style={main}>
         <Container style={container}>
+          <Section style={logoSection}>
+            <Img src={`${siteUrl}/logo.svg`} alt="StudyU" height="32" style={{ height: '32px', width: 'auto' }} />
+          </Section>
           <Heading style={h1}>Foglalása visszaigazolva!</Heading>
 
           <Text style={text}>
@@ -142,6 +148,10 @@ const totalText = {
 const hr = {
   borderColor: '#e5e7eb',
   margin: '20px 0',
+}
+
+const logoSection = {
+  marginBottom: '24px',
 }
 
 const footer = {

@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { StudyULogo } from '@/components/ui/StudyULogo'
 
 const navigation = [
   { name: 'Áttekintés', href: '/admin', icon: DashboardIcon },
@@ -67,24 +68,10 @@ export default async function AdminLayout({
         {/* Logo */}
         <div className="h-20 flex items-center justify-center border-b-[3px] border-gray-800">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative w-10 h-10">
-              <div
-                className="absolute inset-0 rounded-full border-[2px] border-white"
-                style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-              />
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-                style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-              />
-            </div>
-            <div>
-              <span className="font-bugrino text-xl uppercase tracking-tight text-white block">
-                StudyU
-              </span>
-              <span className="text-[10px] uppercase tracking-widest text-[var(--bauhaus-yellow)]">
-                Admin
-              </span>
-            </div>
+            <StudyULogo className="h-7" color="#FFFFFF" />
+            <span className="text-[10px] uppercase tracking-widest text-[var(--bauhaus-yellow)] font-bugrino">
+              Admin
+            </span>
           </Link>
         </div>
 

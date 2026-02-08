@@ -1,4 +1,0 @@
-[  141126ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/admin/foglalasok/184723cb-7467-4869-9e42-271cce0934a7:0
-[  141126ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
-[  289097ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/admin/foglalasok/184723cb-7467-4869-9e42-271cce0934a7:0
-[  289097ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0

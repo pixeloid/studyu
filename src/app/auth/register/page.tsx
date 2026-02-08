@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { BauhausInput } from '@/components/ui/bauhaus/BauhausInput'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
+import { StudyULogo } from '@/components/ui/StudyULogo'
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
@@ -83,18 +84,8 @@ export default function RegisterPage() {
         />
 
         <div className="w-full max-w-md relative z-10 text-center">
-          <Link href="/" className="inline-flex items-center gap-3 mb-8">
-            <div className="relative w-12 h-12">
-              <div
-                className="absolute inset-0 rounded-full border-[3px] border-black"
-                style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-              />
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full"
-                style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-              />
-            </div>
-            <span className="font-bugrino text-3xl uppercase tracking-tight">StudyU</span>
+          <Link href="/" className="inline-flex items-center mb-8">
+            <StudyULogo className="h-10" />
           </Link>
 
           <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent>
@@ -162,18 +153,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3">
-            <div className="relative w-12 h-12">
-              <div
-                className="absolute inset-0 rounded-full border-[3px] border-black"
-                style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-              />
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full"
-                style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-              />
-            </div>
-            <span className="font-bugrino text-3xl uppercase tracking-tight">StudyU</span>
+          <Link href="/" className="inline-flex items-center">
+            <StudyULogo className="h-10" />
           </Link>
         </div>
 

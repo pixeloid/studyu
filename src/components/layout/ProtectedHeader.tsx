@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { StudyULogo } from '@/components/ui/StudyULogo'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@/types/database'
 
@@ -32,18 +33,8 @@ export function ProtectedHeader({ user, profile }: ProtectedHeaderProps) {
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="relative w-10 h-10">
-                <div
-                  className="absolute inset-0 rounded-full border-[3px] border-black"
-                  style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-                />
-                <div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-                  style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-                />
-              </div>
-              <span className="font-bugrino text-xl uppercase tracking-wider">StudyU</span>
+            <Link href="/" className="flex items-center">
+              <StudyULogo className="h-8" />
             </Link>
 
             {/* Desktop navigation */}

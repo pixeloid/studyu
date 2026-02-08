@@ -122,14 +122,11 @@ export async function POST(request: NextRequest) {
     const redColor = '#E53935'
     const yellowColor = '#F5A623'
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://studyu.hu'
+
     const emailHeader = `
       <div style="background: #000; padding: 24px 32px; text-align: left;">
-        <table cellpadding="0" cellspacing="0" border="0"><tr>
-          <td style="width: 40px; height: 40px; background: ${brandColor}; border-radius: 50%;"></td>
-          <td style="padding-left: 12px;">
-            <span style="color: #fff; font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">StudyU</span>
-          </td>
-        </tr></table>
+        <img src="${siteUrl}/logo-white.svg" alt="StudyU" height="32" style="height: 32px; width: auto;" />
       </div>`
 
     const bookingDetailsBlock = `

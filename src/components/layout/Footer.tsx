@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { StudyULogo } from '@/components/ui/StudyULogo'
 
 const navigation = {
   main: [
@@ -21,19 +22,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-12">
           {/* Logo and description */}
           <div className="flex-1 max-w-sm">
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              {/* Geometric logo mark - inverted colors */}
-              <div className="relative w-10 h-10">
-                <div
-                  className="absolute inset-0 rounded-full border-[3px] border-white"
-                  style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-                />
-                <div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full"
-                  style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-                />
-              </div>
-              <span className="font-bugrino text-2xl uppercase tracking-tight text-white">StudyU</span>
+            <Link href="/" className="flex items-center mb-4">
+              <StudyULogo className="h-8" color="#FFFFFF" />
             </Link>
             <p className="text-gray-400 text-sm">
               Professzionális fotóstúdió Budapesten. Modern felszerelés, rugalmas időbeosztás.
