@@ -1,0 +1,14 @@
+[     438ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/auth/login:0
+[     438ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  754384ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://localhost:3000/api/invoices/proforma:0
+[  754510ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://localhost:3000/api/admin/bookings/send-confirmation:0
+[  897916ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/admin/foglalasok:0
+[  897916ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  907798ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://localhost:3000/api/invoices/proforma:0
+[  907884ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://localhost:3000/api/admin/bookings/send-confirmation:0
+[  919675ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/auth/login?next=%2Fadmin%2Ffoglalasok%2Fd0000000-0000-0000-0000-000000000006:0
+[  919675ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  922059ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0
+[  929365ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0
+[  950766ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0
+[  952918ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0

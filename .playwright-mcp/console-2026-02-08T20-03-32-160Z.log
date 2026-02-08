@@ -1,0 +1,66 @@
+[     520ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/admin/foglalasok:0
+[     520ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  558299ms] ReferenceError: loadGcalStatus is not defined
+    at SettingsPage.useEffect (http://localhost:3000/_next/static/chunks/studyu_src_6df81f24._.js?id=%255Bproject%255D%252Fstudyu%252Fsrc%252Fapp%252Fadmin%252Fbeallitasok%252Fpage.tsx+%255Bapp-client%255D+%2528ecmascript%2529:66:13)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:14876:22)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:965:74)
+    at commitHookEffectListMount (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:7266:167)
+    at commitHookPassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:7301:60)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8696:33)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8700:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8700:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8757:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8695:17)
+    at recursivelyTraversePassiveMountEffects (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8683:316)
+    at commitPassiveMountOnFiber (http://localhost:3000/_next/static/chunks/584eb_next_dist_compiled_react-dom_f114e49a._.js:8700:17)
+[  566017ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ http://localhost:3000/_next/static/chunks/584eb_next_dist_8e084c15._.js:2297
+[  570339ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/admin/beallitasok:0
+[  570340ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  589038ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3000/api/auth/google-calendar/authorize:0
+[  625885ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3000/api/auth/google-calendar/authorize:0
+[  693490ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3000/api/auth/google-calendar/authorize:0
+[  703022ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3000/api/auth/google-calendar/authorize:0
+[  739569ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3000/api/auth/google-calendar/authorize:0
+[  906823ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0
+[  913596ms] [ERROR] Access to font at 'https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3000/auth/login?next=%2Fadmin%2Fbeallitasok:0
+[  913596ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2:0
+[  914615ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0
+[ 1059112ms] [ERROR] Failed to load resource: the server responded with a status of 400 (Bad Request) @ http://127.0.0.1:54321/auth/v1/token?grant_type=password:0

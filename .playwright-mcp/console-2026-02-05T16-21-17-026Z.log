@@ -1,0 +1,2 @@
+[   70432ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/dashboard/foglalasaim/33582ae6-a648-43e2-84e6-8be06df167de?success=true&_rsc=12wn4:0
+[   70657ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/dashboard/foglalasaim/33582ae6-a648-43e2-84e6-8be06df167de?success=true:0

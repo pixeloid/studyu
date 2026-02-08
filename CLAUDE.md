@@ -87,3 +87,46 @@ Local development uses `.env.local` (created automatically from local Supabase):
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Publishable API key
 
 For production, set these in your deployment platform with your Supabase project credentials.
+
+## Design System: Bauhaus UI
+
+This project uses a custom Bauhaus-inspired design system based on dugattyus.hu aesthetic.
+
+### Design Principles
+- Geometric shapes (circles, triangles, squares)
+- Strong primary colors: Blue (#0000FF), Red (#E53935), Yellow (#F5A623), Black, White
+- Clean typography with Bugrino font for headings
+- Offset shadows (no blur, pure geometry)
+- Bold 3px borders
+
+### UI Components
+Located in `src/components/ui/bauhaus/`:
+
+```typescript
+import {
+  BauhausButton,    // Buttons with offset shadow
+  BauhausCard,      // Cards with geometric accents
+  BauhausInput,     // Form inputs
+  BauhausCalendarDay, // Calendar day (dugattyus style)
+  BauhausBadge,     // Tags/badges
+  BauhausHero,      // Hero sections with decorations
+  BauhausModal,     // Modal dialogs
+  BauhausGeometric, // Decorative shapes
+} from '@/components/ui/bauhaus';
+```
+
+### CSS Classes
+Available in `globals.css`:
+- `.font-bugrino` - Bugrino font family
+- `.text-bauhaus-display` - Large display text
+- `.text-bauhaus-heading` - Heading text
+- `.text-bauhaus-subheading` - Subheading text
+- `.bauhaus-btn`, `.bauhaus-btn-primary`, `.bauhaus-btn-accent`, `.bauhaus-btn-danger` - Button styles
+- `.bauhaus-card` - Card with offset shadow
+- `.bauhaus-input` - Input field style
+
+### Design System Demo
+Visit `/design-system` to see all components in action.
+
+### Agent Skill
+Use `/bauhaus-ui-designer` skill when designing new interfaces to follow the design guidelines.

@@ -1,26 +1,259 @@
 @import "tailwindcss";
 
+/* Bauhaus Design System - Dugattyus.hu inspired */
+
+/* Custom Bugrino Font */
+@font-face {
+  font-family: 'Bugrino';
+  src: url('https://dugattyus.hu/assets/Bugrino-Medium-BerRJcN3.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Bauhaus Color Palette */
+  --bauhaus-blue: #0000FF;
+  --bauhaus-red: #E53935;
+  --bauhaus-yellow: #F5A623;
+  --bauhaus-black: #000000;
+  --bauhaus-white: #FFFFFF;
+  --bauhaus-gray: #1A1A1A;
+
+  /* Semantic Colors */
+  --background: var(--bauhaus-white);
+  --foreground: var(--bauhaus-black);
+  --primary: var(--bauhaus-blue);
+  --accent: var(--bauhaus-yellow);
+  --danger: var(--bauhaus-red);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius - Bauhaus uses sharp edges and perfect circles */
+  --radius-none: 0;
+  --radius-full: 9999px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bauhaus-blue: var(--bauhaus-blue);
+  --color-bauhaus-red: var(--bauhaus-red);
+  --color-bauhaus-yellow: var(--bauhaus-yellow);
+  --color-bauhaus-black: var(--bauhaus-black);
+  --color-bauhaus-white: var(--bauhaus-white);
+  --color-bauhaus-gray: var(--bauhaus-gray);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --font-bugrino: 'Bugrino', sans-serif;
+  --font-sans: var(--font-inter);
 }
 
+/* Dark Mode - Inverted Bauhaus */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--bauhaus-gray);
+    --foreground: var(--bauhaus-white);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Bauhaus Typography Utilities */
+.font-bugrino {
+  font-family: 'Bugrino', sans-serif;
+}
+
+.text-bauhaus-display {
+  font-family: 'Bugrino', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.text-bauhaus-heading {
+  font-family: 'Bugrino', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.text-bauhaus-subheading {
+  font-family: 'Bugrino', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* Bauhaus Geometric Shapes */
+.bauhaus-circle {
+  width: var(--size, 80px);
+  height: var(--size, 80px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bauhaus-triangle {
+  width: 0;
+  height: 0;
+  border-left: var(--size, 40px) solid transparent;
+  border-right: var(--size, 40px) solid transparent;
+  border-bottom: calc(var(--size, 40px) * 1.732) solid var(--color, var(--bauhaus-black));
+}
+
+.bauhaus-triangle-right {
+  width: 0;
+  height: 0;
+  border-top: var(--size, 40px) solid transparent;
+  border-bottom: var(--size, 40px) solid transparent;
+  border-left: calc(var(--size, 40px) * 1.732) solid var(--color, var(--bauhaus-black));
+}
+
+/* Bauhaus Card Styles */
+.bauhaus-card {
+  background: var(--bauhaus-white);
+  border: 3px solid var(--bauhaus-black);
+  position: relative;
+  overflow: visible;
+}
+
+.bauhaus-card::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: -8px;
+  bottom: -8px;
+  background: var(--bauhaus-black);
+  z-index: -1;
+}
+
+/* Bauhaus Button Base */
+.bauhaus-btn {
+  font-family: 'Bugrino', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-md) var(--space-xl);
+  border: 3px solid var(--bauhaus-black);
+  background: var(--bauhaus-white);
+  color: var(--bauhaus-black);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.bauhaus-btn:hover {
+  transform: translate(-2px, -2px);
+}
+
+.bauhaus-btn:active {
+  transform: translate(0, 0);
+}
+
+.bauhaus-btn::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: -4px;
+  bottom: -4px;
+  background: var(--bauhaus-black);
+  z-index: -1;
+  transition: all 0.1s ease;
+}
+
+.bauhaus-btn:hover::after {
+  top: 6px;
+  left: 6px;
+  right: -6px;
+  bottom: -6px;
+}
+
+.bauhaus-btn-primary {
+  background: var(--bauhaus-blue);
+  color: var(--bauhaus-white);
+}
+
+.bauhaus-btn-accent {
+  background: var(--bauhaus-yellow);
+  color: var(--bauhaus-black);
+}
+
+.bauhaus-btn-danger {
+  background: var(--bauhaus-red);
+  color: var(--bauhaus-white);
+}
+
+/* Bauhaus Input Styles */
+.bauhaus-input {
+  font-family: inherit;
+  padding: var(--space-md);
+  border: 3px solid var(--bauhaus-black);
+  background: var(--bauhaus-white);
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.bauhaus-input:focus {
+  box-shadow: 4px 4px 0 var(--bauhaus-black);
+}
+
+/* Bauhaus Grid Pattern Background */
+.bauhaus-grid-bg {
+  background-image:
+    linear-gradient(var(--bauhaus-black) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bauhaus-black) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: var(--bauhaus-white);
+}
+
+/* Bauhaus Decorative Elements */
+.bauhaus-accent-corner {
+  position: relative;
+}
+
+.bauhaus-accent-corner::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: var(--bauhaus-yellow);
+  border-radius: 50%;
+  top: -20px;
+  right: -20px;
+}
+
+/* Animation Utilities */
+@keyframes bauhaus-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bauhaus-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-bauhaus-rotate {
+  animation: bauhaus-rotate 20s linear infinite;
+}
+
+.animate-bauhaus-pulse {
+  animation: bauhaus-pulse 2s ease-in-out infinite;
 }
