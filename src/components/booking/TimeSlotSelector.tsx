@@ -76,7 +76,7 @@ export function TimeSlotSelector({
                 <div>
                   <p className="font-bugrino text-lg uppercase tracking-wide">{slot.name}</p>
                   <p className="text-sm text-gray-500">
-                    {slot.start_time} - {slot.end_time}
+                    {slot.start_time?.slice(0, 5)} - {slot.end_time?.slice(0, 5)}
                   </p>
                 </div>
               </div>

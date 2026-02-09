@@ -89,11 +89,12 @@ export async function POST(request: NextRequest) {
   const eventData = {
     clientName: (booking.profiles as { full_name: string } | null)?.full_name || 'Ismeretlen',
     bookingDate: booking.booking_date,
-    startTime: (booking.time_slots as { start_time: string } | null)?.start_time || '09:00',
-    endTime: (booking.time_slots as { end_time: string } | null)?.end_time || '17:00',
+    startTime: (booking.time_slots as { start_time: string } | null)?.start_time || booking.start_time || '09:00',
+    endTime: (booking.time_slots as { end_time: string } | null)?.end_time || booking.end_time || '17:00',
     status: booking.status,
     totalPrice: booking.total_price,
-    timeSlotName: (booking.time_slots as { name: string } | null)?.name || undefined,
+    timeSlotName: (booking.time_slots as { name: string } | null)?.name
+      || (booking.start_time ? `Egyedi (${booking.start_time.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})` : undefined),
     userNotes: booking.user_notes,
     adminNotes: booking.admin_notes,
   }

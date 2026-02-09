@@ -71,7 +71,7 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
   }
 
   const isPast = new Date(booking.booking_date) < new Date()
-  const canCancel = !isPast && ['pending', 'confirmed'].includes(booking.status)
+  const canCancel = !isPast && ['pending', 'confirmed', 'paid'].includes(booking.status)
 
   const statusVariants: Record<string, 'yellow' | 'blue' | 'red' | 'outline' | 'black'> = {
     pending: 'yellow',
@@ -158,10 +158,13 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
                 {format(new Date(booking.booking_date), 'EEEE', { locale: hu })}
               </p>
               <p className="text-gray-600">
-                {booking.time_slots?.name} ({booking.time_slots?.start_time?.slice(0, 5)} - {booking.time_slots?.end_time?.slice(0, 5)})
+                {booking.time_slots
+                  ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
+                  : `Egyedi időpont (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
+                }
               </p>
               <p className="text-sm text-gray-500">
-                {booking.time_slots?.duration_hours} óra
+                {booking.time_slots?.duration_hours || booking.duration_hours} óra
               </p>
             </div>
           </div>
@@ -274,6 +277,24 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
             <p className="mt-1 text-sm text-red-700">
               Lemondási díj: {booking.cancellation_fee.toLocaleString('hu-HU')} Ft
             </p>
+          )}
+          {booking.storno_invoice_number && (
+            <p className="mt-1 text-sm text-red-700">
+              Sztornó számla: {booking.storno_invoice_number}
+            </p>
+          )}
+          {booking.cancellation_invoice_url && (
+            <a
+              href={booking.cancellation_invoice_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-2 font-bugrino text-sm uppercase tracking-wider text-red-800 hover:underline"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Lemondási díj számla
+            </a>
           )}
         </div>
       )}

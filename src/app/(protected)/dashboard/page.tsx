@@ -109,7 +109,10 @@ export default async function DashboardPage() {
                           {format(new Date(booking.booking_date), 'MMMM d., EEEE', { locale: hu })}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {booking.time_slots?.name} ({booking.time_slots?.start_time} - {booking.time_slots?.end_time})
+                          {booking.time_slots
+                            ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
+                            : `Egyedi (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
+                          }
                         </p>
                       </div>
                     </div>
@@ -161,7 +164,7 @@ export default async function DashboardPage() {
                         {format(new Date(booking.booking_date), 'yyyy. MMMM d.', { locale: hu })}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {booking.time_slots?.name}
+                        {booking.time_slots?.name || `Egyedi (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`}
                       </p>
                     </div>
                     <div className="text-right">

@@ -155,7 +155,7 @@ export default async function UserBookingsPage() {
 }
 
 function BookingCard({ booking, isPast = false, isCancelled = false }: { booking: any; isPast?: boolean; isCancelled?: boolean }) {
-  const canCancel = !isPast && !isCancelled && ['pending', 'confirmed'].includes(booking.status)
+  const canCancel = !isPast && !isCancelled && ['pending', 'confirmed', 'paid'].includes(booking.status)
 
   return (
     <BauhausCard
@@ -185,7 +185,10 @@ function BookingCard({ booking, isPast = false, isCancelled = false }: { booking
               <StatusBadge status={booking.status} />
             </div>
             <p className="mt-1 text-sm text-gray-500">
-              {booking.time_slots?.name} ({booking.time_slots?.start_time} - {booking.time_slots?.end_time})
+              {booking.time_slots
+                ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
+                : `Egyedi (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
+              }
             </p>
 
             {booking.booking_extras && booking.booking_extras.length > 0 && (
@@ -256,18 +259,31 @@ function BookingCard({ booking, isPast = false, isCancelled = false }: { booking
         </div>
       )}
 
-      {booking.status === 'cancelled' && booking.cancellation_reason && (
+      {booking.status === 'cancelled' && (booking.cancellation_reason || booking.cancellation_fee > 0 || booking.cancellation_invoice_url) && (
         <div
           className="mt-4 p-4 border-[3px] border-[var(--bauhaus-red)]"
           style={{ backgroundColor: 'rgba(229, 57, 53, 0.1)' }}
         >
-          <p className="text-sm" style={{ color: 'var(--bauhaus-red)' }}>
-            <span className="font-bugrino uppercase tracking-wider">Lemondás oka:</span> {booking.cancellation_reason}
-          </p>
+          {booking.cancellation_reason && (
+            <p className="text-sm" style={{ color: 'var(--bauhaus-red)' }}>
+              <span className="font-bugrino uppercase tracking-wider">Lemondás oka:</span> {booking.cancellation_reason}
+            </p>
+          )}
           {booking.cancellation_fee && booking.cancellation_fee > 0 && (
             <p className="mt-1 text-sm" style={{ color: 'var(--bauhaus-red)' }}>
               <span className="font-bugrino uppercase tracking-wider">Lemondási díj:</span> {booking.cancellation_fee.toLocaleString('hu-HU')} Ft
             </p>
+          )}
+          {booking.cancellation_invoice_url && (
+            <a
+              href={booking.cancellation_invoice_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block font-bugrino text-xs uppercase tracking-wider hover:underline"
+              style={{ color: 'var(--bauhaus-red)' }}
+            >
+              Lemondási díj számla letöltése
+            </a>
           )}
         </div>
       )}

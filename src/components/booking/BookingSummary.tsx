@@ -10,11 +10,19 @@ interface SelectedExtra {
   quantity: number
 }
 
+interface HourlyBookingInfo {
+  startTime: string
+  endTime: string
+  duration: number
+  hourlyRate: number
+}
+
 interface BookingSummaryProps {
   date: Date | null
   slot: TimeSlot | null
   extras: SelectedExtra[]
   discountPercent?: number
+  hourlyBooking?: HourlyBookingInfo
 }
 
 export function BookingSummary({
@@ -22,12 +30,17 @@ export function BookingSummary({
   slot,
   extras,
   discountPercent = 0,
+  hourlyBooking,
 }: BookingSummaryProps) {
-  const basePrice = slot?.base_price || 0
+  const basePrice = hourlyBooking
+    ? hourlyBooking.duration * hourlyBooking.hourlyRate
+    : slot?.base_price || 0
   const extrasPrice = extras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
   const subtotal = basePrice + extrasPrice
   const discount = Math.round(subtotal * (discountPercent / 100))
   const total = subtotal - discount
+
+  const hasTimeSelection = slot || hourlyBooking
 
   return (
     <BauhausCard padding="none" accentColor="yellow" hasCornerAccent accentPosition="top-left">
@@ -58,7 +71,7 @@ export function BookingSummary({
           </div>
         )}
 
-        {slot && (
+        {hasTimeSelection && (
           <div className="flex items-center gap-4">
             <div
               className="w-12 h-12 rounded-full border-[2px] border-black flex items-center justify-center"
@@ -70,9 +83,15 @@ export function BookingSummary({
             </div>
             <div>
               <p className="text-xs text-gray-500 uppercase tracking-wider">Időpont</p>
-              <p className="font-medium">
-                {slot.name} ({slot.start_time} - {slot.end_time})
-              </p>
+              {slot ? (
+                <p className="font-medium">
+                  {slot.name} ({slot.start_time?.slice(0, 5)} - {slot.end_time?.slice(0, 5)})
+                </p>
+              ) : hourlyBooking ? (
+                <p className="font-medium">
+                  Egyedi időpont ({hourlyBooking.startTime} - {hourlyBooking.endTime})
+                </p>
+              ) : null}
             </div>
           </div>
         )}
@@ -81,6 +100,15 @@ export function BookingSummary({
           {slot && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Stúdió bérlés</span>
+              <span className="font-bugrino">{basePrice.toLocaleString('hu-HU')} Ft</span>
+            </div>
+          )}
+
+          {hourlyBooking && (
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-600">
+                Stúdió bérlés ({hourlyBooking.duration} óra × {hourlyBooking.hourlyRate.toLocaleString('hu-HU')} Ft/óra)
+              </span>
               <span className="font-bugrino">{basePrice.toLocaleString('hu-HU')} Ft</span>
             </div>
           )}
@@ -115,7 +143,7 @@ export function BookingSummary({
           </div>
         </div>
 
-        {!date && !slot && (
+        {!date && !hasTimeSelection && (
           <div className="text-center py-4">
             <div className="w-12 h-12 rounded-full border-[2px] border-gray-200 flex items-center justify-center mx-auto mb-3">
               <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

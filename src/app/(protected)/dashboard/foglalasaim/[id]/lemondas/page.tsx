@@ -3,16 +3,12 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { format, differenceInDays } from 'date-fns'
+import { format } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import { createClient } from '@/lib/supabase/client'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
-
-interface CancellationRule {
-  days_before: number
-  fee_percent: number
-}
+import { calculateCancellationFee, defaultCancellationPolicy, type CancellationRule } from '@/lib/cancellation/calculate-fee'
 
 interface Booking {
   id: string
@@ -21,6 +17,11 @@ interface Booking {
   extras_price: number
   total_price: number
   status: string
+  invoice_number: string | null
+  booking_type: string
+  start_time: string | null
+  end_time: string | null
+  duration_hours: number | null
   time_slots: {
     name: string
     start_time: string
@@ -32,37 +33,6 @@ interface Booking {
     total_price: number
     extras: { name: string } | null
   }>
-}
-
-const defaultCancellationPolicy: CancellationRule[] = [
-  { days_before: 7, fee_percent: 0 },
-  { days_before: 3, fee_percent: 50 },
-  { days_before: 2, fee_percent: 70 },
-  { days_before: 1, fee_percent: 100 },
-]
-
-function calculateCancellationFee(
-  bookingDate: Date,
-  totalPrice: number,
-  policy: CancellationRule[]
-): { fee: number; feePercent: number; daysUntil: number } {
-  const daysUntil = differenceInDays(bookingDate, new Date())
-
-  // Sort rules by days_before descending
-  const sortedRules = [...policy].sort((a, b) => b.days_before - a.days_before)
-
-  for (const rule of sortedRules) {
-    if (daysUntil >= rule.days_before) {
-      return {
-        fee: Math.round(totalPrice * (rule.fee_percent / 100)),
-        feePercent: rule.fee_percent,
-        daysUntil,
-      }
-    }
-  }
-
-  // If less than minimum days, 100% fee
-  return { fee: totalPrice, feePercent: 100, daysUntil }
 }
 
 export default function CancellationPage({ params }: { params: Promise<{ id: string }> }) {
@@ -92,7 +62,7 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
     const { data, error } = await supabase
       .from('bookings')
       .select(`
-        id, booking_date, base_price, extras_price, total_price, status,
+        id, booking_date, base_price, extras_price, total_price, status, invoice_number,
         time_slots (name, start_time, end_time),
         booking_extras (
           id, quantity, total_price,
@@ -110,7 +80,7 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
     }
 
     // Check if booking can be cancelled
-    if (!['pending', 'confirmed'].includes(data.status)) {
+    if (!['pending', 'confirmed', 'paid'].includes(data.status)) {
       setError('Ez a foglalás már nem mondható le')
       setLoading(false)
       return
@@ -146,29 +116,29 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
     setCancelling(true)
     setError(null)
 
-    const { fee } = calculateCancellationFee(
-      new Date(booking.booking_date),
-      booking.total_price,
-      policy
-    )
-
-    const { error: updateError } = await supabase
-      .from('bookings')
-      .update({
-        status: 'cancelled',
-        cancelled_at: new Date().toISOString(),
-        cancellation_fee: fee,
-        cancellation_reason: reason || null,
+    try {
+      const response = await fetch('/api/bookings/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: booking.id,
+          reason: reason || undefined,
+        }),
       })
-      .eq('id', booking.id)
 
-    if (updateError) {
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
+        setError(result.error || 'Hiba történt a lemondás során')
+        setCancelling(false)
+        return
+      }
+
+      router.push('/dashboard/foglalasaim?cancelled=true')
+    } catch {
       setError('Hiba történt a lemondás során')
       setCancelling(false)
-      return
     }
-
-    router.push('/dashboard/foglalasaim?cancelled=true')
   }
 
   if (loading) {
@@ -261,7 +231,10 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
           <div className="flex justify-between">
             <dt className="text-gray-500">Időpont</dt>
             <dd>
-              {booking.time_slots?.name} ({booking.time_slots?.start_time} - {booking.time_slots?.end_time})
+              {booking.time_slots
+                ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
+                : `Egyedi (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
+              }
             </dd>
           </div>
           <div className="flex justify-between">
@@ -270,6 +243,12 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
               {booking.total_price.toLocaleString('hu-HU')} Ft
             </dd>
           </div>
+          {booking.status === 'paid' && (
+            <div className="flex justify-between">
+              <dt className="text-gray-500">Állapot</dt>
+              <dd className="font-bugrino font-medium text-green-600">Fizetve</dd>
+            </div>
+          )}
         </dl>
       </BauhausCard>
 
@@ -312,12 +291,20 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
               {fee.toLocaleString('hu-HU')} Ft
             </span>
           </div>
-          <div className="flex justify-between text-lg">
-            <span className="font-bugrino uppercase tracking-wider">Visszajáró összeg</span>
-            <span className="font-bugrino font-bold text-green-600">
-              {refundAmount.toLocaleString('hu-HU')} Ft
-            </span>
-          </div>
+          {booking.status === 'paid' ? (
+            <div className="flex justify-between text-lg">
+              <span className="font-bugrino uppercase tracking-wider">Visszatérítés</span>
+              <span className="font-bugrino font-bold text-green-600">
+                {refundAmount.toLocaleString('hu-HU')} Ft
+              </span>
+            </div>
+          ) : fee > 0 ? (
+            <div className="mt-2 p-3 border-[2px] border-[var(--bauhaus-red)] bg-red-50">
+              <p className="text-sm text-[var(--bauhaus-red)]">
+                A lemondási díjról számlát állítunk ki, amelyet átutalással kell kiegyenlíteni.
+              </p>
+            </div>
+          ) : null}
         </div>
       </BauhausCard>
 
@@ -362,6 +349,9 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
             {fee > 0 ? (
               <>
                 <strong className="text-[var(--bauhaus-red)]">{fee.toLocaleString('hu-HU')} Ft</strong> lemondási díjat kell fizetnem
+                {booking.status === 'paid' && (
+                  <>, az eredeti számla sztornózásra kerül, és a visszatérítés összege <strong className="text-green-600">{refundAmount.toLocaleString('hu-HU')} Ft</strong></>
+                )}
               </>
             ) : (
               'nincs lemondási díj'

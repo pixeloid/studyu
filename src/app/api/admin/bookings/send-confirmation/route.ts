@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     const timeSlot = booking.time_slots
       ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
-      : ''
+      : `Egyedi időpont (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
 
     // Bauhaus-style email components
     const brandColor = '#0000FF'

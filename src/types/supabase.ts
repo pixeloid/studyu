@@ -116,7 +116,10 @@ export type Database = {
           admin_notes: string | null
           base_price: number
           booking_date: string
+          booking_type: string
           cancellation_fee: number | null
+          cancellation_invoice_number: string | null
+          cancellation_invoice_url: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
           coupon_code: string | null
@@ -124,6 +127,8 @@ export type Database = {
           created_at: string | null
           discount_amount: number | null
           discount_percent: number | null
+          duration_hours: number | null
+          end_time: string | null
           extras_price: number | null
           google_calendar_event_id: string | null
           id: string
@@ -134,8 +139,10 @@ export type Database = {
           proforma_number: string | null
           proforma_sent_at: string | null
           proforma_url: string | null
+          start_time: string | null
           status: string
-          time_slot_id: string
+          storno_invoice_number: string | null
+          time_slot_id: string | null
           total_price: number
           updated_at: string | null
           user_id: string
@@ -145,7 +152,10 @@ export type Database = {
           admin_notes?: string | null
           base_price: number
           booking_date: string
+          booking_type?: string
           cancellation_fee?: number | null
+          cancellation_invoice_number?: string | null
+          cancellation_invoice_url?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           coupon_code?: string | null
@@ -153,6 +163,8 @@ export type Database = {
           created_at?: string | null
           discount_amount?: number | null
           discount_percent?: number | null
+          duration_hours?: number | null
+          end_time?: string | null
           extras_price?: number | null
           google_calendar_event_id?: string | null
           id?: string
@@ -163,8 +175,10 @@ export type Database = {
           proforma_number?: string | null
           proforma_sent_at?: string | null
           proforma_url?: string | null
+          start_time?: string | null
           status?: string
-          time_slot_id: string
+          storno_invoice_number?: string | null
+          time_slot_id?: string | null
           total_price: number
           updated_at?: string | null
           user_id: string
@@ -174,7 +188,10 @@ export type Database = {
           admin_notes?: string | null
           base_price?: number
           booking_date?: string
+          booking_type?: string
           cancellation_fee?: number | null
+          cancellation_invoice_number?: string | null
+          cancellation_invoice_url?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           coupon_code?: string | null
@@ -182,6 +199,8 @@ export type Database = {
           created_at?: string | null
           discount_amount?: number | null
           discount_percent?: number | null
+          duration_hours?: number | null
+          end_time?: string | null
           extras_price?: number | null
           google_calendar_event_id?: string | null
           id?: string
@@ -192,8 +211,10 @@ export type Database = {
           proforma_number?: string | null
           proforma_sent_at?: string | null
           proforma_url?: string | null
+          start_time?: string | null
           status?: string
-          time_slot_id?: string
+          storno_invoice_number?: string | null
+          time_slot_id?: string | null
           total_price?: number
           updated_at?: string | null
           user_id?: string

@@ -23,10 +23,18 @@ interface ContactSettings {
   address: string
 }
 
+interface HourlyBookingSettings {
+  hourly_rate: number
+  min_hours: number
+  max_hours: number
+  enabled: boolean
+}
+
 interface Settings {
   cancellation_policy: { rules: CancellationRule[] }
   booking_settings: BookingSettings
   contact_info: ContactSettings
+  hourly_booking: HourlyBookingSettings
 }
 
 const defaultSettings: Settings = {
@@ -46,6 +54,12 @@ const defaultSettings: Settings = {
     email: '',
     phone: '',
     address: '',
+  },
+  hourly_booking: {
+    hourly_rate: 10000,
+    min_hours: 2,
+    max_hours: 9,
+    enabled: true,
   },
 }
 
@@ -90,6 +104,9 @@ export default function SettingsPage() {
         }
         if (item.key === 'contact_info' && item.value) {
           loadedSettings.contact_info = item.value as unknown as ContactSettings
+        }
+        if (item.key === 'hourly_booking' && item.value) {
+          loadedSettings.hourly_booking = item.value as unknown as HourlyBookingSettings
         }
       })
       setSettings(loadedSettings)
@@ -398,6 +415,106 @@ export default function SettingsPage() {
           <div className="mt-6 pt-6 border-t-[3px] border-gray-200 flex justify-end">
             <BauhausButton
               onClick={() => saveSetting('contact_info', settings.contact_info)}
+              disabled={saving}
+              variant="primary"
+            >
+              {saving ? 'Mentés...' : 'Mentés'}
+            </BauhausButton>
+          </div>
+        </BauhausCard>
+
+        {/* Hourly Booking */}
+        <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="bottom-right">
+          <h2 className="font-bugrino text-lg uppercase tracking-wider mb-2">Óránkénti foglalás</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Állítsa be az egyedi időpontos foglalás paramétereit.
+          </p>
+
+          <div className="mb-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div
+                className={`w-12 h-7 rounded-full border-[2px] border-black relative transition-colors ${
+                  settings.hourly_booking.enabled ? 'bg-[var(--bauhaus-blue)]' : 'bg-gray-200'
+                }`}
+                onClick={() =>
+                  setSettings({
+                    ...settings,
+                    hourly_booking: { ...settings.hourly_booking, enabled: !settings.hourly_booking.enabled },
+                  })
+                }
+              >
+                <div
+                  className={`w-5 h-5 rounded-full bg-white border-[2px] border-black absolute top-0 transition-transform ${
+                    settings.hourly_booking.enabled ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </div>
+              <span className="font-bugrino text-sm uppercase tracking-wider">
+                {settings.hourly_booking.enabled ? 'Engedélyezve' : 'Letiltva'}
+              </span>
+            </label>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
+                Óradíj (Ft)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="1000"
+                value={settings.hourly_booking.hourly_rate}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    hourly_booking: { ...settings.hourly_booking, hourly_rate: parseInt(e.target.value) || 0 },
+                  })
+                }
+                className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow"
+              />
+            </div>
+            <div>
+              <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
+                Minimum óra
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="12"
+                value={settings.hourly_booking.min_hours}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    hourly_booking: { ...settings.hourly_booking, min_hours: parseInt(e.target.value) || 1 },
+                  })
+                }
+                className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow"
+              />
+            </div>
+            <div>
+              <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
+                Maximum óra
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="24"
+                value={settings.hourly_booking.max_hours}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    hourly_booking: { ...settings.hourly_booking, max_hours: parseInt(e.target.value) || 1 },
+                  })
+                }
+                className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 pt-6 border-t-[3px] border-gray-200 flex justify-end">
+            <BauhausButton
+              onClick={() => saveSetting('hourly_booking', settings.hourly_booking)}
               disabled={saving}
               variant="primary"
             >

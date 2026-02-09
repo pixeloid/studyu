@@ -163,9 +163,14 @@ export default async function BookingsPage({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm font-medium">{booking.time_slots?.name}</p>
+                    <p className="text-sm font-medium">
+                      {booking.time_slots?.name || `Egyedi (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`}
+                    </p>
                     <p className="text-xs text-gray-500">
-                      {booking.time_slots?.start_time} - {booking.time_slots?.end_time}
+                      {booking.time_slots
+                        ? `${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)}`
+                        : `${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)}`
+                      }
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

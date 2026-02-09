@@ -90,9 +90,11 @@ export async function POST(request: NextRequest) {
   const billingAddress = booking.profiles?.billing_address as { zip?: string; city?: string; street?: string } | null
 
   // Build invoice items
+  const slotLabel = booking.time_slots?.name
+    || `Egyedi időpont (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`
   const items = [
     {
-      name: `Stúdió bérlés - ${booking.time_slots?.name} (${format(new Date(booking.booking_date), 'yyyy. MMMM d.', { locale: hu })})`,
+      name: `Stúdió bérlés - ${slotLabel} (${format(new Date(booking.booking_date), 'yyyy. MMMM d.', { locale: hu })})`,
       quantity: 1,
       unit: 'db',
       unitPriceNet: Math.round(booking.base_price / 1.27),

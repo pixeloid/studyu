@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { format, addDays } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import { createClient } from '@/lib/supabase/client'
-import { Calendar, TimeSlotSelector, ExtrasSelector, BookingSummary } from '@/components/booking'
+import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary } from '@/components/booking'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
-import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking } from '@/types/database'
+import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings } from '@/types/database'
 
 interface SelectedExtra {
   extra: Extra
@@ -16,6 +16,7 @@ interface SelectedExtra {
 }
 
 type BookingStep = 'date' | 'slot' | 'extras' | 'confirm'
+type SlotMode = 'package' | 'hourly'
 
 const steps = [
   { key: 'date', label: 'Dátum' },
@@ -40,12 +41,22 @@ export default function BookingPage() {
   const [specialDates, setSpecialDates] = useState<SpecialDate[]>([])
   const [existingBookings, setExistingBookings] = useState<Booking[]>([])
 
+  // Hourly booking settings
+  const [hourlySettings, setHourlySettings] = useState<HourlyBookingSettings | null>(null)
+
   // Selection state
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [slotMode, setSlotMode] = useState<SlotMode>('package')
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null)
   const [selectedExtras, setSelectedExtras] = useState<SelectedExtra[]>([])
   const [userNotes, setUserNotes] = useState('')
+
+  // Hourly booking state
+  const [hourlyStart, setHourlyStart] = useState<string | null>(null)
+  const [hourlyEnd, setHourlyEnd] = useState<string | null>(null)
+  const [hourlyDuration, setHourlyDuration] = useState<number>(0)
+  const [hourlyPrice, setHourlyPrice] = useState<number>(0)
 
   // Settings
   const minDaysAhead = 1
@@ -58,7 +69,7 @@ export default function BookingPage() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes] = await Promise.all([
+      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes, settingsRes] = await Promise.all([
         supabase.from('time_slots').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('extras').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('opening_hours').select('*'),
@@ -67,6 +78,7 @@ export default function BookingPage() {
           .select('*')
           .gte('booking_date', format(new Date(), 'yyyy-MM-dd'))
           .not('status', 'in', '("cancelled","no_show")'),
+        supabase.from('settings').select('*').eq('key', 'hourly_booking').single(),
       ])
 
       if (slotsRes.data) setTimeSlots(slotsRes.data)
@@ -74,6 +86,9 @@ export default function BookingPage() {
       if (hoursRes.data) setOpeningHours(hoursRes.data)
       if (specialRes.data) setSpecialDates(specialRes.data)
       if (bookingsRes.data) setExistingBookings(bookingsRes.data)
+      if (settingsRes.data?.value) {
+        setHourlySettings(settingsRes.data.value as unknown as HourlyBookingSettings)
+      }
     } catch (err) {
       console.error('Error loading booking data:', err)
       setError('Hiba történt az adatok betöltése közben')
@@ -110,6 +125,10 @@ export default function BookingPage() {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)
     setSelectedSlot(null)
+    setHourlyStart(null)
+    setHourlyEnd(null)
+    setHourlyDuration(0)
+    setHourlyPrice(0)
     setStep('slot')
   }
 
@@ -119,8 +138,36 @@ export default function BookingPage() {
     setStep('extras')
   }
 
+  const handleHourlySelect = (start: string, end: string, duration: number, price: number) => {
+    setHourlyStart(start)
+    setHourlyEnd(end)
+    setHourlyDuration(duration)
+    setHourlyPrice(price)
+    setSelectedSlot(null)
+  }
+
+  const handleHourlyContinue = () => {
+    if (hourlyStart && hourlyEnd && hourlyDuration > 0) {
+      setSelectedExtras([])
+      setStep('extras')
+    }
+  }
+
+  const isHourlySelected = slotMode === 'hourly' && hourlyStart && hourlyEnd && hourlyDuration > 0
+  const canProceedFromSlot = selectedSlot || isHourlySelected
+
+  const getDurationHours = (): number => {
+    if (slotMode === 'hourly') return hourlyDuration
+    return selectedSlot?.duration_hours || 0
+  }
+
+  const getBasePrice = (): number => {
+    if (slotMode === 'hourly') return hourlyPrice
+    return selectedSlot?.base_price || 0
+  }
+
   const handleSubmit = async () => {
-    if (!selectedDate || !selectedSlot) return
+    if (!selectedDate || !canProceedFromSlot) return
     setSubmitting(true)
     setError(null)
 
@@ -131,22 +178,40 @@ export default function BookingPage() {
         return
       }
 
-      const basePrice = selectedSlot.base_price
+      const basePrice = getBasePrice()
       const extrasPrice = selectedExtras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
       const totalPrice = basePrice + extrasPrice
 
+      const insertData = slotMode === 'hourly'
+        ? {
+            user_id: user.id,
+            booking_date: format(selectedDate, 'yyyy-MM-dd'),
+            base_price: basePrice,
+            extras_price: extrasPrice,
+            total_price: totalPrice,
+            user_notes: userNotes || null,
+            status: 'pending',
+            booking_type: 'hourly' as const,
+            start_time: hourlyStart,
+            end_time: hourlyEnd,
+            duration_hours: hourlyDuration,
+            time_slot_id: null,
+          }
+        : {
+            user_id: user.id,
+            booking_date: format(selectedDate, 'yyyy-MM-dd'),
+            base_price: basePrice,
+            extras_price: extrasPrice,
+            total_price: totalPrice,
+            user_notes: userNotes || null,
+            status: 'pending',
+            booking_type: 'package' as const,
+            time_slot_id: selectedSlot!.id,
+          }
+
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
-        .insert({
-          user_id: user.id,
-          booking_date: format(selectedDate, 'yyyy-MM-dd'),
-          time_slot_id: selectedSlot.id,
-          base_price: basePrice,
-          extras_price: extrasPrice,
-          total_price: totalPrice,
-          user_notes: userNotes || null,
-          status: 'pending',
-        })
+        .insert(insertData)
         .select()
         .single()
 
@@ -189,6 +254,8 @@ export default function BookingPage() {
       </div>
     )
   }
+
+  const hourlyEnabled = hourlySettings?.enabled ?? false
 
   return (
     <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
@@ -278,15 +345,69 @@ export default function BookingPage() {
                   Vissza
                 </button>
               </div>
-              <TimeSlotSelector
-                slots={getAvailableSlotsForDate(selectedDate)}
-                selectedSlot={selectedSlot}
-                onSlotSelect={handleSlotSelect}
-              />
+
+              {/* Slot mode tabs */}
+              {hourlyEnabled && (
+                <div className="flex gap-2 mb-6">
+                  <button
+                    onClick={() => { setSlotMode('package'); setHourlyStart(null); setHourlyEnd(null); }}
+                    className={`
+                      flex-1 px-4 py-3 font-bugrino text-sm uppercase tracking-wider border-[3px] border-black transition-all
+                      ${slotMode === 'package'
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-gray-50'
+                      }
+                    `}
+                    style={{ boxShadow: slotMode === 'package' ? '3px 3px 0 var(--bauhaus-blue)' : 'none' }}
+                  >
+                    Csomagok
+                  </button>
+                  <button
+                    onClick={() => { setSlotMode('hourly'); setSelectedSlot(null); }}
+                    className={`
+                      flex-1 px-4 py-3 font-bugrino text-sm uppercase tracking-wider border-[3px] border-black transition-all
+                      ${slotMode === 'hourly'
+                        ? 'bg-black text-white'
+                        : 'bg-white text-black hover:bg-gray-50'
+                      }
+                    `}
+                    style={{ boxShadow: slotMode === 'hourly' ? '3px 3px 0 var(--bauhaus-yellow)' : 'none' }}
+                  >
+                    Egyedi időpont
+                  </button>
+                </div>
+              )}
+
+              {slotMode === 'package' ? (
+                <TimeSlotSelector
+                  slots={getAvailableSlotsForDate(selectedDate)}
+                  selectedSlot={selectedSlot}
+                  onSlotSelect={handleSlotSelect}
+                />
+              ) : hourlySettings ? (
+                <div className="space-y-4">
+                  <HourlySlotSelector
+                    openingHours={openingHours}
+                    specialDates={specialDates}
+                    selectedDate={selectedDate}
+                    existingBookings={existingBookings}
+                    timeSlots={timeSlots}
+                    hourlyRate={hourlySettings.hourly_rate}
+                    minHours={hourlySettings.min_hours}
+                    maxHours={hourlySettings.max_hours}
+                    onSelect={handleHourlySelect}
+                  />
+                  {isHourlySelected && (
+                    <BauhausButton variant="primary" fullWidth onClick={handleHourlyContinue}>
+                      Tovább
+                    </BauhausButton>
+                  )}
+                </div>
+              ) : null}
             </BauhausCard>
           )}
 
-          {step === 'extras' && selectedDate && selectedSlot && (
+          {step === 'extras' && selectedDate && canProceedFromSlot && (
             <div className="space-y-6">
               <BauhausCard padding="lg">
                 <div className="flex items-center justify-between mb-6">
@@ -304,7 +425,7 @@ export default function BookingPage() {
                   extras={extras}
                   selectedExtras={selectedExtras}
                   onExtrasChange={setSelectedExtras}
-                  durationHours={selectedSlot.duration_hours}
+                  durationHours={getDurationHours()}
                 />
               </BauhausCard>
 
@@ -314,7 +435,7 @@ export default function BookingPage() {
             </div>
           )}
 
-          {step === 'confirm' && selectedDate && selectedSlot && (
+          {step === 'confirm' && selectedDate && canProceedFromSlot && (
             <div className="space-y-6">
               <BauhausCard padding="lg">
                 <div className="flex items-center justify-between mb-6">
@@ -374,6 +495,12 @@ export default function BookingPage() {
               date={selectedDate}
               slot={selectedSlot}
               extras={selectedExtras}
+              hourlyBooking={slotMode === 'hourly' && hourlyStart && hourlyEnd ? {
+                startTime: hourlyStart,
+                endTime: hourlyEnd,
+                duration: hourlyDuration,
+                hourlyRate: hourlySettings?.hourly_rate || 0,
+              } : undefined}
             />
           </div>
         </div>

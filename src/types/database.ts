@@ -4,6 +4,14 @@ import type { Database } from './supabase'
 
 // Custom type aliases for convenience
 export type BookingStatus = 'pending' | 'confirmed' | 'paid' | 'completed' | 'cancelled' | 'no_show'
+export type BookingType = 'package' | 'hourly'
+
+export interface HourlyBookingSettings {
+  hourly_rate: number
+  min_hours: number
+  max_hours: number
+  enabled: boolean
+}
 export type BlockType = 'maintenance' | 'internal_event' | 'private_booking' | 'preparation' | 'other'
 export type SpecialDateType = 'holiday' | 'closed' | 'special_hours'
 export type PriceType = 'fixed' | 'per_hour' | 'per_person'

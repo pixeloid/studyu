@@ -27,6 +27,8 @@ interface CalendarBooking {
   booking_date: string
   status: BookingStatus
   total_price: number
+  start_time: string | null
+  end_time: string | null
   profiles: { full_name: string } | null
   time_slots: { name: string; start_time: string; end_time: string } | null
 }
@@ -93,6 +95,8 @@ export default function CalendarPage() {
         booking_date,
         status,
         total_price,
+        start_time,
+        end_time,
         profiles (full_name),
         time_slots (name, start_time, end_time)
       `)
@@ -308,7 +312,10 @@ function WeekView({
                     }}
                   >
                     <div className="font-bugrino text-xs text-gray-500">
-                      {booking.time_slots?.start_time?.slice(0, 5)} – {booking.time_slots?.end_time?.slice(0, 5)}
+                      {booking.time_slots
+                        ? `${booking.time_slots.start_time?.slice(0, 5)} – ${booking.time_slots.end_time?.slice(0, 5)}`
+                        : `${booking.start_time?.slice(0, 5)} – ${booking.end_time?.slice(0, 5)}`
+                      }
                     </div>
                     <div className="text-sm font-medium truncate mt-0.5">
                       {booking.profiles?.full_name || 'Ismeretlen'}

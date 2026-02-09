@@ -1,4 +1,5 @@
 export { Calendar } from './Calendar'
 export { TimeSlotSelector } from './TimeSlotSelector'
+export { HourlySlotSelector } from './HourlySlotSelector'
 export { ExtrasSelector } from './ExtrasSelector'
 export { BookingSummary } from './BookingSummary'

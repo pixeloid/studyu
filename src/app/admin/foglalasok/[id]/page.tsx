@@ -13,6 +13,7 @@ import { BauhausBadge } from '@/components/ui/bauhaus/BauhausBadge'
 interface BookingDetail {
   id: string
   booking_date: string
+  booking_type: string
   base_price: number
   extras_price: number | null
   discount_percent: number | null
@@ -20,6 +21,9 @@ interface BookingDetail {
   status: string
   user_notes: string | null
   admin_notes: string | null
+  start_time: string | null
+  end_time: string | null
+  duration_hours: number | null
   proforma_sent_at: string | null
   proforma_number: string | null
   proforma_url: string | null
@@ -504,8 +508,13 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
               <div>
                 <dt className="text-sm text-gray-500">Időpont</dt>
                 <dd className="text-sm font-medium mt-1">
-                  {booking.time_slots?.name}<br />
-                  <span className="text-gray-500">({booking.time_slots?.start_time} - {booking.time_slots?.end_time})</span>
+                  {booking.time_slots?.name || `Egyedi időpont`}<br />
+                  <span className="text-gray-500">
+                    ({booking.time_slots
+                      ? `${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)}`
+                      : `${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)}`
+                    })
+                  </span>
                 </dd>
               </div>
               <div>

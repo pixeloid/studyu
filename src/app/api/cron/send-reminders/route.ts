@@ -65,7 +65,9 @@ export async function GET(request: Request) {
       to: email,
       customerName: booking.profiles?.full_name || 'Kedves Vendégünk',
       bookingDate: format(new Date(booking.booking_date), 'yyyy. MMMM d., EEEE', { locale: hu }),
-      timeSlot: `${booking.time_slots?.name} (${booking.time_slots?.start_time} - ${booking.time_slots?.end_time})`,
+      timeSlot: booking.time_slots
+        ? `${booking.time_slots.name} (${booking.time_slots.start_time?.slice(0, 5)} - ${booking.time_slots.end_time?.slice(0, 5)})`
+        : `Egyedi időpont (${booking.start_time?.slice(0, 5)} - ${booking.end_time?.slice(0, 5)})`,
       studioAddress,
     })
 

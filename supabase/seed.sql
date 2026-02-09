@@ -114,7 +114,14 @@ INSERT INTO settings (key, value) VALUES
     "from_name": "StudyU Fotóstúdió",
     "from_email": "noreply@studyu.hu",
     "admin_email": "admin@studyu.hu"
-  }'::jsonb);
+  }'::jsonb),
+  ('hourly_booking', '{
+    "hourly_rate": 10000,
+    "min_hours": 2,
+    "max_hours": 9,
+    "enabled": true
+  }'::jsonb)
+ON CONFLICT (key) DO NOTHING;
 
 -- ============================================
 -- 6. TEST DATA
