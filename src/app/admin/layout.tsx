@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { StudyULogo } from '@/components/ui/StudyULogo'
+import { AdminLogoutButton } from './AdminLogoutButton'
 
 const navigation = [
   { name: 'Áttekintés', href: '/admin', icon: DashboardIcon },
@@ -116,19 +117,9 @@ export default async function AdminLayout({
           />
         </div>
 
-        {/* Back to dashboard */}
+        {/* Logout */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t-[2px] border-gray-800">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:text-white transition-colors group"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-            </svg>
-            <span className="font-bugrino text-sm uppercase tracking-wider">
-              Vissza
-            </span>
-          </Link>
+          <AdminLogoutButton />
         </div>
       </aside>
 
