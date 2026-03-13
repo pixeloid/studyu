@@ -221,7 +221,7 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
           style={{ boxShadow: '4px 4px 0 var(--bauhaus-yellow)' }}
         >
           <p className="text-yellow-800">
-            Díjbekérő kiállítva. Kérjük, fizesse be a foglalás véglegesítéséhez.
+            Díjbekérő kiállítva. Fizsd be a foglalás véglegesítéséhez.
           </p>
           <a
             href={booking.proforma_url}

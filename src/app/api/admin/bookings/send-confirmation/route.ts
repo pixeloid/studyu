@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
             <strong style="font-size: 18px;">${booking.proforma_number || '-'}</strong>
           </div>
           ${booking.proforma_url ? makeButton(booking.proforma_url, 'Díjbekérő megtekintése') : ''}
-          <p>Kérjük, a díjbekérőn feltüntetett határidőig szíveskedjen az összeget átutalni.</p>`
+          <p>A díjbekérőn feltüntetett határidőig kérünk, utald át az összeget.</p>`
         break
 
       case 'paid':
@@ -207,14 +207,14 @@ export async function POST(request: NextRequest) {
           <div style="background: #059669; color: #fff; padding: 12px 20px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; display: inline-block;">
             Fizetve
           </div>
-          <p style="margin-top: 16px;">Köszönjük, fizetését megkaptuk!</p>
+          <p style="margin-top: 16px;">Köszönjük, a fizetésed megkaptuk!</p>
           ${bookingDetailsBlock}
           <div style="border: 3px solid #000; padding: 16px; background: #f9f9f9; margin: 16px 0;">
             <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Számla száma</span><br>
             <strong style="font-size: 18px;">${booking.invoice_number || '-'}</strong>
           </div>
           ${booking.invoice_url ? makeButton(booking.invoice_url, 'Számla megtekintése') : ''}
-          <p>Várjuk Önt a foglalt időpontban!</p>`
+          <p>Várunk a foglalt időpontban!</p>`
         break
 
       case 'completed':
@@ -223,9 +223,9 @@ export async function POST(request: NextRequest) {
           <div style="background: ${yellowColor}; color: #000; padding: 12px 20px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; display: inline-block;">
             Köszönjük!
           </div>
-          <p style="margin-top: 16px;">Köszönjük, hogy a StudyU Fotóstúdiót választotta!</p>
+          <p style="margin-top: 16px;">Köszönjük, hogy a StudyU Fotóstúdiót választottad!</p>
           ${bookingDetailsBlock}
-          <p>Reméljük, elégedett volt a szolgáltatásunkkal. Ha bármilyen kérdése van, vagy újra szeretne időpontot foglalni, keressen minket bizalommal!</p>
+          <p>Reméljük, elégedett voltál a szolgáltatásunkkal. Ha bármilyen kérdésed van, vagy újra szeretnél időpontot foglalni, keress minket bizalommal!</p>
           ${makeButton((process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000') + '/foglalas', 'Új foglalás')}`
         break
     }

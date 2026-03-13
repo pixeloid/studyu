@@ -83,7 +83,7 @@ export function CancellationConfirmationEmail({
           )}
 
           <Text style={text}>
-            Reméljük, hamarosan újra látjuk!
+            Reméljük, hamarosan újra látunk!
           </Text>
 
           <Hr style={hr} />

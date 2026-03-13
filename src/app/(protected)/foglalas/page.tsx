@@ -233,7 +233,7 @@ export default function BookingPage() {
       router.push(`/dashboard/foglalasaim/${booking.id}?success=true`)
     } catch (err) {
       console.error('Error creating booking:', err)
-      setError('Hiba történt a foglalás létrehozása közben. Kérjük, próbálja újra.')
+      setError('Hiba történt a foglalás létrehozása közben. Próbáld újra.')
     } finally {
       setSubmitting(false)
     }
@@ -459,7 +459,7 @@ export default function BookingPage() {
                     onChange={e => setUserNotes(e.target.value)}
                     rows={3}
                     className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow"
-                    placeholder="Írja le, ha van speciális kérése..."
+                    placeholder="Írd le, ha van speciális kérésed..."
                   />
                 </div>
 

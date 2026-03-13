@@ -108,9 +108,9 @@ export default function LoginPage() {
             Bejelentkezés
           </h2>
           <p className="text-center text-gray-600 text-sm mb-8">
-            Még nincs fiókja?{' '}
+            Még nincs fiókod?{' '}
             <Link href="/auth/register" className="text-[var(--bauhaus-blue)] hover:underline font-medium">
-              Regisztráljon
+              Regisztrálj
             </Link>
           </p>
 

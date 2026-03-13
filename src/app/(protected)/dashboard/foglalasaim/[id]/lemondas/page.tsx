@@ -316,7 +316,7 @@ export default function CancellationPage({ params }: { params: Promise<{ id: str
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Kérjük, adja meg a lemondás okát..."
+          placeholder="Írd le a lemondás okát..."
           rows={3}
           className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow resize-none"
         />

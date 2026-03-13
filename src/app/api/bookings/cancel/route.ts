@@ -370,7 +370,7 @@ export async function POST(request: NextRequest) {
         <p style="margin: 24px 0;">
           <a href="${cancellationInvoiceUrl}" style="display: inline-block; background: ${brandColor}; color: #fff; padding: 14px 32px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">Számla megtekintése</a>
         </p>` : ''}
-        <p>Kérjük, a számlán feltüntetett határidőig szíveskedjen az összeget átutalni.</p>`
+        <p>A számlán feltüntetett határidőig kérünk, utald át az összeget.</p>`
     } else {
       // Szcenárió B: nem fizetett, nincs díj
       emailBody = `

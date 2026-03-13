@@ -73,7 +73,7 @@ export default function ExtrasPage() {
 
   const createExtra = async () => {
     if (!newExtra?.name || !newExtra?.price) {
-      setMessage({ type: 'error', text: 'Kérjük töltse ki a kötelező mezőket' })
+      setMessage({ type: 'error', text: 'Töltsd ki a kötelező mezőket' })
       return
     }
 

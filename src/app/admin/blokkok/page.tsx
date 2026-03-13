@@ -80,7 +80,7 @@ export default function InternalBlocksPage() {
 
   const createBlock = async () => {
     if (!newBlock?.title || !newBlock?.start_datetime || !newBlock?.end_datetime || !newBlock?.block_type) {
-      setMessage({ type: 'error', text: 'Kérjük töltse ki a kötelező mezőket' })
+      setMessage({ type: 'error', text: 'Töltsd ki a kötelező mezőket' })
       return
     }
 

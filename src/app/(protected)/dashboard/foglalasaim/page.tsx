@@ -245,7 +245,7 @@ function BookingCard({ booking, isPast = false, isCancelled = false }: { booking
           style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)' }}
         >
           <p className="text-sm" style={{ color: 'var(--bauhaus-yellow)' }}>
-            Díjbekérő kiállítva. Kérjük, fizesse be a foglalás véglegesítéséhez.
+            Díjbekérő kiállítva. Fizsd be a foglalás véglegesítéséhez.
           </p>
           <a
             href={booking.proforma_url}
