@@ -42,21 +42,39 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // Redirect to dashboard if accessing auth routes while logged in
-  if (authRoutes.some(route => pathname.startsWith(route)) && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
+  // For logged-in users, check role for proper routing
+  if (user) {
+    const needsRoleCheck =
+      authRoutes.some(route => pathname.startsWith(route)) ||
+      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/foglalas') ||
+      pathname.startsWith('/admin')
 
-  // Check admin access
-  if (pathname.startsWith('/admin') && user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+    if (needsRoleCheck) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
 
-    if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      const isAdmin = profile?.role === 'admin'
+
+      // Redirect away from auth routes to the right home
+      if (authRoutes.some(route => pathname.startsWith(route))) {
+        return NextResponse.redirect(
+          new URL(isAdmin ? '/admin' : '/dashboard', request.url)
+        )
+      }
+
+      // Admin should not see user pages — redirect to admin panel
+      if (isAdmin && (pathname.startsWith('/dashboard') || pathname.startsWith('/foglalas'))) {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      }
+
+      // Non-admin cannot access admin routes
+      if (!isAdmin && pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
     }
   }
 

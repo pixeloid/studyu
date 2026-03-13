@@ -1,6 +1,6 @@
 -- Create coupons table
 CREATE TABLE IF NOT EXISTS coupons (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code VARCHAR(50) UNIQUE NOT NULL,
     discount_percent INTEGER NOT NULL CHECK (discount_percent > 0 AND discount_percent <= 100),
     description TEXT,
