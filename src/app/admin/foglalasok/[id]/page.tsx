@@ -34,6 +34,10 @@ interface BookingDetail {
   cancellation_fee: number | null
   cancellation_reason: string | null
   created_at: string | null
+  payment_method?: string | null
+  stripe_checkout_session_id?: string | null
+  stripe_payment_intent_id?: string | null
+  payment_link_url?: string | null
   profiles: {
     id: string
     full_name: string
@@ -160,7 +164,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
       }
     }
 
-    // Confirmed: generate proforma + send confirmation email + send proforma email
+    // Confirmed: generate proforma + create checkout session if online payment enabled + send emails
     if (newStatus === 'confirmed') {
       if (!booking.proforma_number) {
         try {
@@ -179,8 +183,35 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
           messages.push('Díjbekérő generálása sikertelen')
         }
       }
+
+      // Create Stripe Checkout Session if online payment is enabled
+      try {
+        const { data: onlinePaymentSetting } = await supabase
+          .from('settings')
+          .select('value')
+          .eq('key', 'online_payment')
+          .single()
+
+        const onlinePaymentEnabled = (onlinePaymentSetting?.value as any)?.enabled === true
+        if (onlinePaymentEnabled && process.env.NEXT_PUBLIC_STRIPE_ENABLED !== 'false') {
+          const checkoutRes = await fetch('/api/payments/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bookingId: booking.id }),
+          })
+          const checkoutResult = await checkoutRes.json()
+          if (checkoutResult.success) {
+            messages.push('Fizetési link létrehozva')
+          } else {
+            messages.push(`Fizetési link hiba: ${checkoutResult.error}`)
+          }
+        }
+      } catch {
+        messages.push('Fizetési link létrehozása sikertelen')
+      }
+
       await sendEmail('confirmed')
-      // Reload to get proforma_url before sending proforma email
+      // Reload to get proforma_url and payment_link_url before sending proforma email
       const { data: freshBooking } = await supabase
         .from('bookings')
         .select('proforma_number, proforma_url')
@@ -645,6 +676,14 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
                 <dt>Összesen</dt>
                 <dd className="font-bugrino">{booking.total_price.toLocaleString('hu-HU')} Ft</dd>
               </div>
+              {booking.payment_method && (
+                <div className="flex justify-between text-sm mt-3 pt-3 border-t border-gray-200">
+                  <dt className="text-gray-500">Fizetési mód</dt>
+                  <dd className="font-bugrino">
+                    {booking.payment_method === 'card' ? 'Bankkártya' : 'Átutalás'}
+                  </dd>
+                </div>
+              )}
             </dl>
           </BauhausCard>
 

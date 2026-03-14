@@ -43,7 +43,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
           <div className="text-center mb-16">
             <h2 className="text-bauhaus-heading text-black mb-4">
-              Miért válasszon minket?
+              Miért válassz minket?
             </h2>
             <div className="flex items-center justify-center gap-4">
               <div className="w-12 h-[3px] bg-black" />
@@ -65,7 +65,7 @@ export default function HomePage() {
             <FeatureCard
               icon={<ClockIcon />}
               title="Rugalmas időbeosztás"
-              description="Délelőtti, délutáni vagy egész napos foglalás - válassza az Önnek megfelelőt."
+              description="Délelőtti, délutáni vagy egész napos foglalás - válaszd a neked megfelelőt."
               accentColor="yellow"
             />
             <FeatureCard

@@ -75,7 +75,7 @@ export function PaymentReceivedEmail({
           )}
 
           <Text style={text}>
-            Várjuk Önt a megadott időpontban!
+            Várunk a megadott időpontban!
           </Text>
 
           <Hr style={hr} />

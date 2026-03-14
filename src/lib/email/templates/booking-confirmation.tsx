@@ -76,7 +76,7 @@ export function BookingConfirmationEmail({
           </Text>
 
           <Text style={text}>
-            Ha bármilyen kérdése van, kérjük vegye fel velünk a kapcsolatot.
+            Ha bármilyen kérdésed van, vedd fel velünk a kapcsolatot.
           </Text>
 
           <Hr style={hr} />

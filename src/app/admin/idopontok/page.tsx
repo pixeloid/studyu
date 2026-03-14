@@ -69,7 +69,7 @@ export default function TimeSlotsPage() {
 
   const createSlot = async () => {
     if (!newSlot?.name || !newSlot?.start_time || !newSlot?.end_time) {
-      setMessage({ type: 'error', text: 'Kérjük töltse ki az összes mezőt' })
+      setMessage({ type: 'error', text: 'Töltsd ki az összes mezőt' })
       return
     }
 

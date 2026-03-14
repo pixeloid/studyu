@@ -79,7 +79,7 @@ export default function SpecialDatesPage() {
 
   const createDate = async () => {
     if (!newDate?.date || !newDate?.type) {
-      setMessage({ type: 'error', text: 'Kérjük töltse ki a kötelező mezőket' })
+      setMessage({ type: 'error', text: 'Töltsd ki a kötelező mezőket' })
       return
     }
 

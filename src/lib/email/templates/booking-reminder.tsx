@@ -57,7 +57,7 @@ export function BookingReminderEmail({
           </Section>
 
           <Text style={text}>
-            Kérjük, érkezzen időben! Ha bármilyen változás történt, kérjük jelezze felénk.
+            Érkezz időben! Ha bármilyen változás történt, jelezd felénk.
           </Text>
 
           <Hr style={hr} />

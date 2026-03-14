@@ -62,7 +62,7 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
     const result = await resend.emails.send({
       from: FROM_EMAIL,
       to: data.to,
-      subject: 'Foglalása visszaigazolva - StudyU',
+      subject: 'Foglalásod visszaigazolva - StudyU',
       react: BookingConfirmationEmail({
         customerName: data.customerName,
         bookingDate: data.bookingDate,

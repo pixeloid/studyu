@@ -112,7 +112,7 @@ export default function RegisterPage() {
             </h2>
             <p className="text-gray-600 text-sm mb-6">
               Küldtünk egy megerősítő emailt a(z) <strong>{email}</strong> címre.
-              Kérjük, kattintson a levélben található linkre a fiók aktiválásához.
+              Kattints a levélben található linkre a fiókod aktiválásához.
             </p>
             <Link href="/auth/login">
               <BauhausButton variant="primary" fullWidth>
@@ -163,9 +163,9 @@ export default function RegisterPage() {
             Regisztráció
           </h2>
           <p className="text-center text-gray-600 text-sm mb-8">
-            Már van fiókja?{' '}
+            Már van fiókod?{' '}
             <Link href="/auth/login" className="text-[var(--bauhaus-blue)] hover:underline font-medium">
-              Jelentkezzen be
+              Jelentkezz be
             </Link>
           </p>
 

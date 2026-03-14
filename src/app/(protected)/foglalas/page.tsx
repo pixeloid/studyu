@@ -233,7 +233,7 @@ export default function BookingPage() {
       router.push(`/dashboard/foglalasaim/${booking.id}?success=true`)
     } catch (err) {
       console.error('Error creating booking:', err)
-      setError('Hiba történt a foglalás létrehozása közben. Kérjük, próbálja újra.')
+      setError('Hiba történt a foglalás létrehozása közben. Próbáld újra.')
     } finally {
       setSubmitting(false)
     }
@@ -313,7 +313,7 @@ export default function BookingPage() {
           {step === 'date' && (
             <BauhausCard padding="lg">
               <h2 className="font-bugrino text-xl uppercase tracking-wider mb-6">
-                Válasszon dátumot
+                Válassz dátumot
               </h2>
               <Calendar
                 selectedDate={selectedDate}
@@ -332,7 +332,7 @@ export default function BookingPage() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="font-bugrino text-xl uppercase tracking-wider">
-                    Válasszon időpontot
+                    Válassz időpontot
                   </h2>
                   <p className="text-gray-600 mt-1">
                     {format(selectedDate, 'yyyy. MMMM d., EEEE', { locale: hu })}
@@ -459,7 +459,7 @@ export default function BookingPage() {
                     onChange={e => setUserNotes(e.target.value)}
                     rows={3}
                     className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow"
-                    placeholder="Írja le, ha van speciális kérése..."
+                    placeholder="Írd le, ha van speciális kérésed..."
                   />
                 </div>
 
@@ -471,7 +471,7 @@ export default function BookingPage() {
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• A foglalás visszaigazolást igényel</li>
                     <li>• A díjbekérőt email-ben küldjük</li>
-                    <li>• Lemondási feltételeinket az ÁSZF-ben találja</li>
+                    <li>• Lemondási feltételeinket az ÁSZF-ben találod</li>
                   </ul>
                 </div>
               </BauhausCard>

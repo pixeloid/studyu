@@ -134,7 +134,7 @@ export default function ContactPage() {
             <BauhausCard padding="lg" accentColor="blue" hasCornerAccent accentPosition="top-right">
               <h2 className="font-bugrino text-2xl uppercase tracking-wider mb-2">Üzenetküldés</h2>
               <p className="text-sm text-gray-600 mb-8">
-                Töltse ki az alábbi űrlapot és hamarosan felvesszük Önnel a kapcsolatot.
+                Töltsd ki az alábbi űrlapot és hamarosan felvesszük veled a kapcsolatot.
               </p>
 
               <form className="space-y-6">
@@ -186,7 +186,7 @@ export default function ContactPage() {
                     id="message"
                     rows={4}
                     className="w-full px-4 py-3 border-[3px] border-black bg-white focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow resize-none"
-                    placeholder="Írja le kérdését vagy kérését..."
+                    placeholder="Írd le a kérdésed vagy kérésed..."
                   />
                 </div>
 

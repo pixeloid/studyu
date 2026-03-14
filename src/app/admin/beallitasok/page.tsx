@@ -30,11 +30,16 @@ interface HourlyBookingSettings {
   enabled: boolean
 }
 
+interface OnlinePaymentSettings {
+  enabled: boolean
+}
+
 interface Settings {
   cancellation_policy: { rules: CancellationRule[] }
   booking_settings: BookingSettings
   contact_info: ContactSettings
   hourly_booking: HourlyBookingSettings
+  online_payment: OnlinePaymentSettings
 }
 
 const defaultSettings: Settings = {
@@ -60,6 +65,9 @@ const defaultSettings: Settings = {
     min_hours: 2,
     max_hours: 9,
     enabled: true,
+  },
+  online_payment: {
+    enabled: false,
   },
 }
 
@@ -107,6 +115,9 @@ export default function SettingsPage() {
         }
         if (item.key === 'hourly_booking' && item.value) {
           loadedSettings.hourly_booking = item.value as unknown as HourlyBookingSettings
+        }
+        if (item.key === 'online_payment' && item.value) {
+          loadedSettings.online_payment = item.value as unknown as OnlinePaymentSettings
         }
       })
       setSettings(loadedSettings)
@@ -515,6 +526,59 @@ export default function SettingsPage() {
           <div className="mt-6 pt-6 border-t-[3px] border-gray-200 flex justify-end">
             <BauhausButton
               onClick={() => saveSetting('hourly_booking', settings.hourly_booking)}
+              disabled={saving}
+              variant="primary"
+            >
+              {saving ? 'Mentés...' : 'Mentés'}
+            </BauhausButton>
+          </div>
+        </BauhausCard>
+
+        {/* Online Payment */}
+        <BauhausCard padding="lg" accentColor="blue" hasCornerAccent accentPosition="bottom-left">
+          <h2 className="font-bugrino text-lg uppercase tracking-wider mb-2">Online fizetés (Stripe)</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Engedélyezze a bankkártyás fizetést Stripe-on keresztül. A visszaigazolás után az ügyfél kártyával is fizethet.
+          </p>
+
+          <div className="mb-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div
+                className={`w-12 h-7 rounded-full border-[2px] border-black relative transition-colors ${
+                  settings.online_payment.enabled ? 'bg-[var(--bauhaus-blue)]' : 'bg-gray-200'
+                }`}
+                onClick={() =>
+                  setSettings({
+                    ...settings,
+                    online_payment: { ...settings.online_payment, enabled: !settings.online_payment.enabled },
+                  })
+                }
+              >
+                <div
+                  className={`w-5 h-5 rounded-full bg-white border-[2px] border-black absolute top-0 transition-transform ${
+                    settings.online_payment.enabled ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </div>
+              <span className="font-bugrino text-sm uppercase tracking-wider">
+                {settings.online_payment.enabled ? 'Engedélyezve' : 'Letiltva'}
+              </span>
+            </label>
+          </div>
+
+          {settings.online_payment.enabled && (
+            <div className="p-4 border-[2px] border-gray-200 bg-gray-50 text-sm text-gray-600">
+              <p className="mb-2">A Stripe fizetés működéséhez szükséges környezeti változók:</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li><code className="text-xs bg-gray-200 px-1">STRIPE_SECRET_KEY</code></li>
+                <li><code className="text-xs bg-gray-200 px-1">STRIPE_WEBHOOK_SECRET</code></li>
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-6 pt-6 border-t-[3px] border-gray-200 flex justify-end">
+            <BauhausButton
+              onClick={() => saveSetting('online_payment', settings.online_payment)}
               disabled={saving}
               variant="primary"
             >
