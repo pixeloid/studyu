@@ -121,8 +121,9 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Create checkout error:', error)
+    const message = error instanceof Error ? error.message : 'Hiba a fizetési link létrehozása során'
     return NextResponse.json(
-      { success: false, error: 'Hiba a fizetési link létrehozása során' },
+      { success: false, error: message },
       { status: 500 }
     )
   }
