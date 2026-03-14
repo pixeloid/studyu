@@ -8,6 +8,7 @@ import { createProformaInvoice } from '@/lib/szamlazz'
 
 const requestSchema = z.object({
   bookingId: z.string().uuid('Invalid booking ID'),
+  paymentMethod: z.enum(['transfer', 'card']).optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { bookingId } = validation.data
+  const { bookingId, paymentMethod } = validation.data
 
   // Get booking with related data
   const { data: booking, error: bookingError } = await supabase
@@ -120,7 +121,7 @@ export async function POST(request: NextRequest) {
     buyerPhone: booking.profiles?.phone || undefined,
     buyerTaxNumber: booking.profiles?.tax_number || undefined,
     items,
-    paymentMethod: 'transfer',
+    paymentMethod: paymentMethod || 'transfer',
     paymentDeadlineDays: 8,
     currency: 'HUF',
     language: 'hu',

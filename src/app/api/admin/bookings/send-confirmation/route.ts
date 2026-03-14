@@ -198,7 +198,13 @@ export async function POST(request: NextRequest) {
             <strong style="font-size: 18px;">${booking.proforma_number || '-'}</strong>
           </div>
           ${booking.proforma_url ? makeButton(booking.proforma_url, 'Díjbekérő megtekintése') : ''}
-          <p>A díjbekérőn feltüntetett határidőig kérünk, utald át az összeget.</p>`
+          ${booking.payment_link_url ? `
+          <div style="border: 3px solid #059669; padding: 20px; margin: 20px 0; text-align: center;">
+            <p style="margin: 0 0 12px 0; font-weight: bold; color: #059669;">Fizess kényelmesen bankkártyával!</p>
+            <a href="${booking.payment_link_url}" style="display: inline-block; background: #059669; color: #fff; padding: 14px 32px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">Fizetés bankkártyával</a>
+          </div>
+          <p>Vagy utald át az összeget a díjbekérőn feltüntetett határidőig.</p>` : `
+          <p>A díjbekérőn feltüntetett határidőig kérünk, utald át az összeget.</p>`}`
         break
 
       case 'paid':

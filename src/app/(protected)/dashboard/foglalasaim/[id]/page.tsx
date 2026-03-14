@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausBadge } from '@/components/ui/bauhaus/BauhausBadge'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
+import PaymentButton from './PaymentButton'
 
 export const metadata: Metadata = {
   title: 'Foglalás részletei',
@@ -72,6 +73,18 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
 
   const isPast = new Date(booking.booking_date) < new Date()
   const canCancel = !isPast && ['pending', 'confirmed', 'paid'].includes(booking.status)
+
+  // Check if online payment is enabled and booking has a payment link
+  let showPaymentButton = false
+  if (booking.status === 'confirmed') {
+    const { data: onlinePaymentSetting } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'online_payment')
+      .single()
+
+    showPaymentButton = (onlinePaymentSetting?.value as any)?.enabled === true
+  }
 
   const statusVariants: Record<string, 'yellow' | 'blue' | 'red' | 'outline' | 'black'> = {
     pending: 'yellow',
@@ -234,6 +247,29 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
             </svg>
             Díjbekérő letöltése
           </a>
+        </div>
+      )}
+
+      {/* Online payment button */}
+      {booking.status === 'confirmed' && showPaymentButton && (
+        <div
+          className="mt-6 p-6 border-[3px] border-green-500 bg-green-50 text-center"
+          style={{ boxShadow: '4px 4px 0 #22c55e' }}
+        >
+          <p className="text-green-800 font-semibold mb-4">
+            Fizess kényelmesen bankkártyával!
+          </p>
+          {booking.payment_link_url ? (
+            <a
+              href={booking.payment_link_url}
+              className="inline-block px-8 py-4 bg-[#059669] text-white font-bugrino text-sm uppercase tracking-wider border-[3px] border-black hover:translate-x-[-2px] hover:translate-y-[-2px] transition-transform"
+              style={{ boxShadow: '4px 4px 0 #000' }}
+            >
+              Fizetés bankkártyával
+            </a>
+          ) : (
+            <PaymentButton bookingId={booking.id} />
+          )}
         </div>
       )}
 

@@ -158,6 +158,23 @@ export async function POST(request: NextRequest) {
 
       refundAmount = booking.total_price - fee
 
+      // Stripe refund if payment was by card
+      let stripeRefundId: string | null = null
+      if (booking.payment_method === 'card' && booking.stripe_payment_intent_id && refundAmount > 0) {
+        try {
+          const { getStripe } = await import('@/lib/stripe/client')
+          const stripe = getStripe()
+          const refund = await stripe.refunds.create({
+            payment_intent: booking.stripe_payment_intent_id,
+            amount: refundAmount * 100, // HUF: amount in fillér
+          })
+          stripeRefundId = refund.id
+        } catch (stripeError) {
+          console.error('Stripe refund failed:', stripeError)
+          // Continue with cancellation, refund can be done manually
+        }
+      }
+
       // Lemondási díj számla (ha van díj)
       if (fee > 0) {
         const cancellationInvoiceResult = await createInvoice({
@@ -175,7 +192,7 @@ export async function POST(request: NextRequest) {
             unitPriceNet: Math.round(fee / 1.27),
             vatRate: '27',
           }],
-          paymentMethod: 'transfer',
+          paymentMethod: booking.payment_method === 'card' ? 'card' : 'transfer',
           currency: 'HUF',
           language: 'hu',
           comment: `Lemondási díj - Foglalás: ${booking.id}`,
@@ -203,6 +220,7 @@ export async function POST(request: NextRequest) {
           storno_invoice_number: stornoInvoiceNumber,
           cancellation_invoice_number: cancellationInvoiceNumber || null,
           cancellation_invoice_url: cancellationInvoiceUrl || null,
+          stripe_refund_id: stripeRefundId,
         })
         .eq('id', bookingId)
     }

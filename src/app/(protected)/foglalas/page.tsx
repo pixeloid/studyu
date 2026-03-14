@@ -313,7 +313,7 @@ export default function BookingPage() {
           {step === 'date' && (
             <BauhausCard padding="lg">
               <h2 className="font-bugrino text-xl uppercase tracking-wider mb-6">
-                Válasszon dátumot
+                Válassz dátumot
               </h2>
               <Calendar
                 selectedDate={selectedDate}
@@ -332,7 +332,7 @@ export default function BookingPage() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="font-bugrino text-xl uppercase tracking-wider">
-                    Válasszon időpontot
+                    Válassz időpontot
                   </h2>
                   <p className="text-gray-600 mt-1">
                     {format(selectedDate, 'yyyy. MMMM d., EEEE', { locale: hu })}
@@ -471,7 +471,7 @@ export default function BookingPage() {
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• A foglalás visszaigazolást igényel</li>
                     <li>• A díjbekérőt email-ben küldjük</li>
-                    <li>• Lemondási feltételeinket az ÁSZF-ben találja</li>
+                    <li>• Lemondási feltételeinket az ÁSZF-ben találod</li>
                   </ul>
                 </div>
               </BauhausCard>

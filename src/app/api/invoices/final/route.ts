@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
     buyerPhone: booking.profiles?.phone || undefined,
     buyerTaxNumber: booking.profiles?.tax_number || undefined,
     items,
-    paymentMethod: 'transfer',
+    paymentMethod: booking.payment_method === 'card' ? 'card' : 'transfer',
     currency: 'HUF',
     language: 'hu',
     comment: `Foglalás azonosító: ${booking.id}`,
