@@ -71,13 +71,13 @@ export default function HomePage() {
             <FeatureCard
               icon={<SparklesIcon />}
               title="Kiegészítő szolgáltatások"
-              description="Sminkes, stylist, fodrász - mindent megtalál egy helyen."
+              description="Sminkes, stylist, fodrász, fotós asszisztens - amennyiben választja."
               accentColor="red"
             />
             <FeatureCard
               icon={<MapPinIcon />}
               title="Központi elhelyezkedés"
-              description="Könnyen megközelíthető helyszín Budapest szívében."
+              description="Könnyen megközelíthető helyszín Budapesten a II. kerület szívében."
               accentColor="yellow"
             />
             <FeatureCard
@@ -89,7 +89,7 @@ export default function HomePage() {
             <FeatureCard
               icon={<ShieldCheckIcon />}
               title="Átlátható árazás"
-              description="Nincsenek rejtett költségek - pontosan tudja, miért fizet."
+              description="Nincsenek rejtett költségek - pontosan tudod, miért fizetsz."
               accentColor="red"
             />
           </div>
@@ -124,10 +124,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-bauhaus-heading text-white mb-6">
-              Készen áll a foglalásra?
+              Készen állsz a foglalásra?
             </h2>
             <p className="text-lg text-gray-300 mb-10">
-              Válassza ki a megfelelő időpontot és foglaljon online néhány kattintással.
+              Válaszd ki a megfelelő időpontot és foglalj online néhány kattintással.
             </p>
             <Link href="/foglalas">
               <BauhausButton variant="accent" size="lg">
