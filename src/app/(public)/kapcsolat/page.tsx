@@ -4,7 +4,7 @@ import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 
 export const metadata: Metadata = {
   title: 'Kapcsolat',
-  description: 'Lépjen kapcsolatba a StudyU Fotóstúdióval - elérhetőségeink és üzenetküldési lehetőség.',
+  description: 'Lépj kapcsolatba a StudyU Fotóstúdióval - elérhetőségeink és üzenetküldési lehetőség.',
 }
 
 export default function ContactPage() {
@@ -31,7 +31,7 @@ export default function ContactPage() {
               <div className="w-12 h-[3px] bg-black" />
             </div>
             <p className="text-lg text-gray-600">
-              Kérdése van? Szívesen segítünk! Vegye fel velünk a kapcsolatot az alábbi
+              Kérdésed van? Szívesen segítünk! Vedd fel velünk a kapcsolatot az alábbi
               elérhetőségek egyikén.
             </p>
           </div>
@@ -55,8 +55,8 @@ export default function ContactPage() {
                   color="blue"
                   title="Cím"
                 >
-                  <p>1111 Budapest</p>
-                  <p>Példa utca 1.</p>
+                  <p>1023 Budapest</p>
+                  <p>Mecset utca 1-3.</p>
                 </ContactItem>
 
                 <ContactItem
@@ -64,8 +64,8 @@ export default function ContactPage() {
                   color="yellow"
                   title="Telefon"
                 >
-                  <a href="tel:+36301234567" className="hover:underline">
-                    +36 30 123 4567
+                  <a href="tel:+36202977377" className="hover:underline">
+                    +36 202977377
                   </a>
                 </ContactItem>
 

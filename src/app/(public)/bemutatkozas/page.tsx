@@ -5,7 +5,7 @@ import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 
 export const metadata: Metadata = {
   title: 'Bemutatkozás',
-  description: 'Ismerje meg a StudyU Fotóstúdiót - professzionális környezet fotózáshoz Budapest szívében.',
+  description: 'Ismerd meg a StudyU Fotóstúdiót - professzionális környezet fotózáshoz Budapest szívében.',
 }
 
 export default function AboutPage() {
@@ -40,8 +40,8 @@ export default function AboutPage() {
               <div className="w-12 h-[3px] bg-black" />
             </div>
             <p className="text-lg text-gray-600">
-              A StudyU Fotóstúdió 2020 óta várja vendégeit Budapest szívében. Célunk, hogy
-              professzionális környezetet biztosítsunk minden típusú fotózáshoz.
+              A StudyU Fotóstúdió 2025 óta várja vendégeit Budapest szívében. Célunk, hogy
+              professzionális környezetet biztosítsunk minden típusú fotózáshoz, hiszen a kreatív alkotás közös célunk.
             </p>
           </div>
         </div>
@@ -56,8 +56,8 @@ export default function AboutPage() {
             <p className="text-gray-600 leading-relaxed">
               120 négyzetméteres, modern stúdiónk ideális helyszín portré-, divat-,
               termék- és reklámfotózáshoz egyaránt. A természetes fényt biztosító
-              nagy ablakok mellett professzionális világítástechnikával is felszereltük
-              a teret.
+              nagy ablakok mellett professzionális világítástechnikával,
+              választható, színes hátterekkel is felszereltük a teret.
             </p>
           </BauhausCard>
 
@@ -87,8 +87,8 @@ export default function AboutPage() {
           <BauhausCard padding="lg" accentColor="red" hasCornerAccent accentPosition="bottom-left" className="mb-8">
             <h2 className="font-bugrino text-xl uppercase tracking-wider mb-4">Szolgáltatások</h2>
             <p className="text-gray-600 mb-4">
-              A stúdióbérlés mellett kiegészítő szolgáltatásokat is kínálunk,
-              hogy a fotózás minden részletét egy helyen megoldhassa:
+              A stúdióbérlés mellett opcionálisan választható szolgáltatásaink,
+              hogy a fotózás minden részletét egy helyen megoldhassad:
             </p>
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -129,7 +129,7 @@ export default function AboutPage() {
           {/* CTA */}
           <div className="mt-16 text-center">
             <p className="text-gray-600 mb-6">
-              Készen áll a fotózásra? Foglaljon időpontot online!
+              Készen állsz a fotózásra? Foglalj időpontot online!
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link href="/foglalas">
