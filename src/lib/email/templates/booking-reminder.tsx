@@ -42,7 +42,7 @@ export function BookingReminderEmail({
           </Text>
 
           <Text style={text}>
-            Szeretnénk emlékeztetni, hogy holnap foglalása van a StudyU stúdióban.
+            Szeretnénk emlékeztetni, hogy holnap foglalásod van a StudyU stúdióban.
           </Text>
 
           <Section style={detailsBox}>

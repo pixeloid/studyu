@@ -71,7 +71,7 @@ export default function HomePage() {
             <FeatureCard
               icon={<SparklesIcon />}
               title="Kiegészítő szolgáltatások"
-              description="Sminkes, stylist, fodrász, fotós asszisztens - amennyiben választja."
+              description="Sminkes, stylist, fodrász, fotós asszisztens - amennyiben választod."
               accentColor="red"
             />
             <FeatureCard

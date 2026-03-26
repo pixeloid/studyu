@@ -339,7 +339,7 @@ export async function POST(request: NextRequest) {
         <div style="background: ${redColor}; color: #fff; padding: 12px 20px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; display: inline-block;">
           Foglalás lemondva
         </div>
-        <p style="margin-top: 16px;">Az alábbi foglalása lemondásra került.</p>
+        <p style="margin-top: 16px;">Az alábbi foglalásod lemondásra került.</p>
         ${bookingDetailsBlock}
         <div style="border: 3px solid #000; padding: 16px; background: #f9f9f9; margin: 16px 0;">
           <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Eredeti számla</span><br>
@@ -378,7 +378,7 @@ export async function POST(request: NextRequest) {
         <div style="background: ${redColor}; color: #fff; padding: 12px 20px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; display: inline-block;">
           Foglalás lemondva
         </div>
-        <p style="margin-top: 16px;">Az alábbi foglalása lemondásra került.</p>
+        <p style="margin-top: 16px;">Az alábbi foglalásod lemondásra került.</p>
         ${bookingDetailsBlock}
         <div style="border: 3px solid #000; padding: 16px; margin: 16px 0;">
           <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Lemondási díj</span><br>
@@ -395,7 +395,7 @@ export async function POST(request: NextRequest) {
         <div style="background: ${redColor}; color: #fff; padding: 12px 20px; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; display: inline-block;">
           Foglalás lemondva
         </div>
-        <p style="margin-top: 16px;">Az alábbi foglalása sikeresen lemondásra került. A lemondás ingyenes volt.</p>
+        <p style="margin-top: 16px;">Az alábbi foglalásod sikeresen lemondásra került. A lemondás ingyenes volt.</p>
         ${bookingDetailsBlock}`
     }
 

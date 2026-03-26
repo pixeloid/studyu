@@ -4,7 +4,7 @@ import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 
 export const metadata: Metadata = {
   title: 'Galéria',
-  description: 'Tekintse meg a StudyU Fotóstúdióban készült munkáinkat.',
+  description: 'Tekintsd meg a StudyU Fotóstúdióban készült munkáinkat.',
 }
 
 const categories = [
@@ -51,7 +51,7 @@ export default function GalleryPage() {
               <div className="w-12 h-[3px] bg-black" />
             </div>
             <p className="text-lg text-gray-600">
-              Fedezze fel stúdiónkat és tekintse meg az itt készült munkáinkat.
+              Fedezd fel stúdiónkat és tekintsd meg az itt készült munkáinkat.
             </p>
           </div>
         </div>

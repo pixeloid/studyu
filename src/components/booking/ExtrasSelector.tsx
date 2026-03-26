@@ -61,7 +61,7 @@ export function ExtrasSelector({
           Kiegészítők
         </h3>
         <p className="text-sm text-gray-500">
-          Válassza ki a kívánt extra szolgáltatásokat
+          Válaszd ki a kívánt extra szolgáltatásokat
         </p>
       </div>
 

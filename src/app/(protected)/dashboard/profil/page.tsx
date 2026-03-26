@@ -192,7 +192,7 @@ export default function ProfilePage() {
         <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="top-right">
           <h2 className="font-bugrino text-lg uppercase tracking-wider mb-2">Céges adatok</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Opcionális. Töltse ki, ha céges számlát szeretne kapni.
+            Opcionális. Töltsd ki, ha céges számlát szeretnél kapni.
           </p>
           <div className="space-y-5">
             <div>

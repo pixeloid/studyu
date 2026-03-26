@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: "StudyU Fotóstúdió",
     template: "%s | StudyU Fotóstúdió",
   },
-  description: "Professzionális fotóstúdió Budapesten. Foglaljon online időpontot fotózáshoz!",
+  description: "Professzionális fotóstúdió Budapesten. Foglalj online időpontot fotózáshoz!",
   keywords: ["fotóstúdió", "Budapest", "fotózás", "stúdió bérlés", "professzionális fotózás"],
 };
 
