@@ -105,10 +105,10 @@ export default async function UserBookingsPage() {
                 </svg>
               </div>
               <p className="text-gray-500 font-bugrino uppercase tracking-wider text-sm mb-4">
-                Nincs közelgő foglalása
+                Nincs közelgő foglalásod
               </p>
               <Link href="/foglalas">
-                <BauhausButton variant="primary" size="sm">Foglaljon most</BauhausButton>
+                <BauhausButton variant="primary" size="sm">Foglalj most</BauhausButton>
               </Link>
             </div>
           </BauhausCard>

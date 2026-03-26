@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
       case 'proforma':
         emailSubject = 'Díjbekérő - StudyU Fotóstúdió'
         emailBody = `
-          <p>Elkészítettük foglalásához a díjbekérőt.</p>
+          <p>Elkészítettük a foglalásodhoz a díjbekérőt.</p>
           ${bookingDetailsBlock}
           <div style="border: 3px solid #000; padding: 16px; background: #f9f9f9; margin: 16px 0;">
             <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Díjbekérő száma</span><br>

@@ -130,10 +130,10 @@ export default async function DashboardPage() {
                   </svg>
                 </div>
                 <p className="text-gray-500 font-bugrino uppercase tracking-wider text-sm mb-4">
-                  Nincs közelgő foglalása
+                  Nincs közelgő foglalásod
                 </p>
                 <Link href="/foglalas" className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline">
-                  Foglaljon most
+                  Foglalj most
                 </Link>
               </div>
             )}
@@ -179,7 +179,7 @@ export default async function DashboardPage() {
             ) : (
               <div className="text-center py-12">
                 <p className="text-gray-500 font-bugrino uppercase tracking-wider text-sm">
-                  Még nincs foglalása
+                  Még nincs foglalásod
                 </p>
               </div>
             )}
@@ -203,14 +203,14 @@ export default async function DashboardPage() {
             href="/foglalas"
             icon={<CalendarIcon />}
             title="Új foglalás"
-            description="Foglaljon időpontot a stúdióba"
+            description="Foglalj időpontot a stúdióba"
             color="blue"
           />
           <QuickAction
             href="/dashboard/foglalasaim"
             icon={<ListIcon />}
             title="Foglalásaim"
-            description="Tekintse meg foglalásait"
+            description="Tekintsd meg foglalásaid"
             color="yellow"
           />
           <QuickAction
@@ -224,7 +224,7 @@ export default async function DashboardPage() {
             href="/kapcsolat"
             icon={<ChatIcon />}
             title="Kapcsolat"
-            description="Kérdése van? Írjon nekünk"
+            description="Kérdésed van? Írj nekünk"
             color="black"
           />
         </div>

@@ -44,7 +44,7 @@ export function BookingConfirmationEmail({
           </Text>
 
           <Text style={text}>
-            Köszönjük foglalását! Az alábbiakban találja a foglalás részleteit:
+            Köszönjük a foglalásod! Az alábbiakban találod a foglalás részleteit:
           </Text>
 
           <Section style={detailsBox}>
