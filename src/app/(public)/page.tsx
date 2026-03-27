@@ -1,29 +1,23 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
-import { BauhausHero } from '@/components/ui/bauhaus/BauhausHero'
 
 export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <BauhausHero
-        title="Professzionális Fotóstúdió"
-        subtitle="Modern, teljesen felszerelt stúdió Budapesten. Ideális portré-, termék- és reklámfotózáshoz, content gyártáshoz."
-      >
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/foglalas">
-            <BauhausButton variant="accent" size="lg">
-              Foglalás most
-            </BauhausButton>
-          </Link>
-          <Link href="/galeria">
-            <BauhausButton variant="default" size="lg">
-              Galéria megtekintése
-            </BauhausButton>
-          </Link>
-        </div>
-      </BauhausHero>
+      <section className="relative w-full">
+        <Image
+          src="/hero.jpg"
+          alt="StudyU Fotóstúdió - Professzionális fotóstúdió Budapesten"
+          width={1920}
+          height={1080}
+          className="w-full h-auto"
+          priority
+        />
+        <h1 className="sr-only">Professzionális Fotóstúdió - Modern, teljesen felszerelt stúdió Budapesten. Ideális portré-, termék- és reklámfotózáshoz, content gyártáshoz.</h1>
+      </section>
 
       {/* Features Section */}
       <section className="py-24 bg-white relative overflow-hidden">
