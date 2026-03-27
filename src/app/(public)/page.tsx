@@ -82,8 +82,8 @@ export default function HomePage() {
             />
             <FeatureCard
               icon={<ShieldCheckIcon />}
-              title="Kedvenc új helyed"
-              description="Akár privát rendezvényhelyszínként is gondolhatsz ránk."
+              title="Átlátható árazás"
+              description="Nincsenek rejtett költségek - pontosan tudod, miért fizetsz."
               accentColor="red"
             />
           </div>
