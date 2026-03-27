@@ -40,8 +40,8 @@ export default function AboutPage() {
               <div className="w-12 h-[3px] bg-black" />
             </div>
             <p className="text-lg text-gray-600">
-              A StudyU Fotóstúdió 2025 óta várja vendégeit Budapest szívében. Célunk, hogy
-              professzionális környezetet biztosítsunk minden típusú fotózáshoz, hiszen a kreatív alkotás közös célunk.
+              A Studyú a Dugattyús fotóstúdiója, ami 2025 óta várja vendégeit Budapest szívében. Célunk, hogy
+              professzionális környezetet biztosítsunk minden típusú fotózáshoz, hiszen a kreatív alkotás közös célunk és örömünk.
             </p>
           </div>
         </div>
@@ -54,10 +54,10 @@ export default function AboutPage() {
           <BauhausCard padding="lg" accentColor="blue" hasCornerAccent accentPosition="top-left" className="mb-8">
             <h2 className="font-bugrino text-xl uppercase tracking-wider mb-4">A stúdióról</h2>
             <p className="text-gray-600 leading-relaxed">
-              120 négyzetméteres, modern stúdiónk ideális helyszín portré-, divat-,
-              termék- és reklámfotózáshoz egyaránt. A természetes fényt biztosító
+              Modern stúdiónk ideális helyszín portré-, divat-,
+              termék- és reklámfotózáshoz, valamint content gyártáshoz. A természetes fényt biztosító
               nagy ablakok mellett professzionális világítástechnikával,
-              választható, színes hátterekkel is felszereltük a teret.
+              különböző színes papírhátterekkel várunk.
             </p>
           </BauhausCard>
 
@@ -66,8 +66,8 @@ export default function AboutPage() {
             <h2 className="font-bugrino text-xl uppercase tracking-wider mb-4">Felszerelés</h2>
             <ul className="space-y-3">
               {[
-                'Profoto villanók és folyamatos fények',
-                'Különböző méretű és színű háttérvásznak',
+                'Profoto vakufejek és folyamatos fények',
+                'Különböző méretű és színű papírhátterek',
                 'Softboxok, beauty dish, reflektorok',
                 'Sminkasztal tükörrel és világítással',
                 'Öltöző és pihenősarok',
@@ -88,7 +88,7 @@ export default function AboutPage() {
             <h2 className="font-bugrino text-xl uppercase tracking-wider mb-4">Szolgáltatások</h2>
             <p className="text-gray-600 mb-4">
               A stúdióbérlés mellett opcionálisan választható szolgáltatásaink,
-              hogy a fotózás minden részletét egy helyen megoldhassad:
+              hogy a fotózás minden részletét egy helyen oldd meg:
             </p>
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -114,31 +114,18 @@ export default function AboutPage() {
             <h2 className="font-bugrino text-xl uppercase tracking-wider mb-4">Elérhetőség</h2>
             <p className="text-gray-600">
               Stúdiónk kiválóan megközelíthető tömegközlekedéssel és autóval egyaránt.
-              A közelben ingyenes parkolási lehetőség is található.
+              A Mecset utcai bejáratunknál kültéri parkoló üzemel.
             </p>
           </BauhausCard>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <Stat value="120m²" label="Stúdió méret" color="blue" />
-            <Stat value="5+" label="Év tapasztalat" color="yellow" />
-            <Stat value="1000+" label="Sikeres fotózás" color="red" />
-            <Stat value="100%" label="Elégedett ügyfél" color="black" />
-          </div>
-
           {/* CTA */}
-          <div className="mt-16 text-center">
-            <p className="text-gray-600 mb-6">
-              Készen állsz a fotózásra? Foglalj időpontot online!
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/foglalas">
-                <BauhausButton variant="primary" size="lg">Foglalás</BauhausButton>
-              </Link>
-              <Link href="/kapcsolat">
-                <BauhausButton variant="default" size="lg">Kapcsolat</BauhausButton>
-              </Link>
-            </div>
+          <div className="mt-16 flex flex-wrap justify-center gap-4">
+            <Link href="/foglalas">
+              <BauhausButton variant="primary" size="lg">Foglalás</BauhausButton>
+            </Link>
+            <Link href="/kapcsolat">
+              <BauhausButton variant="default" size="lg">Kapcsolat</BauhausButton>
+            </Link>
           </div>
         </div>
       </div>
@@ -146,25 +133,3 @@ export default function AboutPage() {
   )
 }
 
-function Stat({ value, label, color }: { value: string; label: string; color: 'blue' | 'yellow' | 'red' | 'black' }) {
-  const colors = {
-    blue: 'var(--bauhaus-blue)',
-    yellow: 'var(--bauhaus-yellow)',
-    red: 'var(--bauhaus-red)',
-    black: 'var(--bauhaus-black)',
-  }
-
-  return (
-    <div className="text-center">
-      <div
-        className="w-20 h-20 rounded-full border-[3px] border-black flex items-center justify-center mx-auto mb-3"
-        style={{ backgroundColor: colors[color] }}
-      >
-        <span className={`font-bugrino text-xl ${color === 'yellow' ? 'text-black' : 'text-white'}`}>
-          {value}
-        </span>
-      </div>
-      <div className="font-bugrino text-xs uppercase tracking-wider text-gray-600">{label}</div>
-    </div>
-  )
-}

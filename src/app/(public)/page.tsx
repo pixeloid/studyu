@@ -9,7 +9,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <BauhausHero
         title="Professzionális Fotóstúdió"
-        subtitle="Modern, teljesen felszerelt stúdió Budapesten. Ideális portré-, termék- és reklámfotózáshoz."
+        subtitle="Modern, teljesen felszerelt stúdió Budapesten. Ideális portré-, termék- és reklámfotózáshoz, content gyártáshoz."
       >
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/foglalas">
@@ -59,7 +59,7 @@ export default function HomePage() {
             <FeatureCard
               icon={<CameraIcon />}
               title="Modern felszerelés"
-              description="Professzionális világítástechnika, háttérvásznak és minden szükséges kellék."
+              description="Professzionális, minőségi világítástechnika, háttérvásznak és minden szükséges kellék."
               accentColor="blue"
             />
             <FeatureCard
@@ -71,7 +71,7 @@ export default function HomePage() {
             <FeatureCard
               icon={<SparklesIcon />}
               title="Kiegészítő szolgáltatások"
-              description="Sminkes, stylist, fodrász, fotós asszisztens - amennyiben választod."
+              description="Sminkes, stylist, fodrász, fotós asszisztens - igény esetén!"
               accentColor="red"
             />
             <FeatureCard
@@ -88,8 +88,8 @@ export default function HomePage() {
             />
             <FeatureCard
               icon={<ShieldCheckIcon />}
-              title="Átlátható árazás"
-              description="Nincsenek rejtett költségek - pontosan tudod, miért fizetsz."
+              title="Kedvenc új helyed"
+              description="Akár privát rendezvényhelyszínként is gondolhatsz ránk."
               accentColor="red"
             />
           </div>
@@ -138,17 +138,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-white border-t-[3px] border-black">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            <StatItem value="500+" label="Elégedett ügyfél" color="blue" />
-            <StatItem value="50m²" label="Stúdió méret" color="yellow" />
-            <StatItem value="24/7" label="Online foglalás" color="red" />
-            <StatItem value="5+" label="Év tapasztalat" color="blue" />
-          </div>
-        </div>
-      </section>
     </>
   )
 }
@@ -191,37 +180,6 @@ function FeatureCard({
   )
 }
 
-function StatItem({
-  value,
-  label,
-  color,
-}: {
-  value: string
-  label: string
-  color: 'red' | 'yellow' | 'blue'
-}) {
-  const colors = {
-    red: 'var(--bauhaus-red)',
-    yellow: 'var(--bauhaus-yellow)',
-    blue: 'var(--bauhaus-blue)',
-  }
-
-  return (
-    <div className="text-center">
-      <div
-        className="inline-flex items-center justify-center w-20 h-20 rounded-full border-[3px] border-black mb-4"
-        style={{ backgroundColor: colors[color] }}
-      >
-        <span
-          className={`font-bugrino text-xl ${color === 'yellow' ? 'text-black' : 'text-white'}`}
-        >
-          {value}
-        </span>
-      </div>
-      <p className="font-bugrino text-sm uppercase tracking-wider">{label}</p>
-    </div>
-  )
-}
 
 function CameraIcon() {
   return (
