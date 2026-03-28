@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-const protectedRoutes = ['/dashboard', '/foglalas', '/admin']
+const protectedRoutes = ['/dashboard', '/admin']
 const authRoutes = ['/auth/login', '/auth/register']
 
 export async function updateSession(request: NextRequest) {
@@ -47,7 +47,6 @@ export async function updateSession(request: NextRequest) {
     const needsRoleCheck =
       authRoutes.some(route => pathname.startsWith(route)) ||
       pathname.startsWith('/dashboard') ||
-      pathname.startsWith('/foglalas') ||
       pathname.startsWith('/admin')
 
     if (needsRoleCheck) {
@@ -67,7 +66,7 @@ export async function updateSession(request: NextRequest) {
       }
 
       // Admin should not see user pages — redirect to admin panel
-      if (isAdmin && (pathname.startsWith('/dashboard') || pathname.startsWith('/foglalas'))) {
+      if (isAdmin && pathname.startsWith('/dashboard')) {
         return NextResponse.redirect(new URL('/admin', request.url))
       }
 
