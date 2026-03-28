@@ -57,13 +57,7 @@
   --font-sans: var(--font-inter);
 }
 
-/* Dark Mode - Inverted Bauhaus */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--bauhaus-gray);
-    --foreground: var(--bauhaus-white);
-  }
-}
+/* Force light mode - Bauhaus design is light-only */
 
 body {
   background: var(--background);
