@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ]
+    },
+    "rube": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://rube.app/mcp"
+      ],
+      "env": {
+        "npm_config_yes": "true"
+      }
+    }
+  }
+}
