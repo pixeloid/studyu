@@ -74,7 +74,7 @@ export function ExtrasSelector({
             <div
               key={extra.id}
               className={`
-                p-5 border-[3px] bg-white transition-all
+                p-3 sm:p-5 border-[2px] sm:border-[3px] bg-white transition-all
                 ${isSelected
                   ? 'border-black translate-x-[-2px] translate-y-[-2px]'
                   : 'border-black'
@@ -86,82 +86,86 @@ export function ExtrasSelector({
                   : '4px 4px 0 var(--bauhaus-black)',
               }}
             >
-              <div className="flex items-start gap-4">
-                {/* Checkbox */}
-                <button
-                  onClick={() => toggleExtra(extra)}
-                  className={`
-                    mt-1 w-6 h-6 border-[3px] flex items-center justify-center transition-colors flex-shrink-0
-                    ${isSelected
-                      ? 'bg-[var(--bauhaus-yellow)] border-black'
-                      : 'bg-white border-black hover:bg-gray-50'
-                    }
-                  `}
-                >
-                  {isSelected && (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor">
-                      <path strokeLinecap="square" strokeLinejoin="miter" d="M4.5 12.75l6 6 9-13.5" />
-                    </svg>
-                  )}
-                </button>
-
-                {/* Image */}
-                {extra.image_url && (
-                  <img
-                    src={extra.image_url}
-                    alt={extra.name}
-                    className="w-20 h-20 object-cover border-[2px] border-black flex-shrink-0"
-                  />
-                )}
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-bugrino uppercase tracking-wide">{extra.name}</p>
-                  {extra.description && (
-                    <p className="text-sm text-gray-500 mt-1">{extra.description}</p>
-                  )}
-                  <p className="text-sm text-gray-600 mt-2">
-                    <span className="font-bugrino">{extra.price.toLocaleString('hu-HU')} Ft</span>
-                    {extra.price_type === 'per_hour' && ' / óra'}
-                    {extra.price_type === 'per_person' && ' / fő'}
-                  </p>
-                </div>
-
-                {/* Quantity controls */}
-                {isSelected && extra.price_type !== 'fixed' && (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => updateQuantity(extra.id, (selected?.quantity || 1) - 1)}
-                      className="w-8 h-8 border-[2px] border-black flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="square" strokeLinejoin="miter" d="M19.5 12h-15" />
+              {/* Tappable card area */}
+              <button
+                type="button"
+                onClick={() => toggleExtra(extra)}
+                className="w-full text-left"
+              >
+                <div className="flex items-start gap-3">
+                  {/* Checkbox */}
+                  <div
+                    className={`
+                      mt-0.5 w-7 h-7 sm:w-6 sm:h-6 border-[3px] flex items-center justify-center transition-colors flex-shrink-0
+                      ${isSelected
+                        ? 'bg-[var(--bauhaus-yellow)] border-black'
+                        : 'bg-white border-black'
+                      }
+                    `}
+                  >
+                    {isSelected && (
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor">
+                        <path strokeLinecap="square" strokeLinejoin="miter" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
-                    </button>
-                    <span className="w-10 text-center font-bugrino text-lg">
-                      {selected?.quantity || 1}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(extra.id, (selected?.quantity || 1) + 1)}
-                      className="w-8 h-8 border-[2px] border-black flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="square" strokeLinejoin="miter" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                    </button>
+                    )}
                   </div>
-                )}
 
-                {/* Price */}
-                {isSelected && (
-                  <div className="text-right flex-shrink-0">
-                    <p className="font-bugrino text-lg">
-                      {calculatePrice(extra, selected?.quantity || 1).toLocaleString('hu-HU')}
-                      <span className="text-sm ml-1">Ft</span>
+                  {/* Image */}
+                  {extra.image_url && (
+                    <img
+                      src={extra.image_url}
+                      alt={extra.name}
+                      className="w-14 h-14 sm:w-20 sm:h-20 object-cover border-[2px] border-black flex-shrink-0"
+                    />
+                  )}
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bugrino text-sm sm:text-base uppercase tracking-wide">{extra.name}</p>
+                    {extra.description && (
+                      <p className="text-xs sm:text-sm text-gray-500 mt-0.5 line-clamp-2">{extra.description}</p>
+                    )}
+                    <p className="text-sm text-gray-600 mt-1">
+                      <span className="font-bugrino">{extra.price.toLocaleString('hu-HU')} Ft</span>
+                      {extra.price_type === 'per_hour' && ' / óra'}
+                      {extra.price_type === 'per_person' && ' / fő'}
                     </p>
                   </div>
-                )}
-              </div>
+                </div>
+              </button>
+
+              {/* Quantity + Price row (when selected) */}
+              {isSelected && (extra.price_type !== 'fixed' || true) && (
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
+                  {extra.price_type !== 'fixed' ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => updateQuantity(extra.id, (selected?.quantity || 1) - 1)}
+                        className="w-10 h-10 border-[2px] border-black flex items-center justify-center hover:bg-gray-100 active:bg-gray-200 transition-colors"
+                      >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                          <path strokeLinecap="square" strokeLinejoin="miter" d="M19.5 12h-15" />
+                        </svg>
+                      </button>
+                      <span className="w-10 text-center font-bugrino text-lg">
+                        {selected?.quantity || 1}
+                      </span>
+                      <button
+                        onClick={() => updateQuantity(extra.id, (selected?.quantity || 1) + 1)}
+                        className="w-10 h-10 border-[2px] border-black flex items-center justify-center hover:bg-gray-100 active:bg-gray-200 transition-colors"
+                      >
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                          <path strokeLinecap="square" strokeLinejoin="miter" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      </button>
+                    </div>
+                  ) : <div />}
+                  <p className="font-bugrino text-lg">
+                    {calculatePrice(extra, selected?.quantity || 1).toLocaleString('hu-HU')}
+                    <span className="text-sm ml-1">Ft</span>
+                    </p>
+                </div>
+              )}
             </div>
           )
         })}
