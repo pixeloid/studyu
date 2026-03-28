@@ -142,45 +142,42 @@ function RegisterContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-6 lg:py-8 relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-red)' }}>
-      {/* Geometric background decorations */}
-      <div
-        className="absolute top-0 left-0 w-96 h-96 -translate-x-1/3 -translate-y-1/3 rounded-full opacity-20"
-        style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
-      />
-      <div
-        className="absolute bottom-0 right-0 w-80 h-80 translate-x-1/4 translate-y-1/4 opacity-15"
-        style={{ backgroundColor: 'var(--bauhaus-black)' }}
-      />
-      <div
-        className="absolute top-1/3 right-20 opacity-20 hidden lg:block"
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: '80px solid transparent',
-          borderRight: '80px solid transparent',
-          borderBottom: '140px solid var(--bauhaus-yellow)',
-        }}
-      />
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
-        <div className="text-center mb-4">
-          <Link href="/" className="inline-flex items-center">
-            <StudyULogo className="h-8" color="#FFFFFF" />
-          </Link>
+    <div className="min-h-screen flex items-center justify-center px-4 py-6 lg:py-0" style={{ backgroundColor: 'var(--bauhaus-red)' }}>
+      <div className="w-full max-w-md lg:max-w-5xl lg:grid lg:grid-cols-2 lg:min-h-screen">
+        {/* Left: Branding (desktop only) */}
+        <div className="hidden lg:flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-yellow)' }}>
+          <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-20" style={{ backgroundColor: 'var(--bauhaus-red)' }} />
+          <div className="absolute -bottom-10 -left-10 w-48 h-48 opacity-20" style={{ backgroundColor: 'var(--bauhaus-black)', transform: 'rotate(45deg)' }} />
+          <div className="absolute top-20 left-20 opacity-20" style={{ width: 0, height: 0, borderLeft: '60px solid transparent', borderRight: '60px solid transparent', borderBottom: '104px solid var(--bauhaus-red)' }} />
+          <div className="relative z-10 text-center px-12">
+            <StudyULogo className="h-12 mx-auto mb-8" />
+            <h2 className="font-bugrino text-3xl uppercase tracking-wider text-black mb-4">Csatlakozz!</h2>
+            <p className="text-black/70 text-lg">Hozd létre a fiókodat és foglalj időpontot a stúdióba.</p>
+          </div>
         </div>
 
-        <BauhausCard padding="md" accentColor="yellow" hasCornerAccent accentPosition="top-left">
-          <h2 className="font-bugrino text-xl uppercase tracking-wider text-center mb-1">
-            Csatlakozz!
-          </h2>
-          <p className="text-center text-gray-600 text-sm mb-4">
-            Hozd létre a fiókodat és foglalj időpontot.{' '}
-            <Link href={`/auth/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-red)] hover:underline font-medium">
-              Már van fiókod?
+        {/* Right: Form */}
+        <div className="flex flex-col items-center justify-center lg:bg-white lg:px-12 lg:py-8">
+          {/* Logo (mobile only) */}
+          <div className="text-center mb-4 lg:hidden">
+            <Link href="/" className="inline-flex items-center">
+              <StudyULogo className="h-8" color="#FFFFFF" />
             </Link>
-          </p>
+          </div>
+
+          <div className="w-full max-w-md">
+            <BauhausCard padding="md" accentColor="yellow" hasCornerAccent accentPosition="top-left">
+              <h2 className="font-bugrino text-xl uppercase tracking-wider text-center mb-1 lg:hidden">
+                Csatlakozz!
+              </h2>
+              <h2 className="hidden lg:block font-bugrino text-xl uppercase tracking-wider text-center mb-1">
+                Regisztráció
+              </h2>
+              <p className="text-center text-gray-600 text-sm mb-4">
+                <Link href={`/auth/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-red)] hover:underline font-medium">
+                  Már van fiókod? Jelentkezz be
+                </Link>
+              </p>
 
           {error && (
             <div
@@ -315,6 +312,8 @@ function RegisterContent() {
             </BauhausButton>
           </form>
         </BauhausCard>
+          </div>
+        </div>
       </div>
     </div>
   )
