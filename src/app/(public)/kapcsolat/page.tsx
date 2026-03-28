@@ -197,23 +197,30 @@ export default function ContactPage() {
             </BauhausCard>
           </div>
 
-          {/* Map placeholder */}
+          {/* Map */}
           <div className="mt-16">
             <h2 className="font-bugrino text-2xl uppercase tracking-wider mb-6">Térkép</h2>
             <div
-              className="aspect-[16/9] w-full border-[3px] border-black flex items-center justify-center"
+              className="aspect-[16/9] w-full border-[3px] border-black overflow-hidden"
               style={{ boxShadow: '6px 6px 0 var(--bauhaus-black)' }}
             >
-              <div className="text-center">
-                <div
-                  className="w-20 h-20 rounded-full border-[3px] border-black flex items-center justify-center mx-auto mb-4"
-                  style={{ backgroundColor: 'var(--bauhaus-red)' }}
-                >
-                  <MapPinIcon className="h-10 w-10 text-white" />
-                </div>
-                <p className="font-bugrino text-sm uppercase tracking-wider text-gray-500">Térkép helye</p>
-              </div>
+              <iframe
+                src="https://www.openstreetmap.org/export/embed.html?bbox=19.0310%2C47.5117%2C19.0382%2C47.5157&layer=mapnik&marker=47.5137%2C19.0346"
+                className="w-full h-full border-0"
+                loading="lazy"
+                title="StudyU Fotóstúdió - 1023 Budapest, Mecset utca 1-3."
+              />
             </div>
+            <p className="mt-2 text-right">
+              <a
+                href="https://www.openstreetmap.org/?mlat=47.5137&mlon=19.0346#map=17/47.5137/19.0346"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bugrino text-xs uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
+              >
+                Nagyobb térkép &rarr;
+              </a>
+            </p>
           </div>
         </div>
       </div>
