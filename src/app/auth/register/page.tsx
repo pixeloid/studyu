@@ -126,9 +126,13 @@ function RegisterContent() {
           </Link>
           <h1 className="font-bugrino text-4xl uppercase tracking-wider text-black mb-4">Csatlakozz!</h1>
           <p className="text-black/60 text-lg mb-8">Hozd létre a fiókodat és foglalj időpontot a stúdióba.</p>
-          <div className="border-t border-black/20 pt-6">
-            <p className="text-black/40 text-sm">Már van fiókod?</p>
-            <Link href={loginUrl} className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-red)] transition-colors">
+          <div className="border-t-[3px] border-black/20 pt-8 mt-8">
+            <p className="text-black/50 text-lg mb-3">Már van fiókod?</p>
+            <Link
+              href={loginUrl}
+              className="inline-block px-8 py-3 border-[3px] border-black font-bugrino text-base uppercase tracking-wider text-black hover:bg-black hover:text-[var(--bauhaus-yellow)] transition-all"
+              style={{ boxShadow: '4px 4px 0 rgba(0,0,0,0.3)' }}
+            >
               Bejelentkezés &rarr;
             </Link>
           </div>
