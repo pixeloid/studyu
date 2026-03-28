@@ -98,9 +98,13 @@ function LoginContent() {
           </Link>
           <h1 className="font-bugrino text-4xl uppercase tracking-wider text-white mb-4">Üdv újra!</h1>
           <p className="text-white/70 text-lg mb-8">Jelentkezz be és foglalj időpontot a stúdióba.</p>
-          <div className="border-t border-white/20 pt-6">
-            <p className="text-white/50 text-sm">Még nincs fiókod?</p>
-            <Link href={registerUrl} className="font-bugrino text-sm uppercase tracking-wider text-white hover:text-[var(--bauhaus-yellow)] transition-colors">
+          <div className="border-t-[3px] border-white/30 pt-8 mt-8">
+            <p className="text-white/60 text-lg mb-3">Még nincs fiókod?</p>
+            <Link
+              href={registerUrl}
+              className="inline-block px-8 py-3 border-[3px] border-white font-bugrino text-base uppercase tracking-wider text-white hover:bg-white hover:text-[var(--bauhaus-blue)] transition-all"
+              style={{ boxShadow: '4px 4px 0 rgba(0,0,0,0.3)' }}
+            >
               Regisztrálj &rarr;
             </Link>
           </div>
