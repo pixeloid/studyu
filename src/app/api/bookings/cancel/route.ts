@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
       if (booking.payment_method === 'card' && booking.stripe_payment_intent_id && refundAmount > 0) {
         try {
           const { getStripe } = await import('@/lib/stripe/client')
-          const stripe = getStripe()
+          const stripe = await getStripe()
           const refund = await stripe.refunds.create({
             payment_intent: booking.stripe_payment_intent_id,
             amount: refundAmount * 100, // HUF: amount in fillér

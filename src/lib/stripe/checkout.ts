@@ -11,7 +11,7 @@ interface BookingForCheckout {
 }
 
 export async function createCheckoutSession(booking: BookingForCheckout, customerEmail: string) {
-  const stripe = getStripe()
+  const stripe = await getStripe()
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 

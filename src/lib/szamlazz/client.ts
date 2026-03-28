@@ -1,5 +1,6 @@
 import { XMLBuilder, XMLParser } from 'fast-xml-parser'
 import type { CreateInvoiceParams, SzamlazzResponse, StornoParams } from './types'
+import { getSetting } from '@/lib/settings'
 
 const SZAMLAZZ_URL = 'https://www.szamlazz.hu/szamla/'
 
@@ -9,10 +10,10 @@ interface SzamlazzConfig {
   downloadPdf?: boolean
 }
 
-function getConfig(): SzamlazzConfig {
-  const agentKey = process.env.SZAMLAZZ_AGENT_KEY
+async function getConfig(): Promise<SzamlazzConfig> {
+  const agentKey = await getSetting<string>('szamlazz_agent_key', 'SZAMLAZZ_AGENT_KEY')
   if (!agentKey) {
-    throw new Error('SZAMLAZZ_AGENT_KEY environment variable is not set')
+    throw new Error('Számlázz.hu agent kulcs nincs beállítva (adatbázis vagy SZAMLAZZ_AGENT_KEY env)')
   }
   return {
     agentKey,
@@ -162,7 +163,7 @@ function sendXml(xml: string): Promise<Response> {
 
 export async function createInvoice(params: CreateInvoiceParams): Promise<SzamlazzResponse> {
   try {
-    const config = getConfig()
+    const config = await getConfig()
     const xml = buildInvoiceXml(params, config)
 
     console.log('Számlázz.hu request XML:', xml)
@@ -187,7 +188,7 @@ export async function createProformaInvoice(params: CreateInvoiceParams): Promis
 
 export async function stornoInvoice(params: StornoParams): Promise<SzamlazzResponse> {
   try {
-    const config = getConfig()
+    const config = await getConfig()
     const xml = buildStornoXml(params, config)
 
     console.log('Számlázz.hu storno request XML:', xml)

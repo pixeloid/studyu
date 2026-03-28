@@ -78,12 +78,19 @@ export default function SettingsPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [gcalConnected, setGcalConnected] = useState(false)
   const [gcalLoading, setGcalLoading] = useState(true)
+  const [apiKeys, setApiKeys] = useState({
+    szamlazz_agent_key: '',
+    stripe_secret_key: '',
+    stripe_webhook_secret: '',
+  })
+  const [apiKeysLoaded, setApiKeysLoaded] = useState(false)
   const supabase = createClient()
   const searchParams = useSearchParams()
 
   useEffect(() => {
     loadSettings()
     loadGcalStatus()
+    loadApiKeys()
 
     // Handle Google Calendar OAuth callback redirect
     const gcalResult = searchParams.get('gcal')
@@ -134,6 +141,41 @@ export default function SettingsPage() {
       // Ignore errors
     }
     setGcalLoading(false)
+  }
+
+  const loadApiKeys = async () => {
+    const keys = ['szamlazz_agent_key', 'stripe_secret_key', 'stripe_webhook_secret']
+    const { data } = await supabase
+      .from('settings')
+      .select('key, value')
+      .in('key', keys)
+
+    if (data) {
+      const loaded = { ...apiKeys }
+      data.forEach((item) => {
+        if (item.key in loaded) {
+          loaded[item.key as keyof typeof loaded] = (item.value as string) || ''
+        }
+      })
+      setApiKeys(loaded)
+    }
+    setApiKeysLoaded(true)
+  }
+
+  const saveApiKey = async (key: string, value: string) => {
+    setSaving(true)
+    setMessage(null)
+
+    const { error } = await supabase
+      .from('settings')
+      .upsert({ key, value: value as unknown as Json, updated_at: new Date().toISOString() })
+
+    if (error) {
+      setMessage({ type: 'error', text: `Hiba a kulcs mentésekor: ${error.message}` })
+    } else {
+      setMessage({ type: 'success', text: 'API kulcs sikeresen mentve!' })
+    }
+    setSaving(false)
   }
 
   const connectGcal = async () => {
@@ -568,11 +610,7 @@ export default function SettingsPage() {
 
           {settings.online_payment.enabled && (
             <div className="p-4 border-[2px] border-gray-200 bg-gray-50 text-sm text-gray-600">
-              <p className="mb-2">A Stripe fizetés működéséhez szükséges környezeti változók:</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li><code className="text-xs bg-gray-200 px-1">STRIPE_SECRET_KEY</code></li>
-                <li><code className="text-xs bg-gray-200 px-1">STRIPE_WEBHOOK_SECRET</code></li>
-              </ul>
+              <p>A Stripe kulcsokat az alábbi &quot;API kulcsok&quot; szekcióban tudod megadni.</p>
             </div>
           )}
 
@@ -585,6 +623,89 @@ export default function SettingsPage() {
               {saving ? 'Mentés...' : 'Mentés'}
             </BauhausButton>
           </div>
+        </BauhausCard>
+
+        {/* API Keys */}
+        <BauhausCard padding="lg" accentColor="red" hasCornerAccent accentPosition="top-left">
+          <h2 className="font-bugrino text-lg uppercase tracking-wider mb-2">API kulcsok</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Számlázz.hu és Stripe integrációs kulcsok. Ezek az adatbázisban kerülnek tárolásra.
+          </p>
+
+          {!apiKeysLoaded ? (
+            <div className="animate-pulse h-32 bg-gray-100 border-[3px] border-gray-200" />
+          ) : (
+            <div className="space-y-6">
+              {/* Számlázz.hu */}
+              <div>
+                <label className="block font-bugrino text-xs uppercase tracking-wider mb-2">
+                  Számlázz.hu Agent kulcs
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={apiKeys.szamlazz_agent_key}
+                    onChange={(e) => setApiKeys({ ...apiKeys, szamlazz_agent_key: e.target.value })}
+                    placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                    className="flex-1 px-4 py-3 border-[3px] border-black bg-white text-sm focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow font-mono"
+                  />
+                  <BauhausButton
+                    onClick={() => saveApiKey('szamlazz_agent_key', apiKeys.szamlazz_agent_key)}
+                    disabled={saving}
+                    variant="primary"
+                  >
+                    Mentés
+                  </BauhausButton>
+                </div>
+              </div>
+
+              {/* Stripe Secret Key */}
+              <div>
+                <label className="block font-bugrino text-xs uppercase tracking-wider mb-2">
+                  Stripe titkos kulcs
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={apiKeys.stripe_secret_key}
+                    onChange={(e) => setApiKeys({ ...apiKeys, stripe_secret_key: e.target.value })}
+                    placeholder="sk_live_..."
+                    className="flex-1 px-4 py-3 border-[3px] border-black bg-white text-sm focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow font-mono"
+                  />
+                  <BauhausButton
+                    onClick={() => saveApiKey('stripe_secret_key', apiKeys.stripe_secret_key)}
+                    disabled={saving}
+                    variant="primary"
+                  >
+                    Mentés
+                  </BauhausButton>
+                </div>
+              </div>
+
+              {/* Stripe Webhook Secret */}
+              <div>
+                <label className="block font-bugrino text-xs uppercase tracking-wider mb-2">
+                  Stripe webhook secret
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={apiKeys.stripe_webhook_secret}
+                    onChange={(e) => setApiKeys({ ...apiKeys, stripe_webhook_secret: e.target.value })}
+                    placeholder="whsec_..."
+                    className="flex-1 px-4 py-3 border-[3px] border-black bg-white text-sm focus:shadow-[4px_4px_0_var(--bauhaus-black)] outline-none transition-shadow font-mono"
+                  />
+                  <BauhausButton
+                    onClick={() => saveApiKey('stripe_webhook_secret', apiKeys.stripe_webhook_secret)}
+                    disabled={saving}
+                    variant="primary"
+                  >
+                    Mentés
+                  </BauhausButton>
+                </div>
+              </div>
+            </div>
+          )}
         </BauhausCard>
 
         {/* Google Calendar */}

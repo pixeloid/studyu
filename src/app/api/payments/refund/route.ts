@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Stripe refund
-    const stripe = getStripe()
+    const stripe = await getStripe()
     const refundParams: { payment_intent: string; amount?: number } = {
       payment_intent: booking.stripe_payment_intent_id,
     }
