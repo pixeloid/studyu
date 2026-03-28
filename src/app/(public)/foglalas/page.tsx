@@ -81,13 +81,47 @@ export default function BookingPage() {
         supabase.from('settings').select('*').eq('key', 'hourly_booking').single(),
       ])
 
-      if (slotsRes.data) setTimeSlots(slotsRes.data)
-      if (extrasRes.data) setExtras(extrasRes.data)
+      const loadedSlots = slotsRes.data || []
+      const loadedExtras = extrasRes.data || []
+      if (loadedSlots.length) setTimeSlots(loadedSlots)
+      if (loadedExtras.length) setExtras(loadedExtras)
       if (hoursRes.data) setOpeningHours(hoursRes.data)
       if (specialRes.data) setSpecialDates(specialRes.data)
       if (bookingsRes.data) setExistingBookings(bookingsRes.data)
       if (settingsRes.data?.value) {
         setHourlySettings(settingsRes.data.value as unknown as HourlyBookingSettings)
+      }
+
+      // Restore pending booking state after data is loaded
+      try {
+        const saved = sessionStorage.getItem('pendingBooking')
+        if (saved) {
+          const state = JSON.parse(saved)
+          sessionStorage.removeItem('pendingBooking')
+
+          if (state.selectedDate) setSelectedDate(new Date(state.selectedDate))
+          if (state.slotMode) setSlotMode(state.slotMode)
+          if (state.selectedSlotId) {
+            const slot = loadedSlots.find((s: TimeSlot) => s.id === state.selectedSlotId)
+            if (slot) setSelectedSlot(slot)
+          }
+          if (state.hourlyStart) setHourlyStart(state.hourlyStart)
+          if (state.hourlyEnd) setHourlyEnd(state.hourlyEnd)
+          if (state.hourlyDuration) setHourlyDuration(state.hourlyDuration)
+          if (state.selectedExtras?.length && loadedExtras.length) {
+            const restored = state.selectedExtras
+              .map((se: { extraId: string; quantity: number }) => {
+                const extra = loadedExtras.find((e: Extra) => e.id === se.extraId)
+                return extra ? { extra, quantity: se.quantity } : null
+              })
+              .filter(Boolean)
+            setSelectedExtras(restored)
+          }
+          if (state.userNotes) setUserNotes(state.userNotes)
+          setStep('confirm')
+        }
+      } catch {
+        // Ignore restore errors
       }
     } catch (err) {
       console.error('Error loading booking data:', err)
@@ -166,6 +200,21 @@ export default function BookingPage() {
     return selectedSlot?.base_price || 0
   }
 
+  const saveBookingState = () => {
+    const state = {
+      selectedDate: selectedDate?.toISOString(),
+      selectedSlotId: selectedSlot?.id,
+      slotMode,
+      hourlyStart,
+      hourlyEnd,
+      hourlyDuration,
+      selectedExtras: selectedExtras.map(e => ({ extraId: e.extra.id, quantity: e.quantity })),
+      userNotes,
+      step,
+    }
+    sessionStorage.setItem('pendingBooking', JSON.stringify(state))
+  }
+
   const handleSubmit = async () => {
     if (!selectedDate || !canProceedFromSlot) return
     setSubmitting(true)
@@ -174,6 +223,7 @@ export default function BookingPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
+        saveBookingState()
         router.push('/auth/login?next=/foglalas')
         return
       }

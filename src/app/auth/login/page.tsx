@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { BauhausInput } from '@/components/ui/bauhaus/BauhausInput'
@@ -10,12 +10,36 @@ import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { StudyULogo } from '@/components/ui/StudyULogo'
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
+  )
+}
+
+function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  const nextUrl = searchParams.get('next')
+
+  const getRedirectUrl = async () => {
+    if (nextUrl) return nextUrl
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+      if (profile?.role === 'admin') return '/admin'
+    }
+    return '/dashboard'
+  }
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,23 +57,8 @@ export default function LoginPage() {
       return
     }
 
-    // Check if user is admin and redirect accordingly
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      if (profile?.role === 'admin') {
-        router.push('/admin')
-        router.refresh()
-        return
-      }
-    }
-
-    router.push('/dashboard')
+    const redirect = await getRedirectUrl()
+    router.push(redirect)
     router.refresh()
   }
 
@@ -57,10 +66,14 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
 
+    const callbackUrl = nextUrl
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`
+      : `${window.location.origin}/auth/callback`
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     })
 
@@ -105,12 +118,12 @@ export default function LoginPage() {
 
         <BauhausCard padding="lg" accentColor="blue" hasCornerAccent accentPosition="top-right">
           <h2 className="text-bauhaus-subheading text-center mb-2">
-            Bejelentkezés
+            Üdv újra!
           </h2>
           <p className="text-center text-gray-600 text-sm mb-8">
-            Még nincs fiókod?{' '}
-            <Link href="/auth/register" className="text-[var(--bauhaus-blue)] hover:underline font-medium">
-              Regisztrálj
+            Jelentkezz be a fiókodba.{' '}
+            <Link href={`/auth/register${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-blue)] hover:underline font-medium">
+              Még nincs fiókod?
             </Link>
           </p>
 

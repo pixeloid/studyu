@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { BauhausInput } from '@/components/ui/bauhaus/BauhausInput'
@@ -10,6 +10,14 @@ import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { StudyULogo } from '@/components/ui/StudyULogo'
 
 export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterContent />
+    </Suspense>
+  )
+}
+
+function RegisterContent() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,7 +26,9 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+  const nextUrl = searchParams.get('next')
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,7 +53,9 @@ export default function RegisterPage() {
         data: {
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: nextUrl
+          ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`
+          : `${window.location.origin}/auth/callback`,
       },
     })
 
@@ -61,10 +73,14 @@ export default function RegisterPage() {
     setError(null)
     setLoading(true)
 
+    const callbackUrl = nextUrl
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`
+      : `${window.location.origin}/auth/callback`
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     })
 
@@ -126,27 +142,24 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-red)' }}>
       {/* Geometric background decorations */}
       <div
-        className="absolute bottom-0 left-0 w-96 h-96 -translate-x-1/2 translate-y-1/2 rounded-full opacity-10"
+        className="absolute top-0 left-0 w-96 h-96 -translate-x-1/3 -translate-y-1/3 rounded-full opacity-20"
         style={{ backgroundColor: 'var(--bauhaus-yellow)' }}
       />
       <div
-        className="absolute top-0 right-0 w-64 h-64 translate-x-1/3 -translate-y-1/3 opacity-10"
-        style={{
-          backgroundColor: 'var(--bauhaus-red)',
-          transform: 'rotate(45deg)',
-        }}
+        className="absolute bottom-0 right-0 w-80 h-80 translate-x-1/4 translate-y-1/4 opacity-15"
+        style={{ backgroundColor: 'var(--bauhaus-black)' }}
       />
       <div
-        className="absolute bottom-1/4 right-10 opacity-20 hidden lg:block"
+        className="absolute top-1/3 right-20 opacity-20 hidden lg:block"
         style={{
           width: 0,
           height: 0,
-          borderLeft: '60px solid transparent',
-          borderRight: '60px solid transparent',
-          borderBottom: '104px solid var(--bauhaus-blue)',
+          borderLeft: '80px solid transparent',
+          borderRight: '80px solid transparent',
+          borderBottom: '140px solid var(--bauhaus-yellow)',
         }}
       />
 
@@ -154,18 +167,18 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center">
-            <StudyULogo className="h-10" />
+            <StudyULogo className="h-10" color="#FFFFFF" />
           </Link>
         </div>
 
         <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="top-left">
           <h2 className="text-bauhaus-subheading text-center mb-2">
-            Regisztráció
+            Csatlakozz!
           </h2>
           <p className="text-center text-gray-600 text-sm mb-8">
-            Már van fiókod?{' '}
-            <Link href="/auth/login" className="text-[var(--bauhaus-blue)] hover:underline font-medium">
-              Jelentkezz be
+            Hozd létre a fiókodat és foglalj időpontot.{' '}
+            <Link href={`/auth/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-red)] hover:underline font-medium">
+              Már van fiókod?
             </Link>
           </p>
 
@@ -294,11 +307,11 @@ export default function RegisterPage() {
 
             <BauhausButton
               type="submit"
-              variant="accent"
+              variant="danger"
               fullWidth
               disabled={loading}
             >
-              {loading ? 'Regisztráció...' : 'Regisztráció'}
+              {loading ? 'Regisztráció...' : 'Fiók létrehozása'}
             </BauhausButton>
           </form>
         </BauhausCard>
