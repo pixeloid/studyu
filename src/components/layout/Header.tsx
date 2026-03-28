@@ -6,9 +6,9 @@ import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { StudyULogo } from '@/components/ui/StudyULogo'
 
 const navigation = [
-  { name: 'Bemutatkozás', href: '/bemutatkozas' },
-  { name: 'Galéria', href: '/galeria' },
-  { name: 'Kapcsolat', href: '/kapcsolat' },
+  { name: 'Bemutatkozás', href: '/bemutatkozas', external: false },
+  { name: 'Galéria', href: 'https://www.instagram.com/studyu_bp/', external: true },
+  { name: 'Kapcsolat', href: '/kapcsolat', external: false },
 ]
 
 export function Header() {
@@ -49,16 +49,29 @@ export function Header() {
 
         {/* Desktop navigation */}
         <div className="hidden lg:flex lg:gap-x-8">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors relative group"
-            >
-              {item.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-[3px] bg-[var(--bauhaus-blue)] transition-all group-hover:w-full" />
-            </Link>
-          ))}
+          {navigation.map((item) =>
+            item.external ? (
+              <a
+                key={item.name}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors relative group"
+              >
+                {item.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-[3px] bg-[var(--bauhaus-blue)] transition-all group-hover:w-full" />
+              </a>
+            ) : (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors relative group"
+              >
+                {item.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-[3px] bg-[var(--bauhaus-blue)] transition-all group-hover:w-full" />
+              </Link>
+            )
+          )}
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
@@ -82,16 +95,29 @@ export function Header() {
           className="lg:hidden border-t-[3px] border-black bg-white"
         >
           <div className="px-6 py-6 space-y-4">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2 border-b-[2px] border-gray-200 hover:border-[var(--bauhaus-blue)] transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navigation.map((item) =>
+              item.external ? (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2 border-b-[2px] border-gray-200 hover:border-[var(--bauhaus-blue)] transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </a>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2 border-b-[2px] border-gray-200 hover:border-[var(--bauhaus-blue)] transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
             <div className="pt-4 space-y-4 border-t-[3px] border-black">
               <Link
                 href="/auth/login"

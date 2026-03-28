@@ -105,6 +105,15 @@ export function ExtrasSelector({
                   )}
                 </button>
 
+                {/* Image */}
+                {extra.image_url && (
+                  <img
+                    src={extra.image_url}
+                    alt={extra.name}
+                    className="w-20 h-20 object-cover border-[2px] border-black flex-shrink-0"
+                  />
+                )}
+
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <p className="font-bugrino uppercase tracking-wide">{extra.name}</p>

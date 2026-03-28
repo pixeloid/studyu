@@ -13,6 +13,7 @@ interface Extra {
   price_type: string
   is_active: boolean | null
   sort_order: number | null
+  image_url: string | null
 }
 
 const priceTypes = [
@@ -46,6 +47,41 @@ export default function ExtrasPage() {
     setLoading(false)
   }
 
+  const uploadImage = async (extraId: string, file: File): Promise<string | null> => {
+    const ext = file.name.split('.').pop()
+    const path = `${extraId}/${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('extras').upload(path, file)
+    if (error) return null
+    const { data } = supabase.storage.from('extras').getPublicUrl(path)
+    return data.publicUrl
+  }
+
+  const removeImage = async (extra: Extra) => {
+    if (!extra.image_url) return
+    // Extract path from URL
+    const url = new URL(extra.image_url)
+    const pathParts = url.pathname.split('/storage/v1/object/public/extras/')
+    if (pathParts[1]) {
+      await supabase.storage.from('extras').remove([pathParts[1]])
+    }
+    await supabase.from('extras').update({ image_url: null }).eq('id', extra.id)
+    handleChange(extra.id, 'image_url', null)
+    setMessage({ type: 'success', text: 'Kép eltávolítva' })
+  }
+
+  const handleImageUpload = async (extraId: string, file: File) => {
+    setSaving(true)
+    const imageUrl = await uploadImage(extraId, file)
+    if (imageUrl) {
+      await supabase.from('extras').update({ image_url: imageUrl }).eq('id', extraId)
+      handleChange(extraId, 'image_url', imageUrl)
+      setMessage({ type: 'success', text: 'Kép feltöltve!' })
+    } else {
+      setMessage({ type: 'error', text: 'Hiba a kép feltöltésekor' })
+    }
+    setSaving(false)
+  }
+
   const updateExtra = async (extra: Extra) => {
     setSaving(true)
     setMessage(null)
@@ -59,6 +95,7 @@ export default function ExtrasPage() {
         price_type: extra.price_type,
         is_active: extra.is_active,
         sort_order: extra.sort_order,
+        image_url: extra.image_url,
       })
       .eq('id', extra.id)
 
@@ -178,6 +215,9 @@ export default function ExtrasPage() {
             <thead style={{ backgroundColor: 'var(--bauhaus-yellow)' }}>
               <tr className="border-b-[3px] border-black">
                 <th className="px-6 py-4 text-left font-bugrino text-xs uppercase tracking-wider">
+                  Kép
+                </th>
+                <th className="px-6 py-4 text-left font-bugrino text-xs uppercase tracking-wider">
                   Név
                 </th>
                 <th className="px-6 py-4 text-left font-bugrino text-xs uppercase tracking-wider">
@@ -200,6 +240,9 @@ export default function ExtrasPage() {
             <tbody>
               {newExtra && (
                 <tr className="border-b-[2px] border-black" style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)' }}>
+                  <td className="px-6 py-4">
+                    <span className="text-xs text-gray-400">Mentés után</span>
+                  </td>
                   <td className="px-6 py-4">
                     <input
                       type="text"
@@ -265,6 +308,40 @@ export default function ExtrasPage() {
                     !(extra.is_active ?? true) ? 'bg-gray-100 opacity-60' : index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
                   }`}
                 >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      {extra.image_url ? (
+                        <div className="relative">
+                          <img src={extra.image_url} alt={extra.name} className="w-12 h-12 object-cover border-[2px] border-black" />
+                          {editingId === extra.id && (
+                            <button
+                              onClick={() => removeImage(extra)}
+                              className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--bauhaus-red)] text-white text-xs flex items-center justify-center border-[1px] border-black"
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      ) : editingId === extra.id ? (
+                        <label className="w-12 h-12 border-[2px] border-dashed border-gray-400 flex items-center justify-center cursor-pointer hover:border-black transition-colors">
+                          <span className="text-gray-400 text-lg">+</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (file) handleImageUpload(extra.id, file)
+                            }}
+                          />
+                        </label>
+                      ) : (
+                        <div className="w-12 h-12 border-[2px] border-dashed border-gray-200 flex items-center justify-center">
+                          <span className="text-gray-300 text-xs">—</span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4">
                     {editingId === extra.id ? (
                       <input
