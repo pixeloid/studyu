@@ -3,10 +3,10 @@ import { StudyULogo } from '@/components/ui/StudyULogo'
 
 const navigation = {
   main: [
-    { name: 'Bemutatkozás', href: '/bemutatkozas' },
-    { name: 'Galéria', href: '/galeria' },
-    { name: 'Kapcsolat', href: '/kapcsolat' },
-    { name: 'Foglalás', href: '/foglalas' },
+    { name: 'Bemutatkozás', href: '/bemutatkozas', external: false },
+    { name: 'Galéria', href: 'https://www.instagram.com/studyu_bp/', external: true },
+    { name: 'Kapcsolat', href: '/kapcsolat', external: false },
+    { name: 'Foglalás', href: '/foglalas', external: false },
   ],
   legal: [
     { name: 'Adatvédelem', href: '/adatvedelem' },
@@ -39,12 +39,23 @@ export function Footer() {
               <ul className="space-y-2">
                 {navigation.main.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-gray-300 hover:text-white transition-colors text-sm"
-                    >
-                      {item.name}
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 hover:text-white transition-colors text-sm"
+                      >
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className="text-gray-300 hover:text-white transition-colors text-sm"
+                      >
+                        {item.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -105,7 +116,9 @@ export function Footer() {
             </svg>
           </a>
           <a
-            href="#"
+            href="https://www.instagram.com/studyu_bp/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="w-10 h-10 flex items-center justify-center border-[2px] border-white text-white hover:bg-white hover:text-black transition-colors"
             aria-label="Instagram"
           >
