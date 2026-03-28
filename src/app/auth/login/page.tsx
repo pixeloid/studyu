@@ -84,48 +84,42 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-6 lg:py-8 relative overflow-hidden">
-      {/* Geometric background decorations */}
-      <div
-        className="absolute top-0 left-0 w-96 h-96 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-10"
-        style={{ backgroundColor: 'var(--bauhaus-blue)' }}
-      />
-      <div
-        className="absolute bottom-0 right-0 w-64 h-64 translate-x-1/3 translate-y-1/3 opacity-10"
-        style={{
-          backgroundColor: 'var(--bauhaus-yellow)',
-          transform: 'rotate(45deg)',
-        }}
-      />
-      <div
-        className="absolute top-1/4 right-10 opacity-20 hidden lg:block"
-        style={{
-          width: 0,
-          height: 0,
-          borderLeft: '60px solid transparent',
-          borderRight: '60px solid transparent',
-          borderBottom: '104px solid var(--bauhaus-red)',
-        }}
-      />
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
-        <div className="text-center mb-4">
-          <Link href="/" className="inline-flex items-center">
-            <StudyULogo className="h-8" />
-          </Link>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-6 lg:py-0">
+      <div className="w-full max-w-md lg:max-w-5xl lg:grid lg:grid-cols-2 lg:min-h-screen">
+        {/* Left: Branding (desktop only) */}
+        <div className="hidden lg:flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-blue)' }}>
+          <div className="absolute -top-20 -left-20 w-64 h-64 rounded-full opacity-20" style={{ backgroundColor: 'var(--bauhaus-yellow)' }} />
+          <div className="absolute -bottom-10 -right-10 w-48 h-48 opacity-20" style={{ backgroundColor: 'var(--bauhaus-red)', transform: 'rotate(45deg)' }} />
+          <div className="absolute bottom-20 left-20 opacity-20" style={{ width: 0, height: 0, borderLeft: '60px solid transparent', borderRight: '60px solid transparent', borderBottom: '104px solid var(--bauhaus-white)' }} />
+          <div className="relative z-10 text-center px-12">
+            <StudyULogo className="h-12 mx-auto mb-8" color="#FFFFFF" />
+            <h2 className="font-bugrino text-3xl uppercase tracking-wider text-white mb-4">Üdv újra!</h2>
+            <p className="text-white/70 text-lg">Jelentkezz be és foglalj időpontot a stúdióba.</p>
+          </div>
         </div>
 
-        <BauhausCard padding="md" accentColor="blue" hasCornerAccent accentPosition="top-right">
-          <h2 className="font-bugrino text-xl uppercase tracking-wider text-center mb-1">
-            Üdv újra!
-          </h2>
-          <p className="text-center text-gray-600 text-sm mb-4">
-            Jelentkezz be a fiókodba.{' '}
-            <Link href={`/auth/register${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-blue)] hover:underline font-medium">
-              Még nincs fiókod?
+        {/* Right: Form */}
+        <div className="flex flex-col items-center justify-center lg:px-12 lg:py-8">
+          {/* Logo (mobile only) */}
+          <div className="text-center mb-4 lg:hidden">
+            <Link href="/" className="inline-flex items-center">
+              <StudyULogo className="h-8" />
             </Link>
-          </p>
+          </div>
+
+          <div className="w-full max-w-md">
+            <BauhausCard padding="md" accentColor="blue" hasCornerAccent accentPosition="top-right">
+              <h2 className="font-bugrino text-xl uppercase tracking-wider text-center mb-1 lg:hidden">
+                Üdv újra!
+              </h2>
+              <h2 className="hidden lg:block font-bugrino text-xl uppercase tracking-wider text-center mb-1">
+                Bejelentkezés
+              </h2>
+              <p className="text-center text-gray-600 text-sm mb-4">
+                <Link href={`/auth/register${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-blue)] hover:underline font-medium">
+                  Még nincs fiókod? Regisztrálj
+                </Link>
+              </p>
 
           {error && (
             <div
@@ -244,6 +238,8 @@ function LoginContent() {
             </BauhausButton>
           </form>
         </BauhausCard>
+          </div>
+        </div>
       </div>
     </div>
   )
