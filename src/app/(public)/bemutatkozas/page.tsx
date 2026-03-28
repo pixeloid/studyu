@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <div className="bg-white">
       {/* Hero section */}
-      <div className="relative overflow-hidden py-24 sm:py-32">
+      <div className="relative overflow-hidden py-12 sm:py-24 lg:py-32">
         {/* Geometric decorations */}
         <div
           className="absolute top-20 right-10 w-32 h-32 rounded-full opacity-20"

@@ -20,7 +20,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
+      <section className="py-12 sm:py-24 bg-white relative overflow-hidden">
         {/* Geometric background decoration */}
         <div
           className="absolute top-20 -right-20 w-64 h-64 rounded-full opacity-5"
@@ -34,8 +34,8 @@ export default function HomePage() {
           }}
         />
 
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
-          <div className="text-center mb-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center mb-8 sm:mb-16">
             <h2 className="text-bauhaus-heading text-black mb-4">
               Miért válassz minket?
             </h2>
@@ -49,7 +49,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
               icon={<CameraIcon />}
               title="Modern felszerelés"
@@ -92,7 +92,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section
-        className="py-24 relative overflow-hidden"
+        className="py-12 sm:py-24 relative overflow-hidden"
         style={{ backgroundColor: 'var(--bauhaus-black)' }}
       >
         {/* Geometric decorations */}
@@ -115,12 +115,12 @@ export default function HomePage() {
           }}
         />
 
-        <div className="mx-auto max-w-7xl px-6 lg:px-8 relative">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-bauhaus-heading text-white mb-6">
+            <h2 className="text-bauhaus-heading text-white mb-4 sm:mb-6">
               Készen állsz a foglalásra?
             </h2>
-            <p className="text-lg text-gray-300 mb-10">
+            <p className="text-base sm:text-lg text-gray-300 mb-6 sm:mb-10">
               Válaszd ki a megfelelő időpontot és foglalj online néhány kattintással.
             </p>
             <Link href="/foglalas">
@@ -158,18 +158,22 @@ function FeatureCard({
       accentColor={accentColor}
       hasCornerAccent
       accentPosition="top-right"
-      padding="lg"
+      padding="md"
     >
-      <div
-        className="w-14 h-14 rounded-full border-[3px] border-black flex items-center justify-center mb-4"
-        style={{ backgroundColor: iconBgColors[accentColor] }}
-      >
-        <div className={accentColor === 'yellow' ? 'text-black' : 'text-white'}>
-          {icon}
+      <div className="flex items-start gap-3 sm:block">
+        <div
+          className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-[2px] sm:border-[3px] border-black flex items-center justify-center flex-shrink-0 sm:mb-4"
+          style={{ backgroundColor: iconBgColors[accentColor] }}
+        >
+          <div className={accentColor === 'yellow' ? 'text-black' : 'text-white'}>
+            {icon}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bugrino text-base sm:text-lg uppercase tracking-wide mb-1 sm:mb-2">{title}</h3>
+          <p className="text-gray-600 text-sm">{description}</p>
         </div>
       </div>
-      <h3 className="font-bugrino text-lg uppercase tracking-wide mb-2">{title}</h3>
-      <p className="text-gray-600 text-sm">{description}</p>
     </BauhausCard>
   )
 }

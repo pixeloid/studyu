@@ -11,7 +11,7 @@ export default function ContactPage() {
   return (
     <div className="bg-white">
       {/* Hero section */}
-      <div className="relative overflow-hidden py-24 sm:py-32">
+      <div className="relative overflow-hidden py-12 sm:py-24 lg:py-32">
         {/* Geometric decorations */}
         <div
           className="absolute top-20 right-20 w-28 h-28 rounded-full opacity-20"
@@ -40,7 +40,7 @@ export default function ContactPage() {
 
       <div className="mx-auto max-w-7xl px-6 pb-24 lg:px-8">
         <div className="mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:gap-12 lg:grid-cols-2">
             {/* Contact info */}
             <div>
               <h2 className="font-bugrino text-2xl uppercase tracking-wider mb-6">Elérhetőségeink</h2>

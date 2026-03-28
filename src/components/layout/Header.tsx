@@ -28,7 +28,7 @@ export function Header() {
         <div className="flex lg:hidden">
           <button
             type="button"
-            className="relative w-10 h-10 flex items-center justify-center border-[3px] border-black bg-white"
+            className="relative w-11 h-11 flex items-center justify-center border-[3px] border-black bg-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             style={{ boxShadow: '3px 3px 0 var(--bauhaus-black)' }}
           >
@@ -102,7 +102,7 @@ export function Header() {
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2 border-b-[2px] border-gray-200 hover:border-[var(--bauhaus-blue)] transition-colors"
+                  className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-3 border-b-[2px] border-gray-200 hover:border-[var(--bauhaus-blue)] transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}

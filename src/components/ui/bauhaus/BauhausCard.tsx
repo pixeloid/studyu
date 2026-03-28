@@ -21,17 +21,17 @@ const accentColorMap: Record<Exclude<AccentColor, 'none'>, string> = {
 };
 
 const accentPositionStyles: Record<AccentPosition, string> = {
-  'top-left': 'top-[-20px] left-[-20px]',
-  'top-right': 'top-[-20px] right-[-20px]',
-  'bottom-left': 'bottom-[-20px] left-[-20px]',
-  'bottom-right': 'bottom-[-20px] right-[-20px]',
+  'top-left': 'top-[-12px] left-[-12px] sm:top-[-20px] sm:left-[-20px]',
+  'top-right': 'top-[-12px] right-[-12px] sm:top-[-20px] sm:right-[-20px]',
+  'bottom-left': 'bottom-[-12px] left-[-12px] sm:bottom-[-20px] sm:left-[-20px]',
+  'bottom-right': 'bottom-[-12px] right-[-12px] sm:bottom-[-20px] sm:right-[-20px]',
 };
 
 const paddingStyles = {
   none: '',
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
+  sm: 'p-3 sm:p-4',
+  md: 'p-4 sm:p-6',
+  lg: 'p-5 sm:p-8',
 };
 
 export function BauhausCard({
@@ -46,18 +46,18 @@ export function BauhausCard({
     <div
       className={`
         relative bg-white
-        border-[3px] border-black
+        border-[2px] sm:border-[3px] border-black
         ${paddingStyles[padding]}
         ${className}
       `}
       style={{
-        boxShadow: '8px 8px 0 var(--bauhaus-black)',
+        boxShadow: '4px 4px 0 var(--bauhaus-black)',
       }}
     >
       {hasCornerAccent && accentColor !== 'none' && (
         <div
           className={`
-            absolute w-10 h-10 rounded-full z-10
+            absolute w-6 h-6 sm:w-10 sm:h-10 rounded-full z-10
             ${accentPositionStyles[accentPosition]}
           `}
           style={{
