@@ -142,7 +142,7 @@ function RegisterContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-red)' }}>
+    <div className="min-h-screen flex items-center justify-center px-4 py-6 lg:py-8 relative overflow-hidden" style={{ backgroundColor: 'var(--bauhaus-red)' }}>
       {/* Geometric background decorations */}
       <div
         className="absolute top-0 left-0 w-96 h-96 -translate-x-1/3 -translate-y-1/3 rounded-full opacity-20"
@@ -165,17 +165,17 @@ function RegisterContent() {
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <Link href="/" className="inline-flex items-center">
-            <StudyULogo className="h-10" color="#FFFFFF" />
+            <StudyULogo className="h-8" color="#FFFFFF" />
           </Link>
         </div>
 
-        <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="top-left">
-          <h2 className="text-bauhaus-subheading text-center mb-2">
+        <BauhausCard padding="md" accentColor="yellow" hasCornerAccent accentPosition="top-left">
+          <h2 className="font-bugrino text-xl uppercase tracking-wider text-center mb-1">
             Csatlakozz!
           </h2>
-          <p className="text-center text-gray-600 text-sm mb-8">
+          <p className="text-center text-gray-600 text-sm mb-4">
             Hozd létre a fiókodat és foglalj időpontot.{' '}
             <Link href={`/auth/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`} className="text-[var(--bauhaus-red)] hover:underline font-medium">
               Már van fiókod?
@@ -192,7 +192,7 @@ function RegisterContent() {
           )}
 
           {/* OAuth buttons */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-2 mb-4">
             <button
               onClick={() => handleOAuthLogin('google')}
               disabled={loading}
@@ -225,7 +225,7 @@ function RegisterContent() {
           </div>
 
           {/* Divider */}
-          <div className="relative my-8">
+          <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t-[2px] border-gray-200" />
             </div>
@@ -237,7 +237,7 @@ function RegisterContent() {
           </div>
 
           {/* Registration form */}
-          <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-3">
             <BauhausInput
               label="Teljes név"
               type="text"
