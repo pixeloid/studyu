@@ -15,13 +15,14 @@ interface SelectedExtra {
   quantity: number
 }
 
-type BookingStep = 'date' | 'slot' | 'extras' | 'confirm'
+type BookingStep = 'date' | 'slot' | 'extras' | 'catering' | 'confirm'
 type SlotMode = 'package' | 'hourly'
 
 const steps = [
   { key: 'date', label: 'Dátum' },
   { key: 'slot', label: 'Időpont' },
   { key: 'extras', label: 'Extrák' },
+  { key: 'catering', label: 'Catering' },
   { key: 'confirm', label: 'Véglegesítés' },
 ]
 
@@ -472,7 +473,38 @@ export default function BookingPage() {
                   </button>
                 </div>
                 <ExtrasSelector
-                  extras={extras}
+                  extras={extras.filter(e => (e.category || 'extra') === 'extra')}
+                  selectedExtras={selectedExtras}
+                  onExtrasChange={setSelectedExtras}
+                  durationHours={getDurationHours()}
+                />
+              </BauhausCard>
+
+              <BauhausButton variant="primary" fullWidth onClick={() => setStep('catering')}>
+                Tovább
+              </BauhausButton>
+            </div>
+          )}
+
+          {step === 'catering' && selectedDate && canProceedFromSlot && (
+            <div className="space-y-6">
+              <BauhausCard padding="lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="font-bugrino text-xl uppercase tracking-wider">
+                    Catering
+                  </h2>
+                  <button
+                    onClick={() => setStep('extras')}
+                    className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
+                  >
+                    Vissza
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  Szeretnél a fotózáshoz étkezést is rendelni? Válaszd ki a neked megfelelő csomagot!
+                </p>
+                <ExtrasSelector
+                  extras={extras.filter(e => e.category === 'catering')}
                   selectedExtras={selectedExtras}
                   onExtrasChange={setSelectedExtras}
                   durationHours={getDurationHours()}
@@ -493,7 +525,7 @@ export default function BookingPage() {
                     Véglegesítés
                   </h2>
                   <button
-                    onClick={() => setStep('extras')}
+                    onClick={() => setStep('catering')}
                     className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
                   >
                     Vissza
