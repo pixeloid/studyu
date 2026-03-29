@@ -14,6 +14,7 @@ interface Extra {
   is_active: boolean | null
   sort_order: number | null
   image_url: string | null
+  category: string
 }
 
 const priceTypes = [

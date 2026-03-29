@@ -288,6 +288,7 @@ export type Database = {
       }
       extras: {
         Row: {
+          category: string
           created_at: string | null
           description: string | null
           id: string
@@ -299,6 +300,7 @@ export type Database = {
           sort_order: number | null
         }
         Insert: {
+          category?: string
           created_at?: string | null
           description?: string | null
           id?: string
@@ -310,6 +312,7 @@ export type Database = {
           sort_order?: number | null
         }
         Update: {
+          category?: string
           created_at?: string | null
           description?: string | null
           id?: string
