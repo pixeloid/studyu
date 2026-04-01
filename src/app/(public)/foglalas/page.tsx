@@ -59,6 +59,15 @@ export default function BookingPage() {
   const [hourlyDuration, setHourlyDuration] = useState<number>(0)
   const [hourlyPrice, setHourlyPrice] = useState<number>(0)
 
+  // Billing state
+  const [billingName, setBillingName] = useState('')
+  const [billingCompany, setBillingCompany] = useState('')
+  const [billingTaxNumber, setBillingTaxNumber] = useState('')
+  const [billingZip, setBillingZip] = useState('')
+  const [billingCity, setBillingCity] = useState('')
+  const [billingStreet, setBillingStreet] = useState('')
+  const [billingLoaded, setBillingLoaded] = useState(false)
+
   // Settings
   const minDaysAhead = 1
   const maxDaysAhead = 90
@@ -66,6 +75,33 @@ export default function BookingPage() {
   useEffect(() => {
     loadData()
   }, [])
+
+  // Load billing data from profile when entering confirm step
+  useEffect(() => {
+    if (step !== 'confirm' || billingLoaded) return
+    const loadBilling = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, company_name, tax_number, billing_address')
+        .eq('id', user.id)
+        .single()
+      if (profile) {
+        if (!billingName && profile.full_name) setBillingName(profile.full_name)
+        if (!billingCompany && profile.company_name) setBillingCompany(profile.company_name)
+        if (!billingTaxNumber && profile.tax_number) setBillingTaxNumber(profile.tax_number)
+        const addr = profile.billing_address as { zip?: string; city?: string; street?: string } | null
+        if (addr) {
+          if (!billingZip && addr.zip) setBillingZip(addr.zip)
+          if (!billingCity && addr.city) setBillingCity(addr.city)
+          if (!billingStreet && addr.street) setBillingStreet(addr.street)
+        }
+        setBillingLoaded(true)
+      }
+    }
+    loadBilling()
+  }, [step, billingLoaded])
 
   const loadData = async () => {
     setLoading(true)
@@ -119,6 +155,12 @@ export default function BookingPage() {
             setSelectedExtras(restored)
           }
           if (state.userNotes) setUserNotes(state.userNotes)
+          if (state.billingName) setBillingName(state.billingName)
+          if (state.billingCompany) setBillingCompany(state.billingCompany)
+          if (state.billingTaxNumber) setBillingTaxNumber(state.billingTaxNumber)
+          if (state.billingZip) setBillingZip(state.billingZip)
+          if (state.billingCity) setBillingCity(state.billingCity)
+          if (state.billingStreet) setBillingStreet(state.billingStreet)
           setStep('confirm')
         }
       } catch {
@@ -212,12 +254,26 @@ export default function BookingPage() {
       selectedExtras: selectedExtras.map(e => ({ extraId: e.extra.id, quantity: e.quantity })),
       userNotes,
       step,
+      billingName,
+      billingCompany,
+      billingTaxNumber,
+      billingZip,
+      billingCity,
+      billingStreet,
     }
     sessionStorage.setItem('pendingBooking', JSON.stringify(state))
   }
 
   const handleSubmit = async () => {
     if (!selectedDate || !canProceedFromSlot) return
+
+    // Validate billing fields
+    if (!billingName.trim() || !billingCompany.trim() || !billingTaxNumber.trim() ||
+        !billingZip.trim() || !billingCity.trim() || !billingStreet.trim()) {
+      setError('Kérjük, töltsd ki az összes számlázási adatot!')
+      return
+    }
+
     setSubmitting(true)
     setError(null)
 
@@ -228,6 +284,22 @@ export default function BookingPage() {
         router.push('/auth/login?next=/foglalas')
         return
       }
+
+      // Save billing data to profile
+      await supabase
+        .from('profiles')
+        .update({
+          full_name: billingName.trim(),
+          company_name: billingCompany.trim(),
+          tax_number: billingTaxNumber.trim(),
+          billing_address: {
+            zip: billingZip.trim(),
+            city: billingCity.trim(),
+            street: billingStreet.trim(),
+            country: 'Magyarország',
+          },
+        })
+        .eq('id', user.id)
 
       const basePrice = getBasePrice()
       const extrasPrice = selectedExtras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
@@ -519,10 +591,11 @@ export default function BookingPage() {
 
           {step === 'confirm' && selectedDate && canProceedFromSlot && (
             <div className="space-y-6">
-              <BauhausCard padding="lg">
+              {/* Billing data */}
+              <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="top-right">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-bugrino text-xl uppercase tracking-wider">
-                    Véglegesítés
+                    Számlázási adatok
                   </h2>
                   <button
                     onClick={() => setStep('catering')}
@@ -532,6 +605,79 @@ export default function BookingPage() {
                   </button>
                 </div>
 
+                <div className="space-y-4">
+                  <div>
+                    <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Teljes név *</label>
+                    <input
+                      type="text"
+                      value={billingName}
+                      onChange={e => setBillingName(e.target.value)}
+                      placeholder="Kovács János"
+                      className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Cégnév *</label>
+                      <input
+                        type="text"
+                        value={billingCompany}
+                        onChange={e => setBillingCompany(e.target.value)}
+                        placeholder="Példa Kft."
+                        className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Adószám *</label>
+                      <input
+                        type="text"
+                        value={billingTaxNumber}
+                        onChange={e => setBillingTaxNumber(e.target.value)}
+                        placeholder="12345678-1-23"
+                        className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Irányítószám *</label>
+                      <input
+                        type="text"
+                        value={billingZip}
+                        onChange={e => setBillingZip(e.target.value)}
+                        placeholder="1111"
+                        className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Város *</label>
+                      <input
+                        type="text"
+                        value={billingCity}
+                        onChange={e => setBillingCity(e.target.value)}
+                        placeholder="Budapest"
+                        className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block font-bugrino text-xs uppercase tracking-wider mb-1">Utca, házszám *</label>
+                    <input
+                      type="text"
+                      value={billingStreet}
+                      onChange={e => setBillingStreet(e.target.value)}
+                      placeholder="Példa utca 1."
+                      className="w-full px-3 py-2 border-[3px] border-black bg-white text-sm focus:shadow-[3px_3px_0_var(--bauhaus-black)] outline-none transition-shadow"
+                    />
+                  </div>
+                </div>
+              </BauhausCard>
+
+              {/* Notes & info */}
+              <BauhausCard padding="lg">
                 <div className="mb-6">
                   <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
                     Megjegyzés (opcionális)
