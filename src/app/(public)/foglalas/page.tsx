@@ -72,6 +72,103 @@ export default function BookingPage() {
   const minDaysAhead = 1
   const maxDaysAhead = 90
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const autoSubmitBooking = async (userId: string, state: any, loadedSlots: TimeSlot[], loadedExtras: Extra[]) => {
+    try {
+      // Save billing data to profile
+      if (state.billingName) {
+        await supabase
+          .from('profiles')
+          .update({
+            full_name: state.billingName,
+            company_name: state.billingCompany || null,
+            tax_number: state.billingTaxNumber || null,
+            billing_address: state.billingZip ? {
+              zip: state.billingZip,
+              city: state.billingCity,
+              street: state.billingStreet,
+              country: 'Magyarország',
+            } : null,
+          })
+          .eq('id', userId)
+      }
+
+      const bookingDate = format(new Date(state.selectedDate), 'yyyy-MM-dd')
+      const isHourly = state.slotMode === 'hourly' && state.hourlyStart && state.hourlyEnd
+
+      // Resolve extras
+      const restoredExtras = (state.selectedExtras || [])
+        .map((se: { extraId: string; quantity: number }) => {
+          const extra = loadedExtras.find((e: Extra) => e.id === se.extraId)
+          return extra ? { extra, quantity: se.quantity } : null
+        })
+        .filter(Boolean) as SelectedExtra[]
+
+      let basePrice = 0
+      if (isHourly) {
+        basePrice = state.hourlyDuration * (hourlySettings?.hourly_rate || 0)
+      } else {
+        const slot = loadedSlots.find((s: TimeSlot) => s.id === state.selectedSlotId)
+        basePrice = slot?.base_price || 0
+      }
+      const extrasPrice = restoredExtras.reduce((sum: number, e: SelectedExtra) => sum + e.extra.price * e.quantity, 0)
+      const totalPrice = basePrice + extrasPrice
+
+      const insertData = isHourly
+        ? {
+            user_id: userId,
+            booking_date: bookingDate,
+            base_price: basePrice,
+            extras_price: extrasPrice,
+            total_price: totalPrice,
+            user_notes: state.userNotes || null,
+            status: 'pending',
+            booking_type: 'hourly' as const,
+            start_time: state.hourlyStart,
+            end_time: state.hourlyEnd,
+            duration_hours: state.hourlyDuration,
+            time_slot_id: null,
+          }
+        : {
+            user_id: userId,
+            booking_date: bookingDate,
+            base_price: basePrice,
+            extras_price: extrasPrice,
+            total_price: totalPrice,
+            user_notes: state.userNotes || null,
+            status: 'pending',
+            booking_type: 'package' as const,
+            time_slot_id: state.selectedSlotId,
+          }
+
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .insert(insertData)
+        .select()
+        .single()
+
+      if (bookingError) throw bookingError
+
+      if (restoredExtras.length > 0 && booking) {
+        await supabase.from('booking_extras').insert(
+          restoredExtras.map((e: SelectedExtra) => ({
+            booking_id: booking.id,
+            extra_id: e.extra.id,
+            quantity: e.quantity,
+            unit_price: e.extra.price,
+            total_price: e.extra.price * e.quantity,
+          }))
+        )
+      }
+
+      router.push(`/dashboard/foglalasaim/${booking.id}?success=true`)
+    } catch (err) {
+      console.error('Auto-submit error:', err)
+      setError('Hiba történt a foglalás létrehozása közben. Próbáld újra.')
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadData()
   }, [])
@@ -129,13 +226,21 @@ export default function BookingPage() {
         setHourlySettings(settingsRes.data.value as unknown as HourlyBookingSettings)
       }
 
-      // Restore pending booking state after data is loaded
+      // Restore pending booking state and auto-submit if user is now logged in
       try {
         const saved = sessionStorage.getItem('pendingBooking')
         if (saved) {
           const state = JSON.parse(saved)
           sessionStorage.removeItem('pendingBooking')
 
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user && state.selectedDate) {
+            // User just logged in — auto-submit the pending booking
+            await autoSubmitBooking(user.id, state, loadedSlots, loadedExtras)
+            return
+          }
+
+          // Not logged in — just restore state to UI
           if (state.selectedDate) setSelectedDate(new Date(state.selectedDate))
           if (state.slotMode) setSlotMode(state.slotMode)
           if (state.selectedSlotId) {
