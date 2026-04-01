@@ -192,12 +192,12 @@ export default function ProfilePage() {
         <BauhausCard padding="lg" accentColor="yellow" hasCornerAccent accentPosition="top-right">
           <h2 className="font-bugrino text-lg uppercase tracking-wider mb-2">Céges adatok</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Opcionális. Töltsd ki, ha céges számlát szeretnél kapni.
+            Kötelező a számlakiállításhoz.
           </p>
           <div className="space-y-5">
             <div>
               <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                Cégnév
+                Cégnév *
               </label>
               <input
                 type="text"
@@ -210,7 +210,7 @@ export default function ProfilePage() {
 
             <div>
               <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                Adószám
+                Adószám *
               </label>
               <input
                 type="text"
@@ -230,7 +230,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                  Irányítószám
+                  Irányítószám *
                 </label>
                 <input
                   type="text"
@@ -242,7 +242,7 @@ export default function ProfilePage() {
               </div>
               <div className="col-span-2">
                 <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                  Város
+                  Város *
                 </label>
                 <input
                   type="text"
@@ -256,7 +256,7 @@ export default function ProfilePage() {
 
             <div>
               <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                Utca, házszám
+                Utca, házszám *
               </label>
               <input
                 type="text"
@@ -269,7 +269,7 @@ export default function ProfilePage() {
 
             <div>
               <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
-                Ország
+                Ország *
               </label>
               <input
                 type="text"
