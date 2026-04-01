@@ -67,7 +67,8 @@ export async function POST(request: NextRequest) {
       .select(`
         *,
         profiles (id, full_name),
-        time_slots (name, start_time, end_time)
+        time_slots (name, start_time, end_time),
+        booking_extras (quantity, unit_price, total_price, extras (name, category))
       `)
       .eq('id', bookingId)
       .single()
@@ -129,23 +130,73 @@ export async function POST(request: NextRequest) {
         <img src="${siteUrl}/logo-white.svg" alt="StudyU" height="32" style="height: 32px; width: auto;" />
       </div>`
 
+    // Build extras rows for email
+    const bookingExtras = (booking.booking_extras || []) as Array<{
+      quantity: number
+      unit_price: number
+      total_price: number
+      extras: { name: string; category: string } | null
+    }>
+    const extrasItems = bookingExtras.filter(be => be.extras?.category !== 'catering')
+    const cateringItems = bookingExtras.filter(be => be.extras?.category === 'catering')
+
+    const renderItemRows = (items: typeof bookingExtras) =>
+      items.map(be => `
+        <tr>
+          <td style="padding: 4px 0;">
+            <span style="font-size: 14px; color: #333;">${be.extras?.name || 'Tétel'}</span>
+          </td>
+          <td style="padding: 4px 0; text-align: right;">
+            <span style="font-size: 14px; color: #333;">${be.quantity > 1 ? `${be.quantity} × ${be.unit_price.toLocaleString('hu-HU')} Ft = ` : ''}${be.total_price.toLocaleString('hu-HU')} Ft</span>
+          </td>
+        </tr>
+      `).join('')
+
+    const extrasBlock = extrasItems.length > 0 ? `
+      <tr>
+        <td colspan="2" style="padding: 8px 0; border-bottom: 2px solid #eee;">
+          <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Kiegészítők</span>
+          <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin-top: 4px;">
+            ${renderItemRows(extrasItems)}
+          </table>
+        </td>
+      </tr>` : ''
+
+    const cateringBlock = cateringItems.length > 0 ? `
+      <tr>
+        <td colspan="2" style="padding: 8px 0; border-bottom: 2px solid #eee;">
+          <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Catering</span>
+          <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin-top: 4px;">
+            ${renderItemRows(cateringItems)}
+          </table>
+        </td>
+      </tr>` : ''
+
     const bookingDetailsBlock = `
       <div style="border: 3px solid #000; padding: 24px; margin: 24px 0; box-shadow: 6px 6px 0 ${yellowColor};">
         <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
           <tr>
-            <td style="padding: 8px 0; border-bottom: 2px solid #eee;">
+            <td colspan="2" style="padding: 8px 0; border-bottom: 2px solid #eee;">
               <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Dátum</span><br>
               <strong style="font-size: 16px;">${bookingDate}</strong>
             </td>
           </tr>
           <tr>
-            <td style="padding: 8px 0; border-bottom: 2px solid #eee;">
+            <td colspan="2" style="padding: 8px 0; border-bottom: 2px solid #eee;">
               <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Időpont</span><br>
               <strong style="font-size: 16px;">${timeSlot}</strong>
             </td>
           </tr>
           <tr>
-            <td style="padding: 8px 0;">
+            <td colspan="2" style="padding: 8px 0; border-bottom: 2px solid #eee;">
+              <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Stúdió bérlés</span><br>
+              <strong style="font-size: 14px;">${booking.base_price.toLocaleString('hu-HU')} Ft</strong>
+            </td>
+          </tr>
+          ${extrasBlock}
+          ${cateringBlock}
+          <tr>
+            <td colspan="2" style="padding: 12px 0 0;">
               <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Összeg</span><br>
               <strong style="font-size: 20px;">${booking.total_price.toLocaleString('hu-HU')} Ft</strong>
             </td>
