@@ -194,7 +194,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
 
         const onlinePaymentEnabled = (onlinePaymentSetting?.value as any)?.enabled === true
         if (onlinePaymentEnabled && process.env.NEXT_PUBLIC_STRIPE_ENABLED !== 'false') {
-          const checkoutRes = await fetch('/api/payments/create-checkout', {
+          const checkoutRes = await fetch('/api/admin/payments/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bookingId: booking.id }),
