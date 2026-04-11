@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import type { OpeningHours, SpecialDate, Booking, TimeSlot } from '@/types/database'
+import type { OpeningHours, SpecialDate, Booking, TimeSlot, InternalBlock } from '@/types/database'
 import { format } from 'date-fns'
 
 interface HourlySlotSelectorProps {
@@ -10,6 +10,7 @@ interface HourlySlotSelectorProps {
   selectedDate: Date
   existingBookings: Booking[]
   timeSlots: TimeSlot[]
+  internalBlocks: InternalBlock[]
   hourlyRate: number
   minHours: number
   maxHours: number
@@ -38,6 +39,7 @@ export function HourlySlotSelector({
   selectedDate,
   existingBookings,
   timeSlots,
+  internalBlocks,
   hourlyRate,
   minHours,
   maxHours,
@@ -56,7 +58,7 @@ export function HourlySlotSelector({
   const openTime = special?.open_time || hours?.open_time || '09:00'
   const closeTime = special?.close_time || hours?.close_time || '18:00'
 
-  // Collect all booked time ranges for this date
+  // Collect all booked time ranges for this date (bookings + internal blocks)
   const bookedRanges: TimeRange[] = useMemo(() => {
     const ranges: TimeRange[] = []
     const dayBookings = existingBookings.filter(
@@ -80,8 +82,26 @@ export function HourlySlotSelector({
       }
     }
 
+    // Add internal blocks that overlap with this date
+    for (const block of internalBlocks) {
+      const blockStart = new Date(block.start_datetime)
+      const blockEnd = new Date(block.end_datetime)
+      const dayStart = new Date(`${dateStr}T00:00:00`)
+      const dayEnd = new Date(`${dateStr}T23:59:59`)
+
+      if (blockStart <= dayEnd && blockEnd >= dayStart) {
+        const effectiveStart = blockStart >= dayStart
+          ? `${blockStart.getHours().toString().padStart(2, '0')}:${blockStart.getMinutes().toString().padStart(2, '0')}`
+          : openTime
+        const effectiveEnd = blockEnd <= dayEnd
+          ? `${blockEnd.getHours().toString().padStart(2, '0')}:${blockEnd.getMinutes().toString().padStart(2, '0')}`
+          : closeTime
+        ranges.push({ start: effectiveStart, end: effectiveEnd })
+      }
+    }
+
     return ranges.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start))
-  }, [existingBookings, dateStr, timeSlots])
+  }, [existingBookings, dateStr, timeSlots, internalBlocks, openTime, closeTime])
 
   // Check if a time range overlaps with any booked range
   const overlapsBooking = (start: string, end: string): boolean => {
