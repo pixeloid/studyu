@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation'
 import { format, addDays } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import { createClient } from '@/lib/supabase/client'
-import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary } from '@/components/booking'
+import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary, CouponInput } from '@/components/booking'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
-import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings } from '@/types/database'
+import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings, InternalBlock } from '@/types/database'
 
 interface SelectedExtra {
   extra: Extra
@@ -41,6 +41,7 @@ export default function BookingPage() {
   const [openingHours, setOpeningHours] = useState<OpeningHours[]>([])
   const [specialDates, setSpecialDates] = useState<SpecialDate[]>([])
   const [existingBookings, setExistingBookings] = useState<Booking[]>([])
+  const [internalBlocks, setInternalBlocks] = useState<InternalBlock[]>([])
 
   // Hourly booking settings
   const [hourlySettings, setHourlySettings] = useState<HourlyBookingSettings | null>(null)
@@ -58,6 +59,9 @@ export default function BookingPage() {
   const [hourlyEnd, setHourlyEnd] = useState<string | null>(null)
   const [hourlyDuration, setHourlyDuration] = useState<number>(0)
   const [hourlyPrice, setHourlyPrice] = useState<number>(0)
+
+  // Coupon state
+  const [appliedCoupon, setAppliedCoupon] = useState<{ id: string; code: string; discount_percent: number } | null>(null)
 
   // Billing state
   const [billingName, setBillingName] = useState('')
@@ -112,7 +116,10 @@ export default function BookingPage() {
         basePrice = slot?.base_price || 0
       }
       const extrasPrice = restoredExtras.reduce((sum: number, e: SelectedExtra) => sum + e.extra.price * e.quantity, 0)
-      const totalPrice = basePrice + extrasPrice
+      const couponDiscount = state.discountPercent || 0
+      const subtotal = basePrice + extrasPrice
+      const discount = Math.round(subtotal * (couponDiscount / 100))
+      const totalPrice = subtotal - discount
 
       const insertData = isHourly
         ? {
@@ -120,6 +127,7 @@ export default function BookingPage() {
             booking_date: bookingDate,
             base_price: basePrice,
             extras_price: extrasPrice,
+            discount_percent: couponDiscount,
             total_price: totalPrice,
             user_notes: state.userNotes || null,
             status: 'pending',
@@ -134,6 +142,7 @@ export default function BookingPage() {
             booking_date: bookingDate,
             base_price: basePrice,
             extras_price: extrasPrice,
+            discount_percent: couponDiscount,
             total_price: totalPrice,
             user_notes: state.userNotes || null,
             status: 'pending',
@@ -203,7 +212,7 @@ export default function BookingPage() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes, settingsRes] = await Promise.all([
+      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes, settingsRes, blocksRes] = await Promise.all([
         supabase.from('time_slots').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('extras').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('opening_hours').select('*'),
@@ -213,6 +222,9 @@ export default function BookingPage() {
           .gte('booking_date', format(new Date(), 'yyyy-MM-dd'))
           .not('status', 'in', '("cancelled","no_show")'),
         supabase.from('settings').select('*').eq('key', 'hourly_booking').single(),
+        supabase.from('internal_blocks')
+          .select('*')
+          .gte('end_datetime', new Date().toISOString()),
       ])
 
       const loadedSlots = slotsRes.data || []
@@ -222,6 +234,7 @@ export default function BookingPage() {
       if (hoursRes.data) setOpeningHours(hoursRes.data)
       if (specialRes.data) setSpecialDates(specialRes.data)
       if (bookingsRes.data) setExistingBookings(bookingsRes.data)
+      if (blocksRes.data) setInternalBlocks(blocksRes.data)
       if (settingsRes.data?.value) {
         setHourlySettings(settingsRes.data.value as unknown as HourlyBookingSettings)
       }
@@ -291,6 +304,18 @@ export default function BookingPage() {
     return data
   }
 
+  const isSlotBlockedByInternalBlock = (date: Date, slot: TimeSlot): boolean => {
+    const dateStr = format(date, 'yyyy-MM-dd')
+    const slotStart = new Date(`${dateStr}T${slot.start_time}`)
+    const slotEnd = new Date(`${dateStr}T${slot.end_time}`)
+
+    return internalBlocks.some(block => {
+      const blockStart = new Date(block.start_datetime)
+      const blockEnd = new Date(block.end_datetime)
+      return slotStart < blockEnd && slotEnd > blockStart
+    })
+  }
+
   const getAvailableSlotsForDate = (date: Date): TimeSlot[] => {
     const dateStr = format(date, 'yyyy-MM-dd')
     const dayOfWeek = date.getDay()
@@ -301,7 +326,9 @@ export default function BookingPage() {
     const bookedSlotIds = existingBookings
       .filter(b => b.booking_date === dateStr)
       .map(b => b.time_slot_id)
-    return timeSlots.filter(slot => !bookedSlotIds.includes(slot.id))
+    return timeSlots.filter(slot =>
+      !bookedSlotIds.includes(slot.id) && !isSlotBlockedByInternalBlock(date, slot)
+    )
   }
 
   const handleDateSelect = (date: Date) => {
@@ -358,6 +385,7 @@ export default function BookingPage() {
       hourlyDuration,
       selectedExtras: selectedExtras.map(e => ({ extraId: e.extra.id, quantity: e.quantity })),
       userNotes,
+      discountPercent: appliedCoupon?.discount_percent || 0,
       step,
       billingName,
       billingCompany,
@@ -408,7 +436,10 @@ export default function BookingPage() {
 
       const basePrice = getBasePrice()
       const extrasPrice = selectedExtras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
-      const totalPrice = basePrice + extrasPrice
+      const discountPercent = appliedCoupon?.discount_percent || 0
+      const subtotal = basePrice + extrasPrice
+      const discount = Math.round(subtotal * (discountPercent / 100))
+      const totalPrice = subtotal - discount
 
       const insertData = slotMode === 'hourly'
         ? {
@@ -416,6 +447,7 @@ export default function BookingPage() {
             booking_date: format(selectedDate, 'yyyy-MM-dd'),
             base_price: basePrice,
             extras_price: extrasPrice,
+            discount_percent: discountPercent,
             total_price: totalPrice,
             user_notes: userNotes || null,
             status: 'pending',
@@ -430,6 +462,7 @@ export default function BookingPage() {
             booking_date: format(selectedDate, 'yyyy-MM-dd'),
             base_price: basePrice,
             extras_price: extrasPrice,
+            discount_percent: discountPercent,
             total_price: totalPrice,
             user_notes: userNotes || null,
             status: 'pending',
@@ -620,6 +653,7 @@ export default function BookingPage() {
                     selectedDate={selectedDate}
                     existingBookings={existingBookings}
                     timeSlots={timeSlots}
+                    internalBlocks={internalBlocks}
                     hourlyRate={hourlySettings.hourly_rate}
                     minHours={hourlySettings.min_hours}
                     maxHours={hourlySettings.max_hours}
@@ -781,8 +815,15 @@ export default function BookingPage() {
                 </div>
               </BauhausCard>
 
-              {/* Notes & info */}
+              {/* Coupon & Notes */}
               <BauhausCard padding="lg">
+                <div className="mb-6">
+                  <CouponInput
+                    appliedCoupon={appliedCoupon}
+                    onCouponApplied={setAppliedCoupon}
+                  />
+                </div>
+
                 <div className="mb-6">
                   <label className="block font-bugrino text-sm uppercase tracking-wider mb-2">
                     Megjegyzés (opcionális)
@@ -828,6 +869,7 @@ export default function BookingPage() {
               date={selectedDate}
               slot={selectedSlot}
               extras={selectedExtras}
+              discountPercent={appliedCoupon?.discount_percent || 0}
               hourlyBooking={slotMode === 'hourly' && hourlyStart && hourlyEnd ? {
                 startTime: hourlyStart,
                 endTime: hourlyEnd,

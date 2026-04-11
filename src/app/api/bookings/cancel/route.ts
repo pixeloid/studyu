@@ -137,29 +137,32 @@ export async function POST(request: NextRequest) {
     // Billing address
     const billingAddress = booking.profiles?.billing_address as { zip?: string; city?: string; street?: string } | null
 
-    const isPaid = booking.status === 'paid' && booking.invoice_number
+    const isPaid = booking.status === 'paid'
+    const hasInvoice = !!booking.invoice_number
     let stornoInvoiceNumber: string | undefined
     let cancellationInvoiceNumber: string | undefined
     let cancellationInvoiceUrl: string | undefined
     let refundAmount = 0
 
     // === Szcenárió A: Fizetett foglalás ===
+    let stripeRefundId: string | null = null
     if (isPaid) {
-      // Sztornó az eredeti számláról
-      const stornoResult = await stornoInvoice({ invoiceNumber: booking.invoice_number })
-      if (!stornoResult.success) {
-        console.error('Storno failed:', stornoResult.error)
-        return NextResponse.json(
-          { success: false, error: `Sztornó hiba: ${stornoResult.error}` },
-          { status: 500 }
-        )
+      // Sztornó az eredeti számláról (csak ha van számlaszám)
+      if (hasInvoice) {
+        const stornoResult = await stornoInvoice({ invoiceNumber: booking.invoice_number })
+        if (!stornoResult.success) {
+          console.error('Storno failed:', stornoResult.error)
+          return NextResponse.json(
+            { success: false, error: `Sztornó hiba: ${stornoResult.error}` },
+            { status: 500 }
+          )
+        }
+        stornoInvoiceNumber = stornoResult.invoiceId
       }
-      stornoInvoiceNumber = stornoResult.invoiceId
 
       refundAmount = booking.total_price - fee
 
       // Stripe refund if payment was by card
-      let stripeRefundId: string | null = null
       if (booking.payment_method === 'card' && booking.stripe_payment_intent_id && refundAmount > 0) {
         try {
           const { getStripe } = await import('@/lib/stripe/client')
@@ -205,7 +208,6 @@ export async function POST(request: NextRequest) {
           cancellationInvoiceUrl = cancellationInvoiceResult.customerUrl
         } else {
           console.error('Cancellation invoice failed:', cancellationInvoiceResult.error)
-          // Lemondás megtörténik, de warning
         }
       }
 
@@ -217,7 +219,7 @@ export async function POST(request: NextRequest) {
           cancelled_at: new Date().toISOString(),
           cancellation_fee: fee,
           cancellation_reason: reason || null,
-          storno_invoice_number: stornoInvoiceNumber,
+          storno_invoice_number: stornoInvoiceNumber || null,
           cancellation_invoice_number: cancellationInvoiceNumber || null,
           cancellation_invoice_url: cancellationInvoiceUrl || null,
           stripe_refund_id: stripeRefundId,
@@ -346,32 +348,35 @@ export async function POST(request: NextRequest) {
           <strong style="font-size: 16px;">${booking.invoice_number}</strong>
           <span style="color: ${redColor}; font-size: 14px; font-weight: bold;"> - Sztornózva</span>
         </div>
-        ${fee > 0 ? `
         <div style="border: 3px solid #000; padding: 16px; margin: 16px 0;">
           <table cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+            ${fee > 0 ? `
             <tr>
               <td style="padding: 4px 0;">
                 <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Lemondási díj</span><br>
                 <strong style="font-size: 18px; color: ${redColor};">${fee.toLocaleString('hu-HU')} Ft</strong>
               </td>
-            </tr>
+            </tr>` : ''}
             <tr>
               <td style="padding: 4px 0;">
                 <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Visszatérítés összege</span><br>
                 <strong style="font-size: 18px; color: #059669;">${refundAmount.toLocaleString('hu-HU')} Ft</strong>
               </td>
             </tr>
+            ${stornoInvoiceNumber ? `
+            <tr>
+              <td style="padding: 4px 0;">
+                <span style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Sztornó számla</span><br>
+                <strong style="font-size: 14px;">${stornoInvoiceNumber}</strong>
+              </td>
+            </tr>` : ''}
           </table>
         </div>
         ${cancellationInvoiceUrl ? `
         <p style="margin: 24px 0;">
           <a href="${cancellationInvoiceUrl}" style="display: inline-block; background: ${brandColor}; color: #fff; padding: 14px 32px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; border: 3px solid #000; box-shadow: 4px 4px 0 #000;">Lemondási díj számla</a>
         </p>` : ''}
-        <p>A visszatérítés az eredeti fizetési módon történik.</p>
-        ` : `
-        <p style="color: #059669; font-weight: bold;">A teljes összeg visszatérítésre kerül.</p>
-        <p>A visszatérítés az eredeti fizetési módon történik.</p>
-        `}`
+        <p>A visszatérítés az eredeti fizetési módon történik.</p>`
     } else if (fee > 0) {
       // Szcenárió B: nem fizetett, van díj
       emailBody = `
