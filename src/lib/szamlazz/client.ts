@@ -102,9 +102,12 @@ function buildStornoXml(params: StornoParams, config: SzamlazzConfig): string {
     xmlszamlast: {
       '@_xmlns': 'http://www.szamlazz.hu/xmlszamlast',
       '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+      '@_xsi:schemaLocation': 'http://www.szamlazz.hu/xmlszamlast https://www.szamlazz.hu/szamla/docs/xsds/agentst/xmlszamlast.xsd',
       beallitasok: {
         szamlaagentkulcs: config.agentKey,
-        eszamla: params.eInvoice ?? config.eInvoice ? 'true' : 'false',
+        eszamla: (params.eInvoice ?? config.eInvoice) ? 'true' : 'false',
+        szamlaLetoltes: 'true',
+        valaszVerzio: '2',
       },
       fejlec: {
         szamlaszam: params.invoiceNumber,
@@ -123,7 +126,8 @@ function parseResponse(xmlResponse: string): SzamlazzResponse {
 
   const result = parser.parse(xmlResponse)
 
-  const resp = result.xmlszamlavalasz
+  // Handle both invoice and storno responses
+  const resp = result.xmlszamlavalasz || result.xmlszamlastvalasz
 
   // Check for error response
   if (resp?.hibakod && resp.hibakod !== 0) {
@@ -141,6 +145,14 @@ function parseResponse(xmlResponse: string): SzamlazzResponse {
       netPrice: parseFloat(resp.szamlanetto) || undefined,
       grossPrice: parseFloat(resp.szamlabrutto) || undefined,
       customerUrl: resp.vevoifiokurl || undefined,
+    }
+  }
+
+  // Check for plain text error (Számlázz.hu sometimes returns non-XML errors)
+  if (xmlResponse.includes('[ERR]')) {
+    return {
+      success: false,
+      error: xmlResponse.substring(0, 200),
     }
   }
 
