@@ -99,47 +99,19 @@ function buildStornoXml(params: StornoParams, config: SzamlazzConfig): string {
   })
 
   const xmlObj = {
-    xmlszamla: {
-      '@_xmlns': 'http://www.szamlazz.hu/xmlszamla',
+    xmlszamlast: {
+      '@_xmlns': 'http://www.szamlazz.hu/xmlszamlast',
       '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-      '@_xsi:schemaLocation': 'http://www.szamlazz.hu/xmlszamla https://www.szamlazz.hu/szamla/docs/xsds/agent/xmlszamla.xsd',
+      '@_xsi:schemaLocation': 'http://www.szamlazz.hu/xmlszamlast https://www.szamlazz.hu/szamla/docs/xsds/agentst/xmlszamlast.xsd',
       beallitasok: {
         szamlaagentkulcs: config.agentKey,
         eszamla: (params.eInvoice ?? config.eInvoice) ? 'true' : 'false',
         szamlaLetoltes: 'true',
-        szamlaLetoltesPld: '1',
         valaszVerzio: '2',
       },
       fejlec: {
+        szamlaszam: params.invoiceNumber,
         keltDatum: new Date().toISOString().split('T')[0],
-        teljesitesDatum: new Date().toISOString().split('T')[0],
-        fizetesiHataridoDatum: new Date().toISOString().split('T')[0],
-        fizmod: 'bankkártya',
-        penznem: 'HUF',
-        szamlaNyelve: 'hu',
-        megjegyzes: `Stornó számla - ${params.invoiceNumber}`,
-        szamlaTipus: 'SS',
-        szamlaszamElotag: '',
-        dijbekero: 'false',
-      },
-      elado: {},
-      vevo: {
-        nev: '',
-        irsz: '',
-        telepules: '',
-        cim: '',
-      },
-      tetelek: {
-        tetel: {
-          megnevezes: `Sztornó: ${params.invoiceNumber}`,
-          mennyiseg: 1,
-          mennyisegiEgyseg: 'db',
-          nettoEgysegar: 0,
-          afakulcs: '27',
-          nettoErtek: 0,
-          afaErtek: 0,
-          bruttoErtek: 0,
-        },
       },
     },
   }
@@ -190,10 +162,10 @@ function parseResponse(xmlResponse: string): SzamlazzResponse {
   }
 }
 
-function sendXml(xml: string): Promise<Response> {
+function sendXml(xml: string, formFieldName = 'action-xmlagentxmlfile'): Promise<Response> {
   const formData = new FormData()
   const blob = new Blob([xml], { type: 'application/xml' })
-  formData.append('action-xmlagentxmlfile', blob, 'request.xml')
+  formData.append(formFieldName, blob, 'request.xml')
 
   return fetch(SZAMLAZZ_URL, {
     method: 'POST',
@@ -233,7 +205,7 @@ export async function stornoInvoice(params: StornoParams): Promise<SzamlazzRespo
 
     console.log('Számlázz.hu storno request XML:', xml)
 
-    const response = await sendXml(xml)
+    const response = await sendXml(xml, 'action-szamla_agent_st')
 
     const responseText = await response.text()
     console.log('Számlázz.hu storno response:', responseText.substring(0, 500))
