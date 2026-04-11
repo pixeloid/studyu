@@ -17,8 +17,8 @@ CREATE POLICY "Anyone can view booking slots for availability"
     AND booking_date >= CURRENT_DATE
   );
 
--- 2. Allow all authenticated users to read internal blocks (needed for availability)
-CREATE POLICY "Authenticated users can view internal_blocks"
+-- 2. Allow anyone to read internal blocks (needed for availability, including non-logged-in users)
+CREATE POLICY "Anyone can view internal_blocks"
   ON internal_blocks
   FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (true);
