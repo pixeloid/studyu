@@ -30,6 +30,16 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // Handle Supabase auth code redirects (recovery, signup confirmation, etc.)
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && request.nextUrl.pathname === '/') {
+    const callbackUrl = new URL('/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', code)
+    const type = request.nextUrl.searchParams.get('type')
+    if (type) callbackUrl.searchParams.set('type', type)
+    return NextResponse.redirect(callbackUrl)
+  }
+
   // Refresh session if expired - required for Server Components
   const { data: { user } } = await supabase.auth.getUser()
 

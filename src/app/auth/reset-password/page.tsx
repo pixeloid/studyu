@@ -27,14 +27,24 @@ function ResetPasswordContent() {
   const supabase = createClient()
 
   useEffect(() => {
-    // Supabase automatically picks up the recovery token from the URL hash
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
+    const init = async () => {
+      // Check if we already have a session (e.g., after callback redirect)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
         setSessionReady(true)
+        return
       }
-    })
 
-    return () => subscription.unsubscribe()
+      // Listen for PASSWORD_RECOVERY event (hash-based flow)
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          setSessionReady(true)
+        }
+      })
+
+      return () => subscription.unsubscribe()
+    }
+    init()
   }, [supabase.auth])
 
   const handleSubmit = async (e: React.FormEvent) => {

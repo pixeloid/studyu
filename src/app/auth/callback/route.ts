@@ -33,8 +33,14 @@ export async function GET(request: NextRequest) {
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Check if this is a password recovery flow
+      const type = searchParams.get('type')
+      if (type === 'recovery') {
+        return NextResponse.redirect(`${origin}/auth/reset-password`)
+      }
+
       // If no explicit redirect, check if user is admin
       if (next === '/dashboard') {
         const { data: { user } } = await supabase.auth.getUser()
