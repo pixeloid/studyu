@@ -6,7 +6,8 @@ export interface CancellationRule {
 }
 
 export const defaultCancellationPolicy: CancellationRule[] = [
-  { days_before: 2, fee_percent: 0 },
+  { days_before: 7, fee_percent: 0 },
+  { days_before: 2, fee_percent: 50 },
   { days_before: 0, fee_percent: 100 },
 ]
 
