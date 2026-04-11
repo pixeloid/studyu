@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { StudyULogo } from '@/components/ui/StudyULogo'
+import type { User } from '@supabase/supabase-js'
 
 const navigation = [
   { name: 'Bemutatkozás', href: '/bemutatkozas', external: false },
@@ -13,6 +16,30 @@ const navigation = [
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const router = useRouter()
+  const supabase = createClient()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-white border-b-[3px] border-black">
@@ -75,12 +102,29 @@ export function Header() {
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
-          <Link
-            href="/auth/login"
-            className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors"
-          >
-            Bejelentkezés
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors"
+              >
+                Fiókom
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="font-bugrino text-sm uppercase tracking-wider text-gray-500 hover:text-[var(--bauhaus-red)] transition-colors"
+              >
+                Kijelentkezés
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="font-bugrino text-sm uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] transition-colors"
+            >
+              Bejelentkezés
+            </Link>
+          )}
           <Link href="/foglalas">
             <BauhausButton variant="primary" size="sm">
               Foglalás
@@ -119,13 +163,31 @@ export function Header() {
               )
             )}
             <div className="pt-4 space-y-4 border-t-[3px] border-black">
-              <Link
-                href="/auth/login"
-                className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Bejelentkezés
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Fiókom
+                  </Link>
+                  <button
+                    onClick={() => { handleSignOut(); setMobileMenuOpen(false) }}
+                    className="block w-full text-left font-bugrino text-lg uppercase tracking-wider text-gray-500 hover:text-[var(--bauhaus-red)] py-2"
+                  >
+                    Kijelentkezés
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="block font-bugrino text-lg uppercase tracking-wider text-black hover:text-[var(--bauhaus-blue)] py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Bejelentkezés
+                </Link>
+              )}
               <Link
                 href="/foglalas"
                 onClick={() => setMobileMenuOpen(false)}
