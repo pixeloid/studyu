@@ -1,0 +1,156 @@
+"#","Kategória","Teszt neve","Lépések","Elvárt eredmény","Státusz (OK / HIBA / ?)","Megjegyzés"
+"","","","","","",""
+"","=== REGISZTRÁCIÓ ÉS BEJELENTKEZÉS ===","","","","",""
+"1","Regisztráció","Új felhasználó regisztráció e-maillel","1. Nyisd meg az oldalt
+2. Kattints a ""Regisztráció"" gombra
+3. Add meg: teljes név, e-mail, jelszó (min. 8 karakter), jelszó megerősítés
+4. Kattints a ""Regisztráció"" gombra","Sikeres regisztráció, visszaigazoló e-mail érkezik","",""
+"2","Regisztráció","Google regisztráció","1. Kattints a ""Regisztráció"" gombra
+2. Válaszd a ""Bejelentkezés Google-lel"" opciót
+3. Válaszd ki a Google fiókodat","Sikeres regisztráció, átirányítás a dashboardra","",""
+"3","Regisztráció","Facebook regisztráció","1. Kattints a ""Regisztráció"" gombra
+2. Válaszd a ""Bejelentkezés Facebookkal"" opciót
+3. Jelentkezz be a Facebook fiókoddal","Sikeres regisztráció, átirányítás a dashboardra","",""
+"4","Bejelentkezés","Bejelentkezés e-maillel","1. Kattints a ""Bejelentkezés"" gombra
+2. Add meg az e-mail címed és a jelszavad
+3. Kattints a ""Bejelentkezés"" gombra","Sikeres bejelentkezés, átirányítás a dashboardra","",""
+"5","Bejelentkezés","Bejelentkezés Google-lel","1. Kattints a ""Bejelentkezés"" gombra
+2. Válaszd a Google opciót","Sikeres bejelentkezés","",""
+"6","Bejelentkezés","Bejelentkezés Facebookkal","1. Kattints a ""Bejelentkezés"" gombra
+2. Válaszd a Facebook opciót","Sikeres bejelentkezés","",""
+"7","Elfelejtett jelszó","Jelszó visszaállítás","1. Kattints a ""Bejelentkezés"" gombra
+2. Kattints az ""Elfelejtett jelszó"" linkre
+3. Add meg az e-mail címed
+4. Kattints az ""Új jelszó kérése"" gombra
+5. Nézd meg az e-mailjeidet, kattints a linkre
+6. Adj meg egy új jelszót","E-mail érkezik jelszó-visszaállító linkkel. A link megnyitása után új jelszót lehet megadni. Az új jelszóval be tudsz lépni.","",""
+"","","","","","",""
+"","=== FOGLALÁS: NAPTÁR (1. LÉPÉS) ===","","","","",""
+"8","Naptár","Naptár megjelenése","1. Nyisd meg a foglalás oldalt (/foglalas)","A naptár megjelenik, a mai nap és a múltbeli napok nem választhatók. A holnaptól számított napok elérhetők.","",""
+"9","Naptár","Nap kiválasztása","1. Kattints egy elérhető (nem szürke) napra","A nap kijelölődik, megjelennek az elérhető időpontok","",""
+"10","Naptár","Múltbeli nap nem választható","1. Próbálj egy múltbeli napra kattintani","Nem lehet rákattintani, szürke/inaktív","",""
+"11","Naptár","Zárt nap nem választható","1. Keress egy ünnepnapot/zárt napot a naptárban","A zárt nap nem választható, jelölve van","",""
+"12","Naptár","90 napon túli dátum","1. Lapozz előre a naptárban 90+ nappal","90 napon túli napok nem választhatók","",""
+"","","","","","",""
+"","=== FOGLALÁS: IDŐPONT VÁLASZTÁS (2. LÉPÉS) ===","","","","",""
+"13","Időpont - Csomag","Csomag típusú foglalás","1. Válassz egy napot
+2. Válassz egy előre definiált időpontcsomagot (pl. 2 órás, 4 órás)","Az időpont kijelölődik, megjelenik az ár, léphetsz a következő lépésre","",""
+"14","Időpont - Csomag","Foglalt időpont nem választható","1. Válassz egy napot, ahol már van foglalás
+2. Nézd meg a foglalt időpontot","A már foglalt időpont nem választható (szürke/inaktív)","",""
+"15","Időpont - Órás","Órás foglalás - kezdő időpont","1. Válassz egy napot
+2. Válaszd az órás foglalás opciót (ha elérhető)
+3. Válassz kezdő időpontot","Megjelennek a választható kezdő időpontok a nyitvatartás szerint","",""
+"16","Időpont - Órás","Órás foglalás - időtartam","1. A kezdő időpont kiválasztása után válaszd ki az időtartamot","Minimum 2 óra, maximum 9 óra választható. Az ár automatikusan számolódik.","",""
+"17","Időpont - Órás","Órás foglalás ütközésellenőrzés","1. Válassz olyan időtartamot, ami egy másik foglalásba ütközne","Nem engedi kiválasztani, a maximum csak a következő foglalásig terjed","",""
+"","","","","","",""
+"","=== FOGLALÁS: EXTRÁK VÁLASZTÁS (3. LÉPÉS) ===","","","","",""
+"18","Extrák","Extrák megjelenése","1. Lépj a 3. lépésre (Extrák)","Megjelennek az elérhető extrák képpel, leírással és árral","",""
+"19","Extrák","Extra hozzáadása","1. Válassz ki egy extrát (pl. világítás, kellékek)","Az extra bekerül a kosárba, az ár frissül","",""
+"20","Extrák","Extra eltávolítása","1. Vedd ki egy korábban kiválasztott extrát","Az extra kikerül, az ár csökken","",""
+"21","Extrák","Foglalás extrák nélkül","1. Ne válassz semmilyen extrát
+2. Lépj tovább","Tovább lehet lépni extrák nélkül is","",""
+"","","","","","",""
+"","=== FOGLALÁS: CATERING VÁLASZTÁS (4. LÉPÉS) ===","","","","",""
+"22","Catering","Catering csomagok megjelenése","1. Lépj a 4. lépésre (Catering)","Megjelenik a 3 csomag: Alap (3 500 Ft/fő), Közepes (5 300 Ft/fő), Teljes (7 200 Ft/fő)","",""
+"23","Catering","Catering kiválasztása + darabszám","1. Válassz egy catering csomagot
+2. Állítsd be a létszámot a +/- gombokkal","Az ár frissül: csomag ára × létszám","",""
+"24","Catering","Catering módosítása","1. Változtasd meg a létszámot vagy a csomagot","Az összár azonnal frissül","",""
+"25","Catering","Foglalás catering nélkül","1. Ne válassz cateringet
+2. Lépj tovább","Tovább lehet lépni catering nélkül is","",""
+"","","","","","",""
+"","=== FOGLALÁS: MEGERŐSÍTÉS ÉS SZÁMLÁZÁSI ADATOK (5. LÉPÉS) ===","","","","",""
+"26","Megerősítés","Összesítő megjelenése","1. Lépj az 5. lépésre (Megerősítés)","Megjelenik a foglalás összesítője: dátum, időpont, extrák, catering, végösszeg","",""
+"27","Megerősítés","Számlázási adatok kitöltése","1. Töltsd ki: teljes név, cégnév, adószám, irányítószám, város, utca/házszám","Minden mező kitölthető, az adatok validálódnak","",""
+"28","Megerősítés","Hiányos számlázási adatok","1. Hagyd üresen valamelyik kötelező mezőt
+2. Nyomd meg a ""Foglalás véglegesítése"" gombot","Hibaüzenet jelenik meg a hiányzó mezőnél, nem lehet elküldeni","",""
+"29","Megerősítés","Megjegyzés hozzáadása","1. Írj megjegyzést a foglaláshoz","A megjegyzés mentődik a foglaláshoz","",""
+"30","Megerősítés","Foglalás elküldése","1. Töltsd ki az összes kötelező mezőt
+2. Kattints a ""Foglalás véglegesítése"" gombra","Foglalás létrejön 'függőben' státusszal. Visszaigazoló e-mail érkezik. Átirányítás a foglalás részletes oldalára.","",""
+"","","","","","",""
+"","=== FOGLALÁS BEJELENTKEZÉS NÉLKÜL ===","","","","",""
+"31","Bejelentkezés nélkül","Foglalás indítása kijelentkezve","1. Jelentkezz ki
+2. Nyisd meg a /foglalas oldalt
+3. Válassz dátumot és időpontot
+4. Válassz extrákat/cateringet
+5. A megerősítésnél a rendszer bejelentkezést kér","A rendszer bejelentkezési oldalra irányít, a foglalási adatok megmaradnak","",""
+"32","Bejelentkezés nélkül","Bejelentkezés után automatikus foglalás","1. Az előző teszt folytatása: jelentkezz be","Bejelentkezés után a foglalás automatikusan elküldésre kerül (nem kell újra végigmenni a lépéseken)","",""
+"","","","","","",""
+"","=== KUPONKÓD ===","","","","",""
+"33","Kupon","Érvényes kuponkód beváltása","1. A foglalás során add meg egy érvényes kuponkódot","A kedvezmény érvényesül, az összár csökken a kedvezmény %-ával","",""
+"34","Kupon","Érvénytelen kuponkód","1. Adj meg egy nem létező kuponkódot","Hibaüzenet: érvénytelen kuponkód","",""
+"35","Kupon","Lejárt kuponkód","1. Adj meg egy lejárt érvényességű kuponkódot","Hibaüzenet: a kupon lejárt","",""
+"36","Kupon","Felhasználási limit elérése","1. Adj meg egy kuponkódot, ami elérte a maximális felhasználási számot","Hibaüzenet: a kupon már nem érvényes","",""
+"","","","","","",""
+"","=== FIZETÉS: ÁTUTALÁS ===","","","","",""
+"37","Átutalás","Díjbekérő e-mail","1. Hozz létre egy foglalást
+2. Várd meg, amíg az admin megerősíti","Az admin megerősítése után díjbekérő e-mail érkezik az átutalási adatokkal","",""
+"38","Átutalás","Fizetés átutalással","1. Utald el az összeget a díjbekérőben szereplő számlaszámra
+2. Az admin jelöli a fizetést beérkezettnek","A foglalás státusza ""fizetve"" lesz, végszámla e-mail érkezik","",""
+"","","","","","",""
+"","=== FIZETÉS: BANKKÁRTYÁS (STRIPE) ===","","","","",""
+"39","Kártyás fizetés","Fizetés gomb megjelenése","1. Hozz létre egy foglalást
+2. Várd meg az admin megerősítését
+3. Nyisd meg a foglalásodat a dashboardon","Ha az online fizetés engedélyezve van, megjelenik a ""Fizetés bankkártyával"" gomb","",""
+"40","Kártyás fizetés","Sikeres kártyás fizetés","1. Kattints a ""Fizetés bankkártyával"" gombra
+2. Átirányítás a Stripe fizetési oldalra
+3. Add meg a teszt kártyaadatokat:
+   Kártyaszám: 4242 4242 4242 4242
+   Lejárat: bármilyen jövőbeli dátum
+   CVC: bármilyen 3 szám
+4. Kattints a ""Fizetés"" gombra","Sikeres fizetés, visszairányítás az oldalra, foglalás státusza ""fizetve"", visszaigazoló e-mail érkezik","",""
+"41","Kártyás fizetés","Sikertelen kártyás fizetés","1. Kattints a ""Fizetés bankkártyával"" gombra
+2. A Stripe oldalon add meg a sikertelen teszt kártyát:
+   Kártyaszám: 4000 0000 0000 0002
+3. Próbáld meg a fizetést","A fizetés sikertelen, hibaüzenet jelenik meg, visszairányítás az oldalra, a foglalás státusza nem változik","",""
+"42","Kártyás fizetés","Fizetés megszakítása","1. Kattints a ""Fizetés bankkártyával"" gombra
+2. A Stripe oldalon kattints a ""Vissza"" gombra","Visszairányítás az oldalra, a foglalás státusza nem változik, újra megpróbálható","",""
+"","","","","","",""
+"","=== FOGLALÁS LEMONDÁSA ===","","","","",""
+"43","Lemondás","Foglalás lemondása (7+ nap előtte)","1. Nyiss meg egy függőben/megerősített foglalást, ami 7+ nap múlva van
+2. Kattints a ""Lemondás"" gombra
+3. Erősítsd meg","Foglalás lemondva, nincs lemondási díj (0%), e-mail értesítés érkezik","",""
+"44","Lemondás","Foglalás lemondása (3-7 nap előtte)","1. Mondj le egy foglalást, ami 3-7 napon belül van","Foglalás lemondva, 50% lemondási díj, erről díjbekérő e-mail érkezik","",""
+"45","Lemondás","Foglalás lemondása (2-3 nap előtte)","1. Mondj le egy foglalást, ami 2-3 napon belül van","Foglalás lemondva, 70% lemondási díj","",""
+"46","Lemondás","Foglalás lemondása (24 órán belül)","1. Mondj le egy foglalást, ami 24 órán belül van","Foglalás lemondva, 100% lemondási díj (teljes ár)","",""
+"47","Lemondás","Fizetett foglalás lemondása - visszatérítés","1. Mondj le egy már kifizetett foglalást","Stornó számla készül, a visszatérítés automatikusan megindul (kártyás fizetésnél Stripe refund), e-mail a részletekkel","",""
+"","","","","","",""
+"","=== FELHASZNÁLÓI DASHBOARD ===","","","","",""
+"48","Dashboard","Foglalások listája","1. Jelentkezz be
+2. Nyisd meg a dashboardot","Megjelennek a foglalásaid státuszokkal: függőben, megerősítve, fizetve, teljesítve, lemondva","",""
+"49","Dashboard","Foglalás részletei","1. Kattints egy foglalásra a listában","Megjelenik a foglalás minden adata: dátum, időpont, extrák, catering, ár, státusz","",""
+"50","Dashboard","Profil szerkesztése","1. Nyisd meg a profil oldalt
+2. Módosítsd az adataidat (név, telefonszám, cégnév stb.)
+3. Mentsd el","Az adatok frissülnek, következő foglalásnál a számlázási adatok előre kitöltődnek","",""
+"","","","","","",""
+"","=== E-MAIL ÉRTESÍTÉSEK ===","","","","",""
+"51","E-mail","Foglalás visszaigazolás","1. Hozz létre egy új foglalást","E-mail érkezik a foglalás adataival (dátum, időpont, extrák, catering, összár)","",""
+"52","E-mail","Fizetés visszaigazolás","1. Fizess ki egy foglalást (kártya vagy átutalás)","E-mail érkezik a fizetés visszaigazolásával","",""
+"53","E-mail","Lemondás visszaigazolás","1. Mondj le egy foglalást","E-mail érkezik a lemondás részleteivel és az esetleges lemondási díjjal","",""
+"54","E-mail","Emlékeztető e-mail","(Automatikus, a foglalás előtt néhány nappal)","Emlékeztető e-mail érkezik a közelgő foglalásról","",""
+"","","","","","",""
+"","=== ADMIN FELÜLET ===","","","","",""
+"55","Admin","Foglalások kezelése","1. Jelentkezz be admin fiókkal
+2. Nyisd meg a Foglalások menüt","Megjelenik az összes foglalás listája, szűrhető státusz szerint","",""
+"56","Admin","Foglalás megerősítése","1. Nyiss meg egy függőben lévő foglalást
+2. Változtasd a státuszt ""megerősítve"" állapotra","A foglalás megerősítve, a felhasználó e-mailt kap","",""
+"57","Admin","Foglalás státusz módosítás","1. Változtasd a foglalás státuszát (függőben → megerősítve → fizetve → teljesítve)","A státusz változik, a felhasználó értesítést kap","",""
+"58","Admin","Időpontok kezelése","1. Nyisd meg az Időpontok menüt
+2. Adj hozzá/módosíts/töröl egy időpontcsomagot","Az időpont megjelenik/módosul/eltűnik a foglalási naptárból","",""
+"59","Admin","Extrák kezelése","1. Nyisd meg az Extrák menüt
+2. Adj hozzá/módosíts/töröl egy extrát","Az extra megjelenik/módosul/eltűnik a foglalási folyamatban","",""
+"60","Admin","Nyitvatartás beállítása","1. Nyisd meg a Nyitvatartás menüt
+2. Módosítsd egy nap nyitvatartását","A naptár frissül az új nyitvatartás szerint","",""
+"61","Admin","Ünnepnap/zárt nap felvétele","1. Nyisd meg az Ünnepnapok menüt
+2. Adj hozzá egy új zárt napot","Az adott nap nem választható a foglalási naptárban","",""
+"62","Admin","Belső blokk felvétele","1. Nyisd meg a Blokkok menüt
+2. Adj hozzá egy belső blokkot (pl. karbantartás)","Az adott időszakban nem lehet foglalni","",""
+"63","Admin","Kupon létrehozása","1. Nyisd meg a Kuponok menüt
+2. Hozz létre egy új kuponkódot kedvezménnyel","A kupon használható a foglalási folyamatban","",""
+"64","Admin","Beállítások módosítása","1. Nyisd meg a Beállítások menüt
+2. Módosítsd a lemondási feltételeket vagy az órás foglalás beállításait","A módosítások érvénybe lépnek az új foglalásoknál","",""
+"","","","","","",""
+"","=== MOBILNÉZET ===","","","","",""
+"65","Mobilnézet","Foglalási folyamat mobilon","1. Nyisd meg az oldalt telefonon vagy a böngésző mobilnézetében
+2. Végezz el egy teljes foglalást","Minden lépés jól jelenik meg és használható mobilon","",""
+"66","Mobilnézet","Naptár mobilon","1. Mobilnézetben navigálj a naptárban","A naptár jól használható, a napok kiválaszthatók","",""
+"67","Mobilnézet","Stripe fizetés mobilon","1. Mobilon indíts egy kártyás fizetést","A Stripe fizetési oldal jól jelenik meg és működik mobilon","",""
