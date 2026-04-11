@@ -99,19 +99,47 @@ function buildStornoXml(params: StornoParams, config: SzamlazzConfig): string {
   })
 
   const xmlObj = {
-    xmlszamlast: {
-      '@_xmlns': 'http://www.szamlazz.hu/xmlszamlast',
+    xmlszamla: {
+      '@_xmlns': 'http://www.szamlazz.hu/xmlszamla',
       '@_xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-      '@_xsi:schemaLocation': 'http://www.szamlazz.hu/xmlszamlast https://www.szamlazz.hu/szamla/docs/xsds/agentst/xmlszamlast.xsd',
+      '@_xsi:schemaLocation': 'http://www.szamlazz.hu/xmlszamla https://www.szamlazz.hu/szamla/docs/xsds/agent/xmlszamla.xsd',
       beallitasok: {
         szamlaagentkulcs: config.agentKey,
         eszamla: (params.eInvoice ?? config.eInvoice) ? 'true' : 'false',
         szamlaLetoltes: 'true',
+        szamlaLetoltesPld: '1',
         valaszVerzio: '2',
       },
       fejlec: {
-        szamlaszam: params.invoiceNumber,
         keltDatum: new Date().toISOString().split('T')[0],
+        teljesitesDatum: new Date().toISOString().split('T')[0],
+        fizetesiHataridoDatum: new Date().toISOString().split('T')[0],
+        fizmod: 'bankkártya',
+        penznem: 'HUF',
+        szamlaNyelve: 'hu',
+        megjegyzes: `Stornó számla - ${params.invoiceNumber}`,
+        szamlaTipus: 'SS',
+        szamlaszamElotag: '',
+        dijbekero: 'false',
+      },
+      elado: {},
+      vevo: {
+        nev: '',
+        irsz: '',
+        telepules: '',
+        cim: '',
+      },
+      tetelek: {
+        tetel: {
+          megnevezes: `Sztornó: ${params.invoiceNumber}`,
+          mennyiseg: 1,
+          mennyisegiEgyseg: 'db',
+          nettoEgysegar: 0,
+          afakulcs: '27',
+          nettoErtek: 0,
+          afaErtek: 0,
+          bruttoErtek: 0,
+        },
       },
     },
   }
