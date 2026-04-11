@@ -213,14 +213,16 @@ otp_length = 6
 otp_expiry = 3600
 
 # Use a production-ready SMTP server
+# For production: set Custom SMTP in Supabase Dashboard (Settings > Auth > SMTP)
+# Host: smtp.resend.com, Port: 465, User: resend, Pass: RESEND_API_KEY
 # [auth.email.smtp]
 # enabled = true
-# host = "smtp.sendgrid.net"
-# port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# host = "smtp.resend.com"
+# port = 465
+# user = "resend"
+# pass = "env(RESEND_API_KEY)"
+# admin_email = "noreply@studyu.hu"
+# sender_name = "StudyU Fotóstúdió"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
