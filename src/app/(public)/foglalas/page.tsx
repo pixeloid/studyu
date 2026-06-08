@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary, CouponInput } from '@/components/booking'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
+import { LegalLink } from '@/components/legal'
 import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings, InternalBlock } from '@/types/database'
 
 interface SelectedExtra {
@@ -71,6 +72,11 @@ export default function BookingPage() {
   const [billingCity, setBillingCity] = useState('')
   const [billingStreet, setBillingStreet] = useState('')
   const [billingLoaded, setBillingLoaded] = useState(false)
+
+  // Consent state
+  const [acceptedAszf, setAcceptedAszf] = useState(false)
+  const [acceptedHazirend, setAcceptedHazirend] = useState(false)
+  const [acceptedFizetes, setAcceptedFizetes] = useState(false)
 
   // Settings
   const minDaysAhead = 1
@@ -404,6 +410,12 @@ export default function BookingPage() {
     if (!billingName.trim() || !billingCompany.trim() || !billingTaxNumber.trim() ||
         !billingZip.trim() || !billingCity.trim() || !billingStreet.trim()) {
       setError('Kérjük, töltsd ki az összes számlázási adatot!')
+      return
+    }
+
+    // Validate consent checkboxes
+    if (!acceptedAszf || !acceptedHazirend || !acceptedFizetes) {
+      setError('A foglalás véglegesítéséhez minden kötelező nyilatkozatot el kell fogadnod!')
       return
     }
 
@@ -845,8 +857,51 @@ export default function BookingPage() {
                   <ul className="text-sm text-gray-600 space-y-1">
                     <li>• A foglalás visszaigazolást igényel</li>
                     <li>• A díjbekérőt email-ben küldjük</li>
-                    <li>• Lemondási feltételeinket az ÁSZF-ben találod</li>
+                    <li>• Lemondási feltételeinket az <LegalLink doc="aszf">ÁSZF</LegalLink>-ben találod</li>
                   </ul>
+                </div>
+
+                {/* Consent checkboxes */}
+                <div className="space-y-3 mt-6">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptedAszf}
+                      onChange={(e) => setAcceptedAszf(e.target.checked)}
+                      className="mt-0.5 w-5 h-5 border-[2px] border-black accent-[var(--bauhaus-blue)] flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-600">
+                      Elolvastam és elfogadom az{' '}
+                      <LegalLink doc="aszf">ÁSZF</LegalLink>-et
+                      {' '}és az{' '}
+                      <LegalLink doc="adatvedelem">Adatvédelmi Tájékoztatót</LegalLink>. *
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptedHazirend}
+                      onChange={(e) => setAcceptedHazirend(e.target.checked)}
+                      className="mt-0.5 w-5 h-5 border-[2px] border-black accent-[var(--bauhaus-blue)] flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-600">
+                      Megismertem és elfogadom a{' '}
+                      <LegalLink doc="hazirend">Stúdió Házirendet</LegalLink>. *
+                    </span>
+                  </label>
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={acceptedFizetes}
+                      onChange={(e) => setAcceptedFizetes(e.target.checked)}
+                      className="mt-0.5 w-5 h-5 border-[2px] border-black accent-[var(--bauhaus-blue)] flex-shrink-0"
+                    />
+                    <span className="text-sm text-gray-600">
+                      Megismertem az{' '}
+                      <LegalLink doc="fizetesi-tajekoztato">Online Fizetési Tájékoztatót</LegalLink>, és tudomásul veszem, hogy
+                      a szolgáltatás teljesítésének a lefoglalt időpontban történő megkezdésével a 14 napos elállási jogom megszűnik. *
+                    </span>
+                  </label>
                 </div>
               </BauhausCard>
 

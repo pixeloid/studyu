@@ -9,8 +9,13 @@ const navigation = {
     { name: 'Foglalás', href: '/foglalas', external: false },
   ],
   legal: [
-    { name: 'Adatvédelem', href: '/adatvedelem' },
     { name: 'ÁSZF', href: '/aszf' },
+    { name: 'Adatvédelem', href: '/adatvedelem' },
+    { name: 'Házirend', href: '/hazirend' },
+    { name: 'Fizetési Tájékoztató', href: '/fizetesi-tajekoztato' },
+  ],
+  info: [
+    { name: 'GYIK', href: '/gyik' },
   ],
 }
 
@@ -56,6 +61,23 @@ export function Footer() {
                         {item.name}
                       </Link>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-yellow)] mb-4">
+                Információ
+              </h3>
+              <ul className="space-y-2">
+                {navigation.info.map((item) => (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="text-gray-300 hover:text-white transition-colors text-sm"
+                    >
+                      {item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
