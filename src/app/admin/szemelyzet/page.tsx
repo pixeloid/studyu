@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import type { StaffWithTiers } from '@/types/database'
+import { TeamPackageEditor } from './TeamPackageEditor'
 
 type Tier = { id?: string; label: string; hours: number; price: number; note: string | null }
 type Draft = {
@@ -136,14 +137,20 @@ export default function StaffAdminPage() {
             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--bauhaus-yellow)' }} />
           </div>
           <p className="text-sm text-gray-500 mt-3 max-w-2xl">
-            A foglalásnál az óradíj és a fix áras sávok közül mindig a vendégnek kedvezőbb ár számít.
-            Egy munkatárs egy időpontban csak egy foglalásban szerepelhet. Az inaktív munkatárs nem jelenik meg a foglalásnál és az oldalon.
+            Egy munkatárs egy időpontban csak egy foglalásban szerepelhet (csapatként vagy külön is). Az inaktív munkatárs nem jelenik meg a foglalásnál és az oldalon.
           </p>
         </div>
         <BauhausButton variant="primary" onClick={() => setDrafts((ds) => [...ds, emptyDraft(ds.length + 1)])}>
           + Új munkatárs
         </BauhausButton>
       </div>
+
+      <TeamPackageEditor />
+
+      <h2 className="font-bugrino text-lg uppercase tracking-wider mb-1">Munkatársak (külön foglalható)</h2>
+      <p className="text-sm text-gray-500 mb-4 max-w-2xl">
+        Külön foglalásnál az óraszámot és a kezdést a vendég a munkatársnál adja meg, ez független a stúdióbérlés hosszától. Itt az óradíj számít; fix sávot (fél/egész nap) általában a csapatcsomagnál adj meg.
+      </p>
 
       {message && (
         <div

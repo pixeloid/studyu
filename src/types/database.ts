@@ -37,6 +37,12 @@ export type StaffMember = Tables<'staff_members'>
 export type StaffRateTier = Tables<'staff_rate_tiers'>
 export type BookingStaff = Tables<'booking_staff'>
 export type StaffWithTiers = StaffMember & { staff_rate_tiers: StaffRateTier[] }
+export type StaffPackage = Tables<'staff_packages'>
+export type StaffPackageTier = Tables<'staff_package_tiers'>
+export type StaffPackageWithRelations = StaffPackage & {
+  staff_package_tiers: StaffPackageTier[]
+  staff_package_members: { staff_id: string }[]
+}
 
 // Billing address type
 export interface BillingAddress {

@@ -22,6 +22,12 @@ export default async function BeautyTeamPage() {
     .eq('is_active', true)
     .order('sort_order')
 
+  const { data: packages } = await supabase
+    .from('staff_packages')
+    .select('*, staff_package_tiers(*)')
+    .eq('is_active', true)
+    .order('sort_order')
+
   return (
     <div className="bg-white">
       <div className="relative overflow-hidden py-12 sm:py-20">
@@ -41,13 +47,45 @@ export default async function BeautyTeamPage() {
             <div className="w-12 h-[3px] bg-black" />
           </div>
           <p className="text-lg text-gray-700">
-            Fotózásod mellé szakértő sminkest és hair stylistot is foglalhatsz. A beauty csapat tagjait a
-            stúdióbérléssel együtt, ugyanabban a foglalásban választhatod ki.
+            Fotózásod mellé szakértő sminkest és hair stylistot is foglalhatsz. A beauty csapatot egyben
+            4, 6 vagy 12 órára, a szakembereket pedig külön-külön, órára is kiválaszthatod – a stúdióbérléssel együtt,
+            ugyanabban a foglalásban.
           </p>
         </div>
       </div>
 
       <div className="mx-auto max-w-6xl px-6 lg:px-8 pb-16 space-y-12">
+        {(packages || []).map((pkg) => {
+          const tiers = [...pkg.staff_package_tiers].sort((a, b) => a.hours - b.hours)
+          return (
+            <section
+              key={pkg.id}
+              className="border-[3px] border-black p-6 sm:p-8"
+              style={{ backgroundColor: 'var(--bauhaus-yellow)', boxShadow: '8px 8px 0 var(--bauhaus-black)' }}
+            >
+              <h2 className="text-bauhaus-heading mb-2">{pkg.name}</h2>
+              {pkg.description && <p className="text-gray-800 mb-4">{pkg.description}</p>}
+              <div className="flex flex-wrap gap-2">
+                {[...pkg.allowed_hours].sort((a, b) => a - b).map((h) => (
+                  <BauhausBadge key={h} variant="black">{h} óra</BauhausBadge>
+                ))}
+              </div>
+              <ul className="mt-4 text-sm space-y-1">
+                <li>Óradíj (csapat): <strong>{ft(pkg.hourly_rate)}</strong></li>
+                {tiers.map((t) => (
+                  <li key={t.id}>
+                    {t.label} ({t.hours} óra): <strong>{ft(t.price)}</strong>{t.note ? ` · ${t.note}` : ''}
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-gray-700 mt-3">
+                A rendszer foglalásnál automatikusan a kedvezőbb (óra- vagy fix) díjat számolja. Az árak bruttó árak.
+              </p>
+            </section>
+          )
+        })}
+
+        <h2 className="text-bauhaus-heading text-center">A csapat tagjai</h2>
         {(staff || []).map((m, i) => {
           const tiers = [...m.staff_rate_tiers].sort((a, b) => a.hours - b.hours)
           return (
@@ -72,7 +110,7 @@ export default async function BeautyTeamPage() {
                 <div>
                   <h3 className="font-bugrino text-sm uppercase tracking-wider mb-2">Díjak</h3>
                   <div className="flex flex-wrap gap-2">
-                    <BauhausBadge variant="outline">Óránként {ft(m.hourly_rate)}</BauhausBadge>
+                    <BauhausBadge variant="outline">Külön foglalva: {ft(m.hourly_rate)} / óra</BauhausBadge>
                     {tiers.map((t) => (
                       <BauhausBadge key={t.id} variant="yellow">
                         {t.label} ({t.hours} óra) {ft(t.price)}
@@ -81,7 +119,7 @@ export default async function BeautyTeamPage() {
                     ))}
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Az árak bruttó árak. A rendszer foglalásnál automatikusan a kedvezőbb díjat számolja.
+                    Külön foglalásnál az óraszámot és a kezdést a szakembernél adod meg. Az árak bruttó árak.
                   </p>
                 </div>
               </div>

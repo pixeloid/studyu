@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import Link from 'next/link'
+import { groupBookingStaff } from '@/lib/booking/invoice-items'
 import { createClient } from '@/lib/supabase/client'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
@@ -67,6 +68,8 @@ interface BookingDetail {
     tier_label: string | null
     total_price: number
     is_active: boolean
+    package_id: string | null
+    package_name: string | null
   }[]
 }
 
@@ -100,7 +103,7 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
           total_price,
           extras (name)
         ),
-        booking_staff (id, staff_name, role_name, hours, tier_label, total_price, is_active)
+        booking_staff (id, staff_name, role_name, hours, tier_label, total_price, is_active, package_id, package_name)
       `)
       .eq('id', id)
       .single()
@@ -676,12 +679,10 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
                   <dd className="font-bugrino">{be.total_price.toLocaleString('hu-HU')} Ft</dd>
                 </div>
               ))}
-              {(booking.booking_staff || []).filter((bs) => bs.is_active).map((bs) => (
-                <div key={bs.id} className="flex justify-between text-sm">
-                  <dt className="text-gray-500">
-                    {bs.staff_name} ({bs.role_name}, {bs.hours} óra{bs.tier_label ? `, ${bs.tier_label}` : ''})
-                  </dt>
-                  <dd className="font-bugrino">{bs.total_price.toLocaleString('hu-HU')} Ft</dd>
+              {groupBookingStaff(booking.booking_staff).map((l) => (
+                <div key={l.key} className="flex justify-between text-sm">
+                  <dt className="text-gray-500">{l.label} ({l.hours} óra)</dt>
+                  <dd className="font-bugrino">{l.price.toLocaleString('hu-HU')} Ft</dd>
                 </div>
               ))}
               {(booking.discount_percent ?? 0) > 0 && (

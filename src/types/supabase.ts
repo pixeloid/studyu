@@ -120,6 +120,8 @@ export type Database = {
           hours: number
           id: string
           is_active: boolean
+          package_id: string | null
+          package_name: string | null
           role_name: string
           staff_id: string
           staff_name: string
@@ -135,6 +137,8 @@ export type Database = {
           hours: number
           id?: string
           is_active?: boolean
+          package_id?: string | null
+          package_name?: string | null
           role_name: string
           staff_id: string
           staff_name: string
@@ -150,6 +154,8 @@ export type Database = {
           hours?: number
           id?: string
           is_active?: boolean
+          package_id?: string | null
+          package_name?: string | null
           role_name?: string
           staff_id?: string
           staff_name?: string
@@ -163,6 +169,13 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_staff_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "staff_packages"
             referencedColumns: ["id"]
           },
           {
@@ -609,6 +622,104 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_package_members: {
+        Row: {
+          package_id: string
+          staff_id: string
+        }
+        Insert: {
+          package_id: string
+          staff_id: string
+        }
+        Update: {
+          package_id?: string
+          staff_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_package_members_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "staff_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_package_members_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_package_tiers: {
+        Row: {
+          hours: number
+          id: string
+          label: string
+          note: string | null
+          package_id: string
+          price: number
+        }
+        Insert: {
+          hours: number
+          id?: string
+          label: string
+          note?: string | null
+          package_id: string
+          price: number
+        }
+        Update: {
+          hours?: number
+          id?: string
+          label?: string
+          note?: string | null
+          package_id?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_package_tiers_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "staff_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_packages: {
+        Row: {
+          allowed_hours: number[]
+          created_at: string | null
+          description: string | null
+          hourly_rate: number
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          allowed_hours?: number[]
+          created_at?: string | null
+          description?: string | null
+          hourly_rate: number
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          allowed_hours?: number[]
+          created_at?: string | null
+          description?: string | null
+          hourly_rate?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       staff_rate_tiers: {
         Row: {
           hours: number
@@ -685,6 +796,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      book_beauty_staff: {
+        Args: {
+          p_booking: string
+          p_hours: number
+          p_staff: string
+          p_start?: string
+        }
+        Returns: number
+      }
+      book_beauty_team: {
+        Args: {
+          p_booking: string
+          p_hours: number
+          p_package: string
+          p_start?: string
+        }
+        Returns: number
+      }
       busy_staff: {
         Args: { p_from: string; p_to: string }
         Returns: {
@@ -702,6 +831,13 @@ export type Database = {
         Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }
+      staff_package_price: {
+        Args: { p_hours: number; p_package: string }
+        Returns: {
+          label: string
+          total: number
+        }[]
+      }
       staff_price: {
         Args: { p_hours: number; p_staff: string }
         Returns: {
