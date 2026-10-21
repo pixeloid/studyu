@@ -5,24 +5,26 @@ import { useRouter } from 'next/navigation'
 import { format, addDays } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import { createClient } from '@/lib/supabase/client'
-import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary, CouponInput } from '@/components/booking'
+import { Calendar, TimeSlotSelector, HourlySlotSelector, ExtrasSelector, BookingSummary, CouponInput, StaffSelector } from '@/components/booking'
+import { cheapestStaffPrice, bookingHours } from '@/lib/booking/staff-pricing'
 import { BauhausCard } from '@/components/ui/bauhaus/BauhausCard'
 import { BauhausButton } from '@/components/ui/bauhaus/BauhausButton'
 import { LegalLink } from '@/components/legal'
-import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings, InternalBlock } from '@/types/database'
+import type { TimeSlot, Extra, OpeningHours, SpecialDate, Booking, HourlyBookingSettings, InternalBlock, StaffWithTiers } from '@/types/database'
 
 interface SelectedExtra {
   extra: Extra
   quantity: number
 }
 
-type BookingStep = 'date' | 'slot' | 'extras' | 'catering' | 'confirm'
+type BookingStep = 'date' | 'slot' | 'extras' | 'beauty' | 'catering' | 'confirm'
 type SlotMode = 'package' | 'hourly'
 
 const steps = [
   { key: 'date', label: 'Dátum' },
   { key: 'slot', label: 'Időpont' },
   { key: 'extras', label: 'Extrák' },
+  { key: 'beauty', label: 'Beauty' },
   { key: 'catering', label: 'Catering' },
   { key: 'confirm', label: 'Véglegesítés' },
 ]
@@ -61,6 +63,11 @@ export default function BookingPage() {
   const [hourlyDuration, setHourlyDuration] = useState<number>(0)
   const [hourlyPrice, setHourlyPrice] = useState<number>(0)
 
+  // Beauty csapat
+  const [staffList, setStaffList] = useState<StaffWithTiers[]>([])
+  const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>([])
+  const [busyStaffIds, setBusyStaffIds] = useState<Set<string>>(new Set())
+
   // Coupon state
   const [appliedCoupon, setAppliedCoupon] = useState<{ id: string; code: string; discount_percent: number } | null>(null)
 
@@ -83,7 +90,7 @@ export default function BookingPage() {
   const maxDaysAhead = 90
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const autoSubmitBooking = async (userId: string, state: any, loadedSlots: TimeSlot[], loadedExtras: Extra[]) => {
+  const autoSubmitBooking = async (userId: string, state: any, loadedSlots: TimeSlot[], loadedExtras: Extra[], loadedStaff: StaffWithTiers[]) => {
     try {
       // Save billing data to profile
       if (state.billingName) {
@@ -121,7 +128,13 @@ export default function BookingPage() {
         const slot = loadedSlots.find((s: TimeSlot) => s.id === state.selectedSlotId)
         basePrice = slot?.base_price || 0
       }
-      const extrasPrice = restoredExtras.reduce((sum: number, e: SelectedExtra) => sum + e.extra.price * e.quantity, 0)
+      const restoredStaff = loadedStaff.filter((m) => (state.selectedStaffIds || []).includes(m.id))
+      const staffHours = isHourly
+        ? state.hourlyDuration
+        : (loadedSlots.find((sl: TimeSlot) => sl.id === state.selectedSlotId)?.duration_hours || 0)
+      const staffPrice = restoredStaff.reduce(
+        (sum, m) => sum + cheapestStaffPrice(staffHours, m.hourly_rate, m.staff_rate_tiers).total, 0)
+      const extrasPrice = restoredExtras.reduce((sum: number, e: SelectedExtra) => sum + e.extra.price * e.quantity, 0) + staffPrice
       const couponDiscount = state.discountPercent || 0
       const subtotal = basePrice + extrasPrice
       const discount = Math.round(subtotal * (couponDiscount / 100))
@@ -164,6 +177,18 @@ export default function BookingPage() {
 
       if (bookingError) throw bookingError
 
+      if (restoredStaff.length > 0 && booking) {
+        const { error: staffError } = await supabase
+          .from('booking_staff')
+          .insert(restoredStaff.map((m) => ({ booking_id: booking.id, staff_id: m.id })) as never)
+        if (staffError) {
+          await supabase.from('bookings').update({ status: 'cancelled' }).eq('id', booking.id)
+          throw new Error(staffError.code === '23P01'
+            ? 'A kiválasztott beauty szakember időközben foglalttá vált erre az időpontra.'
+            : staffError.message)
+        }
+      }
+
       if (restoredExtras.length > 0 && booking) {
         await supabase.from('booking_extras').insert(
           restoredExtras.map((e: SelectedExtra) => ({
@@ -179,7 +204,9 @@ export default function BookingPage() {
       router.push(`/dashboard/foglalasaim/${booking.id}?success=true`)
     } catch (err) {
       console.error('Auto-submit error:', err)
-      setError('Hiba történt a foglalás létrehozása közben. Próbáld újra.')
+      setError(err instanceof Error && err.message.startsWith('A kiválasztott')
+        ? err.message
+        : 'Hiba történt a foglalás létrehozása közben. Próbáld újra.')
       setLoading(false)
     }
   }
@@ -218,7 +245,7 @@ export default function BookingPage() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes, settingsRes, blocksRes] = await Promise.all([
+      const [slotsRes, extrasRes, hoursRes, specialRes, bookingsRes, settingsRes, blocksRes, staffRes] = await Promise.all([
         supabase.from('time_slots').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('extras').select('*').eq('is_active', true).order('sort_order'),
         supabase.from('opening_hours').select('*'),
@@ -231,6 +258,7 @@ export default function BookingPage() {
         supabase.from('internal_blocks')
           .select('*')
           .gte('end_datetime', new Date().toISOString()),
+        supabase.from('staff_members').select('*, staff_rate_tiers(*)').eq('is_active', true).order('sort_order'),
       ])
 
       const loadedSlots = slotsRes.data || []
@@ -241,6 +269,8 @@ export default function BookingPage() {
       if (specialRes.data) setSpecialDates(specialRes.data)
       if (bookingsRes.data) setExistingBookings(bookingsRes.data)
       if (blocksRes.data) setInternalBlocks(blocksRes.data)
+      const loadedStaff = (staffRes.data || []) as StaffWithTiers[]
+      setStaffList(loadedStaff)
       if (settingsRes.data?.value) {
         setHourlySettings(settingsRes.data.value as unknown as HourlyBookingSettings)
       }
@@ -255,7 +285,7 @@ export default function BookingPage() {
           const { data: { user } } = await supabase.auth.getUser()
           if (user && state.selectedDate) {
             // User just logged in — auto-submit the pending booking
-            await autoSubmitBooking(user.id, state, loadedSlots, loadedExtras)
+            await autoSubmitBooking(user.id, state, loadedSlots, loadedExtras, loadedStaff)
             return
           }
 
@@ -278,6 +308,7 @@ export default function BookingPage() {
               .filter(Boolean)
             setSelectedExtras(restored)
           }
+          if (state.selectedStaffIds?.length) setSelectedStaffIds(state.selectedStaffIds)
           if (state.userNotes) setUserNotes(state.userNotes)
           if (state.billingName) setBillingName(state.billingName)
           if (state.billingCompany) setBillingCompany(state.billingCompany)
@@ -381,6 +412,35 @@ export default function BookingPage() {
     return selectedSlot?.base_price || 0
   }
 
+  const getStaffWindow = (): { start: string; end: string } | null => {
+    if (slotMode === 'hourly') return hourlyStart && hourlyEnd ? { start: hourlyStart, end: hourlyEnd } : null
+    return selectedSlot ? { start: selectedSlot.start_time, end: selectedSlot.end_time } : null
+  }
+
+  const getStaffHours = (): number => {
+    const w = getStaffWindow()
+    return w ? bookingHours(w.start, w.end) : getDurationHours()
+  }
+
+  const selectedStaff = staffList.filter((m) => selectedStaffIds.includes(m.id))
+  const getStaffPrice = (): number =>
+    selectedStaff.reduce((sum, m) => sum + cheapestStaffPrice(getStaffHours(), m.hourly_rate, m.staff_rate_tiers).total, 0)
+
+  // Foglalt beauty szakemberek az időablakban (a beauty lépésben frissül)
+  useEffect(() => {
+    if (step !== 'beauty' || !selectedDate) return
+    const w = getStaffWindow()
+    if (!w) return
+    supabase
+      .rpc('busy_staff_on', { p_date: format(selectedDate, 'yyyy-MM-dd'), p_start: w.start, p_end: w.end })
+      .then(({ data }) => {
+        const busy = new Set((data || []).map((r: { staff_id: string }) => r.staff_id))
+        setBusyStaffIds(busy)
+        setSelectedStaffIds((ids) => ids.filter((id) => !busy.has(id)))
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, selectedDate, selectedSlot, hourlyStart, hourlyEnd, slotMode])
+
   const saveBookingState = () => {
     const state = {
       selectedDate: selectedDate?.toISOString(),
@@ -390,6 +450,7 @@ export default function BookingPage() {
       hourlyEnd,
       hourlyDuration,
       selectedExtras: selectedExtras.map(e => ({ extraId: e.extra.id, quantity: e.quantity })),
+      selectedStaffIds,
       userNotes,
       discountPercent: appliedCoupon?.discount_percent || 0,
       step,
@@ -447,7 +508,7 @@ export default function BookingPage() {
         .eq('id', user.id)
 
       const basePrice = getBasePrice()
-      const extrasPrice = selectedExtras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
+      const extrasPrice = selectedExtras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0) + getStaffPrice()
       const discountPercent = appliedCoupon?.discount_percent || 0
       const subtotal = basePrice + extrasPrice
       const discount = Math.round(subtotal * (discountPercent / 100))
@@ -490,6 +551,21 @@ export default function BookingPage() {
 
       if (bookingError) throw bookingError
 
+      if (selectedStaff.length > 0 && booking) {
+        const { error: staffError } = await supabase
+          .from('booking_staff')
+          .insert(selectedStaff.map((m) => ({ booking_id: booking.id, staff_id: m.id })) as never)
+        if (staffError) {
+          // Nem fizetett, függő foglalás – felszabadítjuk az időpontot
+          await supabase.from('bookings').update({ status: 'cancelled' }).eq('id', booking.id)
+          setError(staffError.code === '23P01'
+            ? 'A kiválasztott beauty szakember időközben foglalttá vált erre az időpontra. Válassz másikat vagy másik időpontot.'
+            : 'Hiba történt a beauty csapat foglalása közben. Próbáld újra.')
+          setStep('beauty')
+          return
+        }
+      }
+
       if (selectedExtras.length > 0 && booking) {
         const extrasToInsert = selectedExtras.map(e => ({
           booking_id: booking.id,
@@ -513,8 +589,7 @@ export default function BookingPage() {
   }
 
   const getStepIndex = (s: BookingStep): number => {
-    const stepKeys: BookingStep[] = ['date', 'slot', 'extras', 'confirm']
-    return stepKeys.indexOf(s)
+    return steps.findIndex((st) => st.key === s)
   }
 
   if (loading) {
@@ -703,8 +778,40 @@ export default function BookingPage() {
                 />
               </BauhausCard>
 
-              <BauhausButton variant="primary" fullWidth onClick={() => setStep('catering')}>
+              <BauhausButton variant="primary" fullWidth onClick={() => setStep(staffList.length > 0 ? 'beauty' : 'catering')}>
                 Tovább
+              </BauhausButton>
+            </div>
+          )}
+
+          {step === 'beauty' && selectedDate && canProceedFromSlot && (
+            <div className="space-y-6">
+              <BauhausCard padding="lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="font-bugrino text-xl uppercase tracking-wider">
+                    Beauty csapat
+                  </h2>
+                  <button
+                    onClick={() => setStep('extras')}
+                    className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
+                  >
+                    Vissza
+                  </button>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  Szeretnél sminkest vagy hair stylistot a fotózásra? Opcionális – a díjat a foglalás időtartamára számoljuk, a kedvezőbb (óra- vagy fix) áron.
+                </p>
+                <StaffSelector
+                  staff={staffList}
+                  busyIds={busyStaffIds}
+                  selectedIds={selectedStaffIds}
+                  onChange={setSelectedStaffIds}
+                  hours={getStaffHours()}
+                />
+              </BauhausCard>
+
+              <BauhausButton variant="primary" fullWidth onClick={() => setStep('catering')}>
+                {selectedStaffIds.length > 0 ? 'Tovább' : 'Kihagyom, tovább'}
               </BauhausButton>
             </div>
           )}
@@ -717,7 +824,7 @@ export default function BookingPage() {
                     Catering
                   </h2>
                   <button
-                    onClick={() => setStep('extras')}
+                    onClick={() => setStep(staffList.length > 0 ? 'beauty' : 'extras')}
                     className="font-bugrino text-sm uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
                   >
                     Vissza
@@ -924,6 +1031,10 @@ export default function BookingPage() {
               date={selectedDate}
               slot={selectedSlot}
               extras={selectedExtras}
+              staff={selectedStaff.map((m) => {
+                const q = cheapestStaffPrice(getStaffHours(), m.hourly_rate, m.staff_rate_tiers)
+                return { id: m.id, label: `${m.name} (${m.role_name}, ${getStaffHours()} óra${q.label ? `, ${q.label}` : ''})`, price: q.total }
+              })}
               discountPercent={appliedCoupon?.discount_percent || 0}
               hourlyBooking={slotMode === 'hourly' && hourlyStart && hourlyEnd ? {
                 startTime: hourlyStart,

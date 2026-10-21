@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { hu } from 'date-fns/locale'
 import { z } from 'zod'
 import { createInvoice } from '@/lib/szamlazz'
+import { staffInvoiceItems, STAFF_SELECT } from '@/lib/booking/invoice-items'
 
 const requestSchema = z.object({
   bookingId: z.string().uuid('Invalid booking ID'),
@@ -69,7 +70,8 @@ export async function POST(request: NextRequest) {
       *,
       profiles (full_name, phone, company_name, tax_number, billing_address),
       time_slots (name, duration_hours),
-      booking_extras (quantity, unit_price, total_price, extras (name))
+      booking_extras (quantity, unit_price, total_price, extras (name)),
+      ${STAFF_SELECT}
     `)
     .eq('id', bookingId)
     .single()
@@ -114,6 +116,8 @@ export async function POST(request: NextRequest) {
       })
     }
   }
+
+  items.push(...staffInvoiceItems(booking.booking_staff))
 
   // Create final invoice (linked to proforma if exists)
   const result = await createInvoice({

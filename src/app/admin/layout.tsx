@@ -12,6 +12,7 @@ const navigation = [
   { name: 'Felhasználók', href: '/admin/felhasznalok', icon: UsersIcon },
   { name: 'Időpontok', href: '/admin/idopontok', icon: ClockIcon },
   { name: 'Extrák', href: '/admin/extrak', icon: SparklesIcon },
+  { name: 'Beauty csapat', href: '/admin/szemelyzet', icon: UsersIcon },
   { name: 'Kuponok', href: '/admin/kuponok', icon: CouponIcon },
   { name: 'Nyitvatartás', href: '/admin/nyitvatartas', icon: StoreIcon },
   { name: 'Ünnepnapok', href: '/admin/unnepnapok', icon: StarIcon },

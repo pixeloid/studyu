@@ -33,6 +33,10 @@ export type Booking = Tables<'bookings'>
 export type BookingExtra = Tables<'booking_extras'>
 export type BlockedDate = Tables<'blocked_dates'>
 export type Setting = Tables<'settings'>
+export type StaffMember = Tables<'staff_members'>
+export type StaffRateTier = Tables<'staff_rate_tiers'>
+export type BookingStaff = Tables<'booking_staff'>
+export type StaffWithTiers = StaffMember & { staff_rate_tiers: StaffRateTier[] }
 
 // Billing address type
 export interface BillingAddress {

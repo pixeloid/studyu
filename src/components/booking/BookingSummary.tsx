@@ -23,6 +23,7 @@ interface BookingSummaryProps {
   extras: SelectedExtra[]
   discountPercent?: number
   hourlyBooking?: HourlyBookingInfo
+  staff?: { id: string; label: string; price: number }[]
 }
 
 export function BookingSummary({
@@ -31,12 +32,14 @@ export function BookingSummary({
   extras,
   discountPercent = 0,
   hourlyBooking,
+  staff = [],
 }: BookingSummaryProps) {
   const basePrice = hourlyBooking
     ? hourlyBooking.duration * hourlyBooking.hourlyRate
     : slot?.base_price || 0
   const extrasPrice = extras.reduce((sum, e) => sum + e.extra.price * e.quantity, 0)
-  const subtotal = basePrice + extrasPrice
+  const staffPrice = staff.reduce((sum, m) => sum + m.price, 0)
+  const subtotal = basePrice + extrasPrice + staffPrice
   const discount = Math.round(subtotal * (discountPercent / 100))
   const total = subtotal - discount
 
@@ -122,6 +125,13 @@ export function BookingSummary({
               <span className="font-bugrino">
                 {(extra.price * quantity).toLocaleString('hu-HU')} Ft
               </span>
+            </div>
+          ))}
+
+          {staff.map((m) => (
+            <div key={m.id} className="flex justify-between text-sm">
+              <span className="text-gray-600">{m.label}</span>
+              <span className="font-bugrino">{m.price.toLocaleString('hu-HU')} Ft</span>
             </div>
           ))}
 

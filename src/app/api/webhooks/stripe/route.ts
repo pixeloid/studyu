@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { getStripe, getStripeWebhookSecret } from '@/lib/stripe/client'
 import Stripe from 'stripe'
+import { staffInvoiceItems, STAFF_SELECT } from '@/lib/booking/invoice-items'
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -61,7 +62,8 @@ export async function POST(request: NextRequest) {
       *,
       profiles (full_name, phone, company_name, tax_number, billing_address),
       time_slots (name, start_time, end_time, duration_hours),
-      booking_extras (quantity, unit_price, total_price, extras (name))
+      booking_extras (quantity, unit_price, total_price, extras (name)),
+      ${STAFF_SELECT}
     `)
     .eq('id', bookingId)
     .single()
@@ -125,6 +127,8 @@ export async function POST(request: NextRequest) {
         })
       }
     }
+
+    items.push(...staffInvoiceItems(booking.booking_staff))
 
     const result = await createInvoice({
       buyerName: booking.profiles?.company_name || booking.profiles?.full_name || 'Vevő',

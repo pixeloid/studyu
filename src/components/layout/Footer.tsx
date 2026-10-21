@@ -4,6 +4,7 @@ import { StudyULogo } from '@/components/ui/StudyULogo'
 const navigation = {
   main: [
     { name: 'Bemutatkozás', href: '/bemutatkozas', external: false },
+    { name: 'Beauty csapat', href: '/beauty-csapat', external: false },
     { name: 'Galéria', href: 'https://www.instagram.com/studyu_bp/', external: true },
     { name: 'Kapcsolat', href: '/kapcsolat', external: false },
     { name: 'Foglalás', href: '/foglalas', external: false },

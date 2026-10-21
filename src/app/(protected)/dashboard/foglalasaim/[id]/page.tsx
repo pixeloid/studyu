@@ -61,7 +61,8 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
         unit_price,
         total_price,
         extras (name, description)
-      )
+      ),
+      booking_staff (id, staff_name, role_name, hours, tier_label, total_price, is_active)
     `)
     .eq('id', id)
     .eq('user_id', user.id)
@@ -202,6 +203,26 @@ export default async function BookingDetailPage({ params, searchParams }: PagePr
                   <p className="font-bugrino">
                     {be.total_price.toLocaleString('hu-HU')} Ft
                   </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Beauty csapat */}
+        {booking.booking_staff && booking.booking_staff.some((bs: any) => bs.is_active) && (
+          <div className="p-6 border-b-[3px] border-gray-200">
+            <h2 className="font-bugrino text-sm uppercase tracking-wider text-gray-500 mb-3">Beauty csapat</h2>
+            <div className="space-y-3">
+              {booking.booking_staff.filter((bs: any) => bs.is_active).map((bs: any) => (
+                <div key={bs.id} className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium">{bs.staff_name}</p>
+                    <p className="text-sm text-gray-500">
+                      {bs.role_name} · {bs.hours} óra{bs.tier_label ? ` · ${bs.tier_label}` : ''}
+                    </p>
+                  </div>
+                  <p className="font-bugrino">{bs.total_price.toLocaleString('hu-HU')} Ft</p>
                 </div>
               ))}
             </div>

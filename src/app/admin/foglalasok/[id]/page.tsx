@@ -59,6 +59,15 @@ interface BookingDetail {
       name: string
     } | null
   }[]
+  booking_staff: {
+    id: string
+    staff_name: string
+    role_name: string
+    hours: number
+    tier_label: string | null
+    total_price: number
+    is_active: boolean
+  }[]
 }
 
 export default function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -90,7 +99,8 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
           unit_price,
           total_price,
           extras (name)
-        )
+        ),
+        booking_staff (id, staff_name, role_name, hours, tier_label, total_price, is_active)
       `)
       .eq('id', id)
       .single()
@@ -664,6 +674,14 @@ export default function BookingDetailPage({ params }: { params: Promise<{ id: st
                     {be.extras?.name} {(be.quantity ?? 1) > 1 && `(${be.quantity}x)`}
                   </dt>
                   <dd className="font-bugrino">{be.total_price.toLocaleString('hu-HU')} Ft</dd>
+                </div>
+              ))}
+              {(booking.booking_staff || []).filter((bs) => bs.is_active).map((bs) => (
+                <div key={bs.id} className="flex justify-between text-sm">
+                  <dt className="text-gray-500">
+                    {bs.staff_name} ({bs.role_name}, {bs.hours} óra{bs.tier_label ? `, ${bs.tier_label}` : ''})
+                  </dt>
+                  <dd className="font-bugrino">{bs.total_price.toLocaleString('hu-HU')} Ft</dd>
                 </div>
               ))}
               {(booking.discount_percent ?? 0) > 0 && (

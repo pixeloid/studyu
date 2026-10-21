@@ -111,6 +111,69 @@ export type Database = {
           },
         ]
       }
+      booking_staff: {
+        Row: {
+          booking_id: string
+          created_at: string | null
+          end_datetime: string
+          hourly_rate: number
+          hours: number
+          id: string
+          is_active: boolean
+          role_name: string
+          staff_id: string
+          staff_name: string
+          start_datetime: string
+          tier_label: string | null
+          total_price: number
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string | null
+          end_datetime: string
+          hourly_rate: number
+          hours: number
+          id?: string
+          is_active?: boolean
+          role_name: string
+          staff_id: string
+          staff_name: string
+          start_datetime: string
+          tier_label?: string | null
+          total_price: number
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string | null
+          end_datetime?: string
+          hourly_rate?: number
+          hours?: number
+          id?: string
+          is_active?: boolean
+          role_name?: string
+          staff_id?: string
+          staff_name?: string
+          start_datetime?: string
+          tier_label?: string | null
+          total_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_staff_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_staff_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           admin_notes: string | null
@@ -136,12 +199,17 @@ export type Database = {
           invoice_number: string | null
           invoice_url: string | null
           paid_at: string | null
+          payment_link_url: string | null
+          payment_method: string | null
           proforma_number: string | null
           proforma_sent_at: string | null
           proforma_url: string | null
           start_time: string | null
           status: string
           storno_invoice_number: string | null
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_refund_id: string | null
           time_slot_id: string | null
           total_price: number
           updated_at: string | null
@@ -172,12 +240,17 @@ export type Database = {
           invoice_number?: string | null
           invoice_url?: string | null
           paid_at?: string | null
+          payment_link_url?: string | null
+          payment_method?: string | null
           proforma_number?: string | null
           proforma_sent_at?: string | null
           proforma_url?: string | null
           start_time?: string | null
           status?: string
           storno_invoice_number?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
           time_slot_id?: string | null
           total_price: number
           updated_at?: string | null
@@ -208,12 +281,17 @@ export type Database = {
           invoice_number?: string | null
           invoice_url?: string | null
           paid_at?: string | null
+          payment_link_url?: string | null
+          payment_method?: string | null
           proforma_number?: string | null
           proforma_sent_at?: string | null
           proforma_url?: string | null
           start_time?: string | null
           status?: string
           storno_invoice_number?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
           time_slot_id?: string | null
           total_price?: number
           updated_at?: string | null
@@ -495,6 +573,77 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_members: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          hourly_rate: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          role_name: string
+          sort_order: number
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          hourly_rate: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          role_name: string
+          sort_order?: number
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          hourly_rate?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          role_name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      staff_rate_tiers: {
+        Row: {
+          hours: number
+          id: string
+          label: string
+          note: string | null
+          price: number
+          staff_id: string
+        }
+        Insert: {
+          hours: number
+          id?: string
+          label: string
+          note?: string | null
+          price: number
+          staff_id: string
+        }
+        Update: {
+          hours?: number
+          id?: string
+          label?: string
+          note?: string | null
+          price?: number
+          staff_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_rate_tiers_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       time_slots: {
         Row: {
           base_price: number
@@ -536,11 +685,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      busy_staff: {
+        Args: { p_from: string; p_to: string }
+        Returns: {
+          staff_id: string
+        }[]
+      }
+      busy_staff_on: {
+        Args: { p_date: string; p_end: string; p_start: string }
+        Returns: {
+          staff_id: string
+        }[]
+      }
       increment_coupon_usage: {
         Args: { coupon_id_input: string }
         Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }
+      staff_price: {
+        Args: { p_hours: number; p_staff: string }
+        Returns: {
+          label: string
+          total: number
+        }[]
+      }
       validate_coupon: {
         Args: { coupon_code_input: string }
         Returns: {
