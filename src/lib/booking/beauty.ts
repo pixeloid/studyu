@@ -53,8 +53,14 @@ export function startOptions(defaultStart: string, hours: number): string[] {
   return [...opts].filter((s) => beautyEnd(s, hours) !== null).sort()
 }
 
+/** A csapatnak csak fix áras csomagjai vannak (fél nap, egész nap, ...), óradíja nincs. */
+export function teamTiers(pkg: StaffPackageWithRelations) {
+  return [...pkg.staff_package_tiers].sort((a, b) => a.hours - b.hours)
+}
+
 export function teamQuote(pkg: StaffPackageWithRelations, hours: number) {
-  return cheapestStaffPrice(hours, pkg.hourly_rate, pkg.staff_package_tiers)
+  const tier = pkg.staff_package_tiers.find((t) => t.hours === hours)
+  return { total: tier?.price ?? 0, label: tier?.label ?? null }
 }
 
 export function beautyLines(

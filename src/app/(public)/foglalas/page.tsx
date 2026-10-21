@@ -796,7 +796,7 @@ export default function BookingPage() {
                   </button>
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
-                  Szeretnél sminkest vagy hair stylistot a fotózásra? Opcionális. A beauty csapatot egyben foglalhatod 4, 6 vagy 12 órára, vagy a szakembereket külön-külön, órára – az óraszámot és a kezdést itt kell megadni, nem függ a stúdióbérlés hosszától.
+                  Szeretnél sminkest vagy hair stylistot a fotózásra? Opcionális. Bencét és Barbarát együtt is foglalhatod, vagy külön-külön, tetszőleges óraszámra – az óraszámot és a kezdést itt kell megadni, nem függ a stúdióbérlés hosszától.
                 </p>
                 <StaffSelector
                   packages={teamPackages}

@@ -11,8 +11,6 @@ type Draft = {
   id: string
   name: string
   description: string
-  hourly_rate: number
-  allowed_hours: string // vesszővel elválasztva
   is_active: boolean
   tiers: Tier[]
   members: string[]
@@ -46,8 +44,6 @@ export function TeamPackageEditor() {
         id: p.id,
         name: p.name,
         description: p.description || '',
-        hourly_rate: p.hourly_rate,
-        allowed_hours: [...p.allowed_hours].sort((a, b) => a - b).join(', '),
         is_active: p.is_active,
         tiers: [...p.staff_package_tiers].sort((a, b) => a.hours - b.hours).map((t) => ({
           label: t.label, hours: t.hours, price: t.price, note: t.note,
@@ -64,9 +60,13 @@ export function TeamPackageEditor() {
 
   const save = async (i: number) => {
     const d = drafts[i]
-    const hours = d.allowed_hours.split(',').map((x) => Number(x.trim())).filter((n) => Number.isInteger(n) && n >= 1 && n <= 12)
-    if (!d.name.trim() || hours.length === 0 || d.members.length === 0) {
-      setMessage({ type: 'error', text: 'Név, legalább egy választható óraszám (1-12) és legalább egy tag kötelező' })
+    const tierHours = d.tiers.map((t) => t.hours)
+    if (!d.name.trim() || d.tiers.length === 0 || d.members.length === 0) {
+      setMessage({ type: 'error', text: 'Név, legalább egy fix áras csomag és legalább egy tag kötelező' })
+      return
+    }
+    if (new Set(tierHours).size !== tierHours.length || tierHours.some((h) => !Number.isInteger(h) || h < 1 || h > 12)) {
+      setMessage({ type: 'error', text: 'Az óraszámok 1 és 12 közötti egész számok legyenek, és ne ismétlődjenek' })
       return
     }
     setSavingId(d.id)
@@ -79,8 +79,6 @@ export function TeamPackageEditor() {
     const { error } = await supabase.from('staff_packages').update({
       name: d.name.trim(),
       description: d.description.trim() || null,
-      hourly_rate: d.hourly_rate,
-      allowed_hours: [...new Set(hours)].sort((a, b) => a - b),
       is_active: d.is_active,
     }).eq('id', d.id)
     if (error) return fail(error.message)
@@ -109,7 +107,7 @@ export function TeamPackageEditor() {
     <div className="mb-12">
       <h2 className="font-bugrino text-lg uppercase tracking-wider mb-1">Csapatcsomag (egyben foglalható)</h2>
       <p className="text-sm text-gray-500 mb-4 max-w-2xl">
-        A csapat együtt foglalható a megadott óraszámokra. A csapat ára egy összeg (a tagok között egyenlően oszlik el a számlán), a rendszer az óradíj és a fix sávok közül a kedvezőbbet számolja. A tagokat külön óradíjjal is lehet foglalni lent.
+        A csapat (a tagok együtt) csak fix áras csomagokban foglalható, óradíja nincs. A választható óraszámok azok, amelyekhez itt van csomag (pl. 4, 6, 12 óra). A csomag ára a számlán egy sor, a tagok között egyenlően oszlik el. A tagok külön, óradíjjal lent foglalhatók.
       </p>
       {message && (
         <div className={`mb-4 p-3 border-[3px] ${message.type === 'success' ? 'border-green-500 bg-green-50' : 'border-[var(--bauhaus-red)] bg-red-50'}`}>
@@ -123,18 +121,9 @@ export function TeamPackageEditor() {
               <label className={labelCls}>Név</label>
               <input className={inputCls} value={d.name} onChange={(e) => patch(i, { name: e.target.value })} />
             </div>
-            <div>
-              <label className={labelCls}>Csapat óradíj (bruttó Ft)</label>
-              <input type="number" min={0} className={inputCls} value={d.hourly_rate} onChange={(e) => patch(i, { hourly_rate: Number(e.target.value) })} />
-            </div>
             <div className="sm:col-span-2">
               <label className={labelCls}>Leírás</label>
               <input className={inputCls} value={d.description} onChange={(e) => patch(i, { description: e.target.value })} />
-            </div>
-            <div>
-              <label className={labelCls}>Választható óraszámok</label>
-              <input className={inputCls} value={d.allowed_hours} onChange={(e) => patch(i, { allowed_hours: e.target.value })} placeholder="4, 6, 12" />
-              <p className="text-xs text-gray-400 mt-1">Vesszővel elválasztva, 1–12 óra.</p>
             </div>
             <div>
               <label className={labelCls}>Tagok</label>
@@ -156,7 +145,7 @@ export function TeamPackageEditor() {
 
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <label className={labelCls + ' mb-0'}>Fix áras sávok (a csapatra együtt)</label>
+              <label className={labelCls + ' mb-0'}>Csapat csomagok (fix ár, a csapatra együtt)</label>
               <button type="button" className="font-bugrino text-xs uppercase tracking-wider text-[var(--bauhaus-blue)] hover:underline"
                 onClick={() => patch(i, { tiers: [...d.tiers, { label: '', hours: 6, price: 0, note: null }] })}>
                 + Sáv
